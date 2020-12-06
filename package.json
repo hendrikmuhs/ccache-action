@@ -1,0 +1,37 @@
+{
+  "name": "ccache-action",
+  "version": "1.0.0",
+  "description": "github action to speedup building using ccache",
+  "main": "dist/restore/index.js",
+  "scripts": {
+    "prepare": "ncc build --target es2020 -o dist/restore src/restore.ts && ncc build --target es2020 -o dist/save src/save.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hendrikmuhs/ccache-action.git"
+  },
+  "keywords": [
+    "actions",
+    "ccache",
+    "cache",
+    "c++",
+    "cpp",
+    "c"
+  ],
+  "author": "Hendrik Muhs",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/cache": "^1.0.4",
+    "@actions/core": "^1.2.6",
+    "@actions/exec": "^1.0.4",
+    "@actions/io": "^1.0.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.25.1",
+    "typescript": "^4.1.2"
+  },
+  "bugs": {
+    "url": "https://github.com/hendrikmuhs/ccache-action/issues"
+  },
+  "homepage": "https://github.com/hendrikmuhs/ccache-action#readme"
+}
