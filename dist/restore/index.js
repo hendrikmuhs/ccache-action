@@ -55067,6 +55067,11 @@ module.exports = v4;
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => /* binding */ src_restore
+});
+
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __webpack_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
@@ -55089,8 +55094,8 @@ async function install() {
         await exec.exec("brew install ccache");
     }
     else {
-        await exec.exec("apt-get update");
-        await exec.exec("apt-get install -y ccache");
+        await exec.exec("sudo apt-get update");
+        await exec.exec("sudo apt-get install -y ccache");
     }
 }
 async function restore() {
@@ -55102,7 +55107,7 @@ async function restore() {
     const restoreKeys = [
         restoreKey
     ];
-    const key = restoreKey + "-" + new Date().toUTCString();
+    const key = restoreKey + "-" + new Date().toISOString();
     const paths = [
         '.ccache'
     ];
@@ -55118,22 +55123,23 @@ async function configure() {
     await exec.exec("ccache -p");
 }
 async function run() {
-    let ccachePath = await io.which("ccache");
-    if (!ccachePath) {
-        core.info(`Install ccache`);
-        await install();
-        ccachePath = await io.which("ccache", true);
+    try {
+        let ccachePath = await io.which("ccache");
+        if (!ccachePath) {
+            core.info(`Install ccache`);
+            await install();
+            ccachePath = await io.which("ccache", true);
+        }
+        await restore();
+        await configure();
+        await exec.exec("ccache -z");
     }
-    await restore();
-    await configure();
-    await exec.exec("ccache -z");
+    catch (error) {
+        core.setFailed(error.message);
+    }
 }
-try {
-    run();
-}
-catch (err) {
-    core.setFailed(`Action failed with error ${err}`);
-}
+run();
+/* harmony default export */ const src_restore = (run);
 
 
 /***/ }),

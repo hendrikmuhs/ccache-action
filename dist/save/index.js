@@ -55065,6 +55065,9 @@ module.exports = v4;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2186);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7799);
@@ -55072,23 +55075,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 async function run() {
-    let restoreKey = `ccache-`;
-    let inputKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("key");
-    if (inputKey) {
-        restoreKey += `${inputKey}-`;
+    try {
+        let restoreKey = `ccache-`;
+        let inputKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("key");
+        if (inputKey) {
+            restoreKey += `${inputKey}-`;
+        }
+        const key = restoreKey + "-" + new Date().toISOString();
+        const paths = [
+            '.ccache'
+        ];
+        await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, key);
     }
-    const key = restoreKey + "-" + new Date().toUTCString();
-    const paths = [
-        '.ccache'
-    ];
-    await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, key);
+    catch (error) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
+    }
 }
-try {
-    run();
-}
-catch (err) {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Action failed with error ${err}`);
-}
+run();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (run);
 
 
 /***/ }),

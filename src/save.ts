@@ -1,24 +1,26 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 
-async function run() {
-  let restoreKey = `ccache-`;
-  let inputKey = core.getInput("key");
+async function run() : Promise<void> {
+  try{
+    let restoreKey = `ccache-`;
+    let inputKey = core.getInput("key");
 
-  if (inputKey) {
-    restoreKey += `${inputKey}-`;
-  }
+    if (inputKey) {
+      restoreKey += `${inputKey}-`;
+    }
 
-  const key = restoreKey + "-" + new Date().toUTCString();
-  const paths = [
-    '.ccache'
-  ]
+    const key = restoreKey + "-" + new Date().toISOString();
+    const paths = [
+      '.ccache'
+    ]
   
-  await cache.saveCache(paths, key)
+    await cache.saveCache(paths, key);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
 
-try {
-  run();
-} catch (err) {
-  core.setFailed(`Action failed with error ${err}`);
-}
+run();
+
+export default run;
