@@ -55072,10 +55072,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7799);
 /* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_cache__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1514);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 async function run() {
     try {
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Ccache stats:");
+        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec("ccache -s");
         let restoreKey = `ccache-`;
         let inputKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("key");
         if (inputKey) {
@@ -55085,6 +55090,7 @@ async function run() {
         const paths = [
             '.ccache'
         ];
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Save cache using key "${key}".`);
         await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, key);
     }
     catch (error) {

@@ -55111,7 +55111,13 @@ async function restore() {
     const paths = [
         '.ccache'
     ];
-    await cache.restoreCache(paths, key, restoreKeys);
+    const restoredWith = await cache.restoreCache(paths, key, restoreKeys);
+    if (restoredWith) {
+        core.info(`Restored from cache key "${restoredWith}".`);
+    }
+    else {
+        core.info("No cache found.");
+    }
 }
 async function configure() {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE;

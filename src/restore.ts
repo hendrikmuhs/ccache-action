@@ -28,11 +28,17 @@ async function restore() {
   ]
   
   const key = restoreKey + "-" + new Date().toISOString();
+
   const paths = [
     '.ccache'
   ]  
 
-  await cache.restoreCache(paths, key, restoreKeys)
+  const restoredWith = await cache.restoreCache(paths, key, restoreKeys)
+  if (restoredWith) {
+    core.info(`Restored from cache key "${restoredWith}".`);
+  } else {
+    core.info("No cache found.");
+  }
 }
 
 async function configure() {
