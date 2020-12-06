@@ -27,7 +27,7 @@ async function restore() {
     restoreKey
   ]
   
-  const key = restoreKey + "-" + new Date().toISOString();
+  const key = restoreKey + new Date().toISOString();
 
   const paths = [
     '.ccache'
