@@ -14,7 +14,7 @@ async function run() : Promise<void> {
       restoreKey += `${inputKey}-`;
     }
 
-    const key = restoreKey + "-" + new Date().toISOString();
+    const key = restoreKey + new Date().toISOString();
     const paths = [
       '.ccache'
     ]

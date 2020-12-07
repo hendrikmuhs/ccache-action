@@ -1,5 +1,5 @@
-name: "C-Cache for gh actions"
-description: "A GitHub Action that speeds up compiling for C/C++ projects."
+name: "Ccache for gh actions"
+description: "A GitHub Action that speeds up compiling for C/C++ projects using ccache."
 author: "Hendrik Muhs<hendrik.muhs@gmail.com>"
 inputs:
   key:
