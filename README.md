@@ -48,7 +48,7 @@ separetely. An additional key can be specified like this:
 
 This action is based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 
-In a nutshell, the `.ccache` folder is configured in the runner path and the folder is persisted and reloaded using (`cache`)[https://github.com/actions/toolkit/tree/main/packages/cache].
+In a nutshell, the `.ccache` folder is configured in the runner path and the folder is persisted and reloaded using [`cache`](https://github.com/actions/toolkit/tree/main/packages/cache).
 For more details see: https://docs.github.com/en/free-pro-team@latest/actions/guides/caching-dependencies-to-speed-up-workflows.
 
 ## Stats
@@ -57,4 +57,4 @@ Stats are provided as part of the post action, check the output to see if cache 
 
 ## Example use:
 
- - (Keyvi)[https://github.com/KeyviDev/keyvi/blob/master/.github/workflows/keyvi.yml]
+ - [Keyvi](https://github.com/KeyviDev/keyvi/blob/master/.github/workflows/keyvi.yml)
