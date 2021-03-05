@@ -5,6 +5,9 @@ inputs:
   key:
     description: "An additional key for the cache"
     required: false
+  max-size:
+    description: "Max size of the cache"
+    default: "500M"
 runs:
   using: "node12"
   main: "dist/restore/index.js"

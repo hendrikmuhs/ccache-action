@@ -42,10 +42,11 @@ async function restore() {
 
 async function configure() {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE;
+  const maxSize = core.getInput('max-size');
   
   core.info("Configure ccache");
   await exec.exec("ccache --set-config=cache_dir=" + ghWorkSpace + "/.ccache");
-  await exec.exec("ccache --set-config=max_size=500M");
+  await exec.exec("ccache --set-config=max_size=" + maxSize);
   await exec.exec("ccache --set-config=compression=true");
 
   core.info("Ccache config:")

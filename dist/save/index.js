@@ -55086,7 +55086,7 @@ async function run() {
         if (inputKey) {
             restoreKey += `${inputKey}-`;
         }
-        const key = restoreKey + "-" + new Date().toISOString();
+        const key = restoreKey + new Date().toISOString();
         const paths = [
             '.ccache'
         ];

@@ -55094,7 +55094,6 @@ async function install() {
         await exec.exec("brew install ccache");
     }
     else {
-        await exec.exec("sudo apt-get update");
         await exec.exec("sudo apt-get install -y ccache");
     }
 }
@@ -55121,9 +55120,10 @@ async function restore() {
 }
 async function configure() {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE;
+    const maxSize = core.getInput('max-size');
     core.info("Configure ccache");
     await exec.exec("ccache --set-config=cache_dir=" + ghWorkSpace + "/.ccache");
-    await exec.exec("ccache --set-config=max_size=500M");
+    await exec.exec("ccache --set-config=max_size=" + maxSize);
     await exec.exec("ccache --set-config=compression=true");
     core.info("Ccache config:");
     await exec.exec("ccache -p");
