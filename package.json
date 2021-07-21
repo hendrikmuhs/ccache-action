@@ -24,7 +24,7 @@
     "@actions/cache": "^1.0.7",
     "@actions/core": "^1.2.6",
     "@actions/exec": "^1.1.0",
-    "@actions/io": "^1.0.2"
+    "@actions/io": "^1.1.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.25.1",
