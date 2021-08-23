@@ -7,12 +7,18 @@ import * as cache from "@actions/cache";
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 
 async function install() {
+  const run = async (command: string) => {
+    core.startGroup(command);
+    await exec.exec(command);
+    core.endGroup();
+  };
+
   if (process.platform === "darwin") {
-    await exec.exec("brew update");
-    await exec.exec("brew install ccache");
+    await run("brew update");
+    await run("brew install ccache");
   } else {
-    await exec.exec("sudo apt-get update");
-    await exec.exec("sudo apt-get install -y ccache");
+    await run("sudo apt-get update");
+    await run("sudo apt-get install -y ccache");
   }
 }
 
