@@ -15,24 +15,22 @@ async function install() {
 }
 
 async function restore() {
-  let restoreKey = `ccache-`;
+  let restoreKey = `ccache`;
 
-  let inputKey = core.getInput("key");
+  const inputKey = core.getInput("key");
   if (inputKey) {
-    restoreKey += `${inputKey}-`;
+    restoreKey += `-${inputKey}`;
   }
 
   const restoreKeys = [
     restoreKey
   ]
-  
-  const key = restoreKey + new Date().toISOString();
 
   const paths = [
     '.ccache'
-  ]  
+  ]
 
-  const restoredWith = await cache.restoreCache(paths, key, restoreKeys)
+  const restoredWith = await cache.restoreCache(paths, restoreKey, restoreKeys)
   if (restoredWith) {
     core.info(`Restored from cache key "${restoredWith}".`);
   } else {
@@ -43,7 +41,7 @@ async function restore() {
 async function configure() {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE;
   const maxSize = core.getInput('max-size');
-  
+
   core.info("Configure ccache");
   await exec.exec("ccache --set-config=cache_dir=" + ghWorkSpace + "/.ccache");
   await exec.exec("ccache --set-config=max_size=" + maxSize);

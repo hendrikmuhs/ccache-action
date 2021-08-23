@@ -7,20 +7,19 @@ async function run() : Promise<void> {
     core.info("Ccache stats:")
     await exec.exec("ccache -s");
 
-    let restoreKey = `ccache-`;
-    let inputKey = core.getInput("key");
+    let saveKey = `ccache`;
 
+    const inputKey = core.getInput("key");
     if (inputKey) {
-      restoreKey += `${inputKey}-`;
+      saveKey += `-${inputKey}`;
     }
 
-    const key = restoreKey + new Date().toISOString();
     const paths = [
       '.ccache'
     ]
-  
-    core.info(`Save cache using key "${key}".`)
-    await cache.saveCache(paths, key);
+
+    core.info(`Save cache using key "${saveKey}".`)
+    await cache.saveCache(paths, saveKey);
   } catch (error) {
     core.setFailed(error.message);
   }
