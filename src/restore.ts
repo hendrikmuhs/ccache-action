@@ -15,7 +15,7 @@ async function install() {
 }
 
 async function restore() {
-  let restoreKey = `ccache`;
+  let restoreKey = `ccache_action`;
 
   const inputKey = core.getInput("key");
   if (inputKey) {

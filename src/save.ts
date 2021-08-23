@@ -7,7 +7,7 @@ async function run() : Promise<void> {
     core.info("Ccache stats:")
     await exec.exec("ccache -s");
 
-    let saveKey = `ccache`;
+    let saveKey = `ccache_action`;
 
     const inputKey = core.getInput("key");
     if (inputKey) {
