@@ -37,7 +37,7 @@ Ccache gets installed by this action, if its not installed yet.
 ## Configuration
 
 If you have multiple targets(`Debug`, `Release`) and/or multiple OS's, it makes sense to cache them
-separetely. An additional cache key can be specified.
+separately. An additional cache key can be specified.
 You can also specify the maximum cache size - default `500M` (500 MB).
 
 ```yaml
