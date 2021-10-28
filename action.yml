@@ -8,6 +8,10 @@ inputs:
   max-size:
     description: "Max size of the cache"
     default: "500M"
+  verbose:
+    description: "Verbosity level: 0 (default), 1 or 2"
+    default: 0
+
 runs:
   using: "node12"
   main: "dist/restore/index.js"

@@ -59,6 +59,9 @@ For more details see: https://docs.github.com/en/free-pro-team@latest/actions/gu
 
 Stats are provided as part of the post action, check the output to see if cache is effective.
 
+You may also set `verbose` input to 1 to enable verbose output from this action or even to 2
+to make it even more verbose.
+
 ## Example workflow
 
  - [Keyvi](https://github.com/KeyviDev/keyvi/blob/master/.github/workflows/keyvi.yml)

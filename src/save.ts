@@ -5,7 +5,24 @@ import * as exec from "@actions/exec";
 async function run() : Promise<void> {
   try{
     core.info("Ccache stats:")
-    await exec.exec("ccache -s");
+    let verbosity = '';
+    const inputVerbose = core.getInput("verbose");
+    switch (inputVerbose) {
+        case '0':
+            break;
+
+        case '1':
+            verbosity = ' -v';
+            break;
+
+        case '2':
+            verbosity = ' -vv';
+            break;
+
+        default:
+            core.warning(`Invalid value "${inputVerbose}" of "verbose" option ignored.`);
+    }
+    await exec.exec(`ccache -s${verbosity}`);
 
     let restoreKey = `ccache-`;
     let inputKey = core.getInput("key");

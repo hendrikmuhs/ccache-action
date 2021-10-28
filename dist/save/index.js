@@ -59361,7 +59361,21 @@ __nccwpck_require__.r(__webpack_exports__);
 async function run() {
     try {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Ccache stats:");
-        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec("ccache -s");
+        let verbosity = '';
+        const inputVerbose = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose");
+        switch (inputVerbose) {
+            case '0':
+                break;
+            case '1':
+                verbosity = ' -v';
+                break;
+            case '2':
+                verbosity = ' -vv';
+                break;
+            default:
+                _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Invalid value "${inputVerbose}" of "verbose" option ignored.`);
+        }
+        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`ccache -s${verbosity}`);
         let restoreKey = `ccache-`;
         let inputKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("key");
         if (inputKey) {
