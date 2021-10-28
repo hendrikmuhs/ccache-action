@@ -22,7 +22,7 @@ async function run() : Promise<void> {
     core.info(`Save cache using key "${key}".`)
     await cache.saveCache(paths, key);
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`Saving cache failed: ${error}`);
   }
 }
 
