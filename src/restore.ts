@@ -67,7 +67,7 @@ async function run() : Promise<void> {
 
     await exec.exec("ccache -z");
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`Restoring cache failed: ${error}`);
   }
 }
 

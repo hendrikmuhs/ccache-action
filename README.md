@@ -37,7 +37,7 @@ Ccache gets installed by this action, if its not installed yet.
 ## Configuration
 
 If you have multiple targets(`Debug`, `Release`) and/or multiple OS's, it makes sense to cache them
-separetely. An additional cache key can be specified.
+separately. An additional cache key can be specified.
 You can also specify the maximum cache size - default `500M` (500 MB).
 
 ```yaml
@@ -58,6 +58,9 @@ For more details see: https://docs.github.com/en/free-pro-team@latest/actions/gu
 ## Stats
 
 Stats are provided as part of the post action, check the output to see if cache is effective.
+
+You may also set `verbose` input to 1 to enable verbose output from this action or even to 2
+to make it even more verbose.
 
 ## Example workflow
 
