@@ -32,6 +32,7 @@ async function restore() {
     '.ccache'
   ]  
 
+  core.saveState("primaryKey", key)
   const restoredWith = await cache.restoreCache(paths, key, restoreKeys)
   if (restoredWith) {
     core.info(`Restored from cache key "${restoredWith}".`);
