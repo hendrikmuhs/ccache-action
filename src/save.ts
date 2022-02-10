@@ -24,14 +24,7 @@ async function run() : Promise<void> {
     }
     await exec.exec(`ccache -s${verbosity}`);
 
-    let restoreKey = `ccache-`;
-    let inputKey = core.getInput("key");
-
-    if (inputKey) {
-      restoreKey += `${inputKey}-`;
-    }
-
-    const key = restoreKey + new Date().toISOString();
+    const key = core.getState("primaryKey") + new Date().toISOString();
     const paths = [
       '.ccache'
     ]
