@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          npm install
+          git diff --exit-code
+  test_ccache:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        sccache: [true, false]
+        exclude:
+          - os: windows-latest
+            sccache: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache-action
+        uses: ./
+        with:
+          verbose: 2
+          sccache: ${{ matrix.sccache }}
+          max-size: 10M
+      - name: Test ccache
+        run: |
+          if ${{ matrix.sccache }}; then
+            which sccache
+            sccache -V
+            sccache -s
+            sccache -s | grep -E 'Max cache size.+10 MiB'
+            sccache -s | grep -E 'Cache location.+ccache-action/\.sccache'
+          else
+            which ccache
+            ccache -V
+            ccache -s || true  # Some versions of ccache don't have -s
+          fi
+        shell: bash
