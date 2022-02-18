@@ -1,6 +1,8 @@
 # Ccache for gh actions
 
-A Github action to speedup building using ccache for C/C++ projects.
+A Github action to speedup building using ccache/sccache for C/C++ projects.
+
+Works on Linux, macOS, and Windows (sccache only).
 
 ## Example usage
 
@@ -10,6 +12,15 @@ A Github action to speedup building using ccache for C/C++ projects.
 ```
 
 NB! This should always come after the `actions/checkout` step.
+
+For sccache (Windows support), use:
+
+```yaml
+- name: ccache
+  uses: hendrikmuhs/ccache-action@v1
+  with:
+    sccache: true
+```
 
 In order to use ccache in your other steps, point the compiler to it, e.g. with `run-cmake`:
 
@@ -22,7 +33,7 @@ In order to use ccache in your other steps, point the compiler to it, e.g. with 
     ...
 ```
 
-or by manipulating `PATH`:
+or by manipulating `PATH` (ccache only):
 
 ```yaml
 - name: build
@@ -32,7 +43,7 @@ or by manipulating `PATH`:
 
 (works for both `ubuntu` and `macos`)
 
-Ccache gets installed by this action, if its not installed yet.
+Ccache/sccache gets installed by this action, if its not installed yet.
 
 ## Configuration
 

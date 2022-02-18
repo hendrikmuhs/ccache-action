@@ -9,11 +9,14 @@ inputs:
     description: "Max size of the cache"
     default: "500M"
   verbose:
-    description: "Verbosity level: 0 (default), 1 or 2"
+    description: "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
     default: 0
+  sccache:
+    description: "Use sccache https://github.com/mozilla/sccache instead of ccache"
+    default: false
 
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
 branding:
