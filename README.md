@@ -19,7 +19,7 @@ For sccache (Windows support), use:
 - name: ccache
   uses: hendrikmuhs/ccache-action@v1
   with:
-    sccache: true
+    variant: sccache
 ```
 
 In order to use ccache in your other steps, point the compiler to it, e.g. with `run-cmake`:

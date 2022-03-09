@@ -32,10 +32,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        sccache: [true, false]
+        variant: ["sccache", "ccache"]
         exclude:
           - os: windows-latest
-            sccache: false
+            variant: ccache
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -44,13 +44,13 @@ jobs:
         uses: ./
         with:
           verbose: 2
-          sccache: ${{ matrix.sccache }}
+          variant: ${{ matrix.variant }}
           max-size: 10M
           key: parent
       - name: Test ccache
         run: |
           [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
-          if ${{ matrix.sccache }}; then
+          if ${{ matrix.variant === "sccache" }}; then
             which sccache
             sccache -V
             sccache -s
@@ -64,8 +64,7 @@ jobs:
 
           # Compile a test program to put something in the cache
           echo "int x;" > test.c
-          ccache_variant=$([[ ${{ matrix.sccache }} = true ]] && echo "sccache" || echo "ccache")
-          $ccache_variant gcc test.c -c -o test.o
+          ${{ matrix.variant }} gcc test.c -c -o test.o
 
   test_cache_hit:
     # Test that loading from the cache works.
@@ -74,10 +73,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        sccache: [true, false]
+        variant: ["sccache", "ccache"]
         exclude:
           - os: windows-latest
-            sccache: false
+            variant: ccache
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -85,7 +84,7 @@ jobs:
         uses: ./
         id: output
         with:
-          sccache: ${{ matrix.sccache }}
+          variant: ${{ matrix.variant }}
           key: parent
       - name: Test output true
         run: |
@@ -98,10 +97,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        sccache: [true, false]
+        variant: ["sccache", "ccache"]
         exclude:
           - os: windows-latest
-            sccache: false
+            variant: ccache
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -111,7 +110,7 @@ jobs:
         uses: ./
         id: output
         with:
-          sccache: ${{ matrix.sccache }}
+          variant: ${{ matrix.variant }}
           key: random-key-${{ env.RAND }}
       - name: Test output false
         run: |
@@ -124,10 +123,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        sccache: [true, false]
+        variant: ["sccache", "ccache"]
         exclude:
           - os: windows-latest
-            sccache: false
+            variant: ccache
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -137,7 +136,7 @@ jobs:
         uses: ./
         id: restore-keys
         with:
-          sccache: ${{ matrix.sccache }}
+          variant: ${{ matrix.variant }}
           key: child-${{ env.RAND }}
           restore-keys: |
             parent

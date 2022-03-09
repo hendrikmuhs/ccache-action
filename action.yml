@@ -14,9 +14,9 @@ inputs:
   verbose:
     description: "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
     default: 0
-  sccache:
-    description: "Use sccache https://github.com/mozilla/sccache instead of ccache"
-    default: false
+  variant:
+    description: 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+    default: ccache
 
 runs:
   using: "node16"

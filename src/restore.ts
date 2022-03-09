@@ -63,7 +63,7 @@ async function installCcacheLinux() : Promise<void> {
 }
 
 async function installCcacheWindows() : Promise<void> {
-  throw Error("Ccache is not available for Windows, use Sccache with 'sccache: true'")
+  throw Error("Ccache is not available for Windows, use 'variant: sccache'")
 }
 
 async function installSccacheMac() : Promise<void> {
@@ -101,8 +101,7 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
 
 async function run() : Promise<void> {
   try {
-    const useSccache = core.getBooleanInput("sccache");
-    const ccacheVariant = useSccache ? "sccache" : "ccache";
+    const ccacheVariant = core.getInput("variant");
     core.saveState("ccacheVariant", ccacheVariant);
     let ccachePath = await io.which(ccacheVariant);
     if (!ccachePath) {
