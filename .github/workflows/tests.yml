@@ -50,7 +50,7 @@ jobs:
       - name: Test ccache
         run: |
           [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
-          if ${{ matrix.variant === "sccache" }}; then
+          if ${{ matrix.variant == "sccache" }}; then
             which sccache
             sccache -V
             sccache -s
