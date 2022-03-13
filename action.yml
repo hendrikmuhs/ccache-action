@@ -5,15 +5,21 @@ inputs:
   key:
     description: "An additional key for the cache"
     required: false
+  restore-keys:
+    description: "An ordered list of keys to use for restoring the cache if no cache hit occurred for key"
+    required: false
   max-size:
     description: "Max size of the cache"
     default: "500M"
   verbose:
-    description: "Verbosity level: 0 (default), 1 or 2"
+    description: "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
     default: 0
+  variant:
+    description: 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+    default: ccache
 
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
 branding:
