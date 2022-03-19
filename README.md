@@ -9,7 +9,7 @@ Works on Linux, macOS, and Windows.
 ```yaml
 - run: apt update  # Only for Docker jobs
 - name: ccache
-  uses: hendrikmuhs/ccache-action@main
+  uses: hendrikmuhs/ccache-action@v1.1
 ```
 
 NB! This should always come after the `actions/checkout` step.
@@ -18,7 +18,7 @@ For sccache, use:
 
 ```yaml
 - name: ccache
-  uses: hendrikmuhs/ccache-action@main
+  uses: hendrikmuhs/ccache-action@v1.1
   with:
     variant: sccache
 ```
@@ -57,7 +57,7 @@ You can also specify the maximum cache size - default `500M` (500 MB).
 
 ```yaml
 - name: ccache
-  uses: hendrikmuhs/ccache-action@main
+  uses: hendrikmuhs/ccache-action@v1.1
   with:
     key: ${{ matrix.os }}-${{ matrix.type }}
     max-size: 100M
