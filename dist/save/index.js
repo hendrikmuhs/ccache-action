@@ -58269,14 +58269,14 @@ __nccwpck_require__.r(__webpack_exports__);
 async function ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag) {
     if (ccacheVariant === "ccache") {
         if (ccacheKnowsVerbosityFlag) {
-            return !!(await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("ccache -s -v")).stdout.match(/Files:.+0/);
+            return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+0/);
         }
         else {
-            return !!(await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("ccache -s")).stdout.match(/files in cache.+0/);
+            return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+0/);
         }
     }
     else {
-        return !!(await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("sccache -s")).stdout.match(/Cache size.+0 bytes/);
+        return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+0 bytes/);
     }
 }
 async function getVerbosity(verbositySetting) {
@@ -58292,6 +58292,9 @@ async function getVerbosity(verbositySetting) {
             return '';
     }
 }
+function getExecBashOutput(cmd) {
+    return _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("bash", ["-xc", cmd]);
+}
 async function run() {
     try {
         const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
@@ -58301,7 +58304,7 @@ async function run() {
             return;
         }
         // Some versions of ccache do not support --verbose
-        const ccacheKnowsVerbosityFlag = !!(await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
+        const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`${ccacheVariant} stats:`);
         const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose")) : '';
         await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`${ccacheVariant} -s${verbosity}`);

@@ -58204,6 +58204,18 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -58249,6 +58261,18 @@ __nccwpck_require__.d(__webpack_exports__, {
   "default": () => (/* binding */ src_restore)
 });
 
+// EXTERNAL MODULE: external "crypto"
+var external_crypto_ = __nccwpck_require__(6113);
+var external_crypto_default = /*#__PURE__*/__nccwpck_require__.n(external_crypto_);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(2037);
+var external_os_default = /*#__PURE__*/__nccwpck_require__.n(external_os_);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
@@ -58260,6 +58284,10 @@ const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
 var cache = __nccwpck_require__(7799);
 ;// CONCATENATED MODULE: ./src/restore.ts
+
+
+
+
 
 
 
@@ -58293,47 +58321,81 @@ async function restore(ccacheVariant) {
     }
 }
 async function configure(ccacheVariant) {
-    const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE;
+    const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
     core.info(`Configure ${ccacheVariant}`);
     if (ccacheVariant === "ccache") {
-        await exec.exec(`ccache --set-config=cache_dir=${ghWorkSpace}/.ccache}`);
-        await exec.exec(`ccache --set-config=max_size=${maxSize}`);
-        await exec.exec(`ccache --set-config=compression=true`);
+        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
+        await execBash(`ccache --set-config=max_size='${maxSize}'`);
+        await execBash(`ccache --set-config=compression=true`);
         core.info("Cccache config:");
-        await exec.exec("ccache -p");
+        await execBash("ccache -p");
     }
     else {
-        const options = `SCCACHE_IDLE_TIMEOUT=999999 SCCACHE_DIR="${ghWorkSpace}"/.sccache SCCACHE_CACHE_SIZE="${maxSize}"`;
-        await exec.exec(`env ${options} sccache --start-server`);
+        const options = `SCCACHE_IDLE_TIMEOUT=999999 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        await execBash(`env ${options} sccache --start-server`);
     }
 }
 async function installCcacheMac() {
-    await exec.exec("brew install ccache");
+    await execBash("brew install ccache");
 }
 async function installCcacheLinux() {
-    await exec.exec("sudo apt-get install -y ccache");
+    await execBash("sudo apt-get install -y ccache");
 }
 async function installCcacheWindows() {
-    throw Error("Ccache is not available for Windows, use 'variant: sccache'");
+    await installCcacheFromGitHub("4.6", "windows-64", "e721aac12692e35fb644c801f3ad1af66d88c3ac5ba10fbe6bdacc347e2a0e3f", 
+    // TODO find a better place
+    "C:\\Users\\runneradmin\\.cargo\\bin", "ccache.exe");
 }
 async function installSccacheMac() {
-    await exec.exec("brew install sccache");
+    await execBash("brew install sccache");
 }
 async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.2.15", "x86_64-unknown-linux-musl", "e5d03a9aa3b9fac7e490391bbe22d4f42c840d31ef9eaf127a03101930cbb7ca", "/usr/local/bin/", "sccache");
+    await installSccacheFromGitHub("v0.2.15", "x86_64-unknown-linux-musl", "6075534342ea713d178142c61d3676f8a68f9fb8fa299e554e2a4a4635bd28d3", "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.2.15", "x86_64-pc-windows-msvc", "e5d03a9aa3b9fac7e490391bbe22d4f42c840d31ef9eaf127a03101930cbb7ca", 
+    await installSccacheFromGitHub("v0.2.15", "x86_64-pc-windows-msvc", "b4a06b86f940e352c93af32810e137de056423d13c9e1345ed9e8b11e95f126f", 
     // TODO find a better place
     "C:\\Users\\runneradmin\\.cargo\\bin", "sccache.exe");
 }
-async function installSccacheFromGitHub(version, artifactName, sha256, binPath, binName) {
+async function execBash(cmd) {
+    await exec.exec("bash", ["-xc", cmd]);
+}
+async function installCcacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
+    const archiveName = `ccache-${version}-${artifactName}`;
+    const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}.zip`;
+    const binPath = external_path_default().join(binDir, binName);
+    await downloadAndExtract(url, external_path_default().join(archiveName, binName), binPath);
+    checkSha256Sum(binPath, binSha256);
+}
+async function installSccacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
     const archiveName = `sccache-${version}-${artifactName}`;
     const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}.tar.gz`;
-    await exec.exec("sh", ["-c", `curl -L '${url}' | tar xzf - -O '${archiveName}/${binName}' > '${binPath}/${binName}'`]);
-    await exec.exec(`echo "${sha256}  ${binPath}/${binName}" | sha256sum -c`);
-    await exec.exec(`chmod +x ${binPath}/${binName}`);
+    const binPath = external_path_default().join(binDir, binName);
+    await downloadAndExtract(url, `*/${binName}`, binPath);
+    checkSha256Sum(binPath, binSha256);
+    await execBash(`chmod +x '${binPath}'`);
+}
+async function downloadAndExtract(url, srcFile, dstFile) {
+    if (url.endsWith(".zip")) {
+        const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
+        const zipName = external_path_default().join(tmp, "dl.zip");
+        await execBash(`curl -L '${url}' -o '${zipName}'`);
+        await execBash(`unzip '${zipName}' -d '${tmp}'`);
+        external_fs_default().copyFileSync(external_path_default().join(tmp, srcFile), dstFile);
+        external_fs_default().rmSync(tmp, { recursive: true });
+    }
+    else {
+        await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    }
+}
+function checkSha256Sum(path, expectedSha256) {
+    const h = external_crypto_default().createHash("sha256");
+    h.update(external_fs_default().readFileSync(path));
+    const actualSha256 = h.digest("hex");
+    if (actualSha256 !== expectedSha256) {
+        throw Error(`SHA256 of ${path} is ${actualSha256}, expected ${expectedSha256}`);
+    }
 }
 async function run() {
     try {
@@ -58359,7 +58421,7 @@ async function run() {
         }
         await restore(ccacheVariant);
         await configure(ccacheVariant);
-        await exec.exec(`${ccacheVariant} -z`);
+        await execBash(`${ccacheVariant} -z`);
     }
     catch (error) {
         core.setFailed(`Restoring cache failed: ${error}`);
