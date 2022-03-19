@@ -2,7 +2,7 @@
 
 A Github action to speedup building using ccache/sccache for C/C++ projects.
 
-Works on Linux, macOS, and Windows (sccache only).
+Works on Linux, macOS, and Windows.
 
 ## Example usage
 
@@ -13,7 +13,7 @@ Works on Linux, macOS, and Windows (sccache only).
 
 NB! This should always come after the `actions/checkout` step.
 
-For sccache (Windows support), use:
+For sccache, use:
 
 ```yaml
 - name: ccache
@@ -43,7 +43,10 @@ or by manipulating `PATH` (ccache only):
 
 (works for both `ubuntu` and `macos`)
 
-Ccache/sccache gets installed by this action, if its not installed yet.
+Ccache/sccache gets installed by this action if it is not installed yet.
+
+Note that using Ccache on Windows is still experimental and [works only in Bash](https://github.com/ccache/ccache/issues/1023).
+Use Sccache for stable Windows support.
 
 ## Configuration
 
