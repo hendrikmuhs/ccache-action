@@ -58297,6 +58297,10 @@ function getExecBashOutput(cmd) {
 }
 async function run() {
     try {
+        if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("shouldSave") !== "true") {
+            _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because 'save' is set to 'false'.");
+            return;
+        }
         const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
         const primaryKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("primaryKey");
         if (!ccacheVariant || !primaryKey) {
@@ -58305,9 +58309,10 @@ async function run() {
         }
         // Some versions of ccache do not support --verbose
         const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`${ccacheVariant} stats:`);
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(`${ccacheVariant} stats`);
         const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose")) : '';
         await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`${ccacheVariant} -s${verbosity}`);
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
         if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because no objects are cached.");
         }

@@ -44,7 +44,6 @@ async function configure(ccacheVariant : string) : Promise<void> {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const maxSize = core.getInput('max-size');
   
-  core.info(`Configure ${ccacheVariant}`);
   if (ccacheVariant === "ccache") {
     await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
@@ -52,7 +51,7 @@ async function configure(ccacheVariant : string) : Promise<void> {
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
-    const options = `SCCACHE_IDLE_TIMEOUT=999999 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
     await execBash(`env ${options} sccache --start-server`);
   }
 
@@ -63,7 +62,7 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  await execBash("sudo apt-get install -y ccache");
+  await execBashSudo("apt-get install -y ccache");
 }
 
 async function installCcacheWindows() : Promise<void> {
@@ -106,6 +105,10 @@ async function execBash(cmd : string) {
   await exec.exec("bash", ["-xc", cmd]);
 }
 
+async function execBashSudo(cmd : string) {
+  await execBash("$(which sudo) " + cmd);
+}
+
 async function installCcacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
   const archiveName = `ccache-${version}-${artifactName}`;
   const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}.zip`;
@@ -145,33 +148,43 @@ function checkSha256Sum (path : string, expectedSha256 : string) {
   }
 }
 
+async function runInner() : Promise<void> {
+  const ccacheVariant = core.getInput("variant");
+  core.saveState("ccacheVariant", ccacheVariant);
+  core.saveState("shouldSave", core.getBooleanInput("save"));
+  let ccachePath = await io.which(ccacheVariant);
+  if (!ccachePath) {
+    core.startGroup(`Install ${ccacheVariant}`);
+    const installer = {
+      ["ccache,linux"]: installCcacheLinux,
+      ["ccache,darwin"]: installCcacheMac,
+      ["ccache,win32"]: installCcacheWindows,
+      ["sccache,linux"]: installSccacheLinux,
+      ["sccache,darwin"]: installSccacheMac,
+      ["sccache,win32"]: installSccacheWindows,
+    }[[ccacheVariant, process.platform].join()];
+    if (!installer) {
+      throw Error(`Unsupported platform: ${process.platform}`)
+    }
+    await installer();
+    core.info(await io.which(ccacheVariant + ".exe"));
+    ccachePath = await io.which(ccacheVariant, true);
+    core.endGroup();
+  }
+
+  core.startGroup("Restore cache");
+  await restore(ccacheVariant);
+  core.endGroup();
+
+  core.startGroup(`Configure ${ccacheVariant}`);
+  await configure(ccacheVariant);
+  await execBash(`${ccacheVariant} -z`);
+  core.endGroup();
+}
+
 async function run() : Promise<void> {
   try {
-    const ccacheVariant = core.getInput("variant");
-    core.saveState("ccacheVariant", ccacheVariant);
-    let ccachePath = await io.which(ccacheVariant);
-    if (!ccachePath) {
-      core.info(`Install ${ccacheVariant}`);
-      const installer = {
-        ["ccache,linux"]: installCcacheLinux,
-        ["ccache,darwin"]: installCcacheMac,
-        ["ccache,win32"]: installCcacheWindows,
-        ["sccache,linux"]: installSccacheLinux,
-        ["sccache,darwin"]: installSccacheMac,
-        ["sccache,win32"]: installSccacheWindows,
-      }[[ccacheVariant, process.platform].join()];
-      if (!installer) {
-        throw Error(`Unsupported platform: ${process.platform}`)
-      }
-      await installer();
-      core.info(await io.which(ccacheVariant + ".exe"));
-      ccachePath = await io.which(ccacheVariant, true);
-    }
-
-    await restore(ccacheVariant);
-    await configure(ccacheVariant);
-
-    await execBash(`${ccacheVariant} -z`);
+    await runInner();
   } catch (error) {
     core.setFailed(`Restoring cache failed: ${error}`);
   }

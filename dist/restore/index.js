@@ -58323,7 +58323,6 @@ async function restore(ccacheVariant) {
 async function configure(ccacheVariant) {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
-    core.info(`Configure ${ccacheVariant}`);
     if (ccacheVariant === "ccache") {
         await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
         await execBash(`ccache --set-config=max_size='${maxSize}'`);
@@ -58332,7 +58331,7 @@ async function configure(ccacheVariant) {
         await execBash("ccache -p");
     }
     else {
-        const options = `SCCACHE_IDLE_TIMEOUT=999999 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
         await execBash(`env ${options} sccache --start-server`);
     }
 }
@@ -58340,7 +58339,7 @@ async function installCcacheMac() {
     await execBash("brew install ccache");
 }
 async function installCcacheLinux() {
-    await execBash("sudo apt-get install -y ccache");
+    await execBashSudo("apt-get install -y ccache");
 }
 async function installCcacheWindows() {
     await installCcacheFromGitHub("4.6", "windows-64", "e721aac12692e35fb644c801f3ad1af66d88c3ac5ba10fbe6bdacc347e2a0e3f", 
@@ -58360,6 +58359,9 @@ async function installSccacheWindows() {
 }
 async function execBash(cmd) {
     await exec.exec("bash", ["-xc", cmd]);
+}
+async function execBashSudo(cmd) {
+    await execBash("$(which sudo) " + cmd);
 }
 async function installCcacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
     const archiveName = `ccache-${version}-${artifactName}`;
@@ -58397,31 +58399,40 @@ function checkSha256Sum(path, expectedSha256) {
         throw Error(`SHA256 of ${path} is ${actualSha256}, expected ${expectedSha256}`);
     }
 }
+async function runInner() {
+    const ccacheVariant = core.getInput("variant");
+    core.saveState("ccacheVariant", ccacheVariant);
+    core.saveState("shouldSave", core.getBooleanInput("save"));
+    let ccachePath = await io.which(ccacheVariant);
+    if (!ccachePath) {
+        core.startGroup(`Install ${ccacheVariant}`);
+        const installer = {
+            ["ccache,linux"]: installCcacheLinux,
+            ["ccache,darwin"]: installCcacheMac,
+            ["ccache,win32"]: installCcacheWindows,
+            ["sccache,linux"]: installSccacheLinux,
+            ["sccache,darwin"]: installSccacheMac,
+            ["sccache,win32"]: installSccacheWindows,
+        }[[ccacheVariant, external_process_namespaceObject.platform].join()];
+        if (!installer) {
+            throw Error(`Unsupported platform: ${external_process_namespaceObject.platform}`);
+        }
+        await installer();
+        core.info(await io.which(ccacheVariant + ".exe"));
+        ccachePath = await io.which(ccacheVariant, true);
+        core.endGroup();
+    }
+    core.startGroup("Restore cache");
+    await restore(ccacheVariant);
+    core.endGroup();
+    core.startGroup(`Configure ${ccacheVariant}`);
+    await configure(ccacheVariant);
+    await execBash(`${ccacheVariant} -z`);
+    core.endGroup();
+}
 async function run() {
     try {
-        const ccacheVariant = core.getInput("variant");
-        core.saveState("ccacheVariant", ccacheVariant);
-        let ccachePath = await io.which(ccacheVariant);
-        if (!ccachePath) {
-            core.info(`Install ${ccacheVariant}`);
-            const installer = {
-                ["ccache,linux"]: installCcacheLinux,
-                ["ccache,darwin"]: installCcacheMac,
-                ["ccache,win32"]: installCcacheWindows,
-                ["sccache,linux"]: installSccacheLinux,
-                ["sccache,darwin"]: installSccacheMac,
-                ["sccache,win32"]: installSccacheWindows,
-            }[[ccacheVariant, external_process_namespaceObject.platform].join()];
-            if (!installer) {
-                throw Error(`Unsupported platform: ${external_process_namespaceObject.platform}`);
-            }
-            await installer();
-            core.info(await io.which(ccacheVariant + ".exe"));
-            ccachePath = await io.which(ccacheVariant, true);
-        }
-        await restore(ccacheVariant);
-        await configure(ccacheVariant);
-        await execBash(`${ccacheVariant} -z`);
+        await runInner();
     }
     catch (error) {
         core.setFailed(`Restoring cache failed: ${error}`);
