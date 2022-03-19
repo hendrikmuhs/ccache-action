@@ -17,6 +17,9 @@ inputs:
   variant:
     description: 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
     default: ccache
+  save:
+    description: "If 'false', do not save the cache, only restore."
+    default: true
 
 runs:
   using: "node16"
