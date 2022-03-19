@@ -174,7 +174,7 @@ jobs:
       - name: Run ccache-action
         uses: ./
 
-  test_save_false:
+  test_option_save:
     # Test that the 'save' option is available.
     runs-on: ubuntu-latest
     strategy:
