@@ -169,6 +169,8 @@ jobs:
     container: ubuntu:latest
     steps:
       - uses: actions/checkout@v2
+      - run: apt update
+        shell: bash
       - name: Run ccache-action
         uses: ./
 
