@@ -166,7 +166,7 @@ jobs:
   test_docker:
     # Test that it works in a Docker container without sudo.
     runs-on: ubuntu-latest
-    container: ubuntu-latest
+    container: ubuntu:latest
     steps:
       - uses: actions/checkout@v2
       - name: Run ccache-action
