@@ -162,3 +162,27 @@ jobs:
       - name: Test restore-keys
         run: |
           [[ ${{ steps.restore-keys.outputs.test-cache-hit }} = true ]]
+
+  test_docker:
+    # Test that it works in a Docker container without sudo.
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: apt update
+        shell: bash
+      - name: Run ccache-action
+        uses: ./
+
+  test_option_save:
+    # Test that the 'save' option is available.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        save: [true, false]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache-action
+        uses: ./
+        with:
+          save: ${{ matrix.save }}

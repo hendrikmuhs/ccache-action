@@ -5,12 +5,12 @@ import * as exec from "@actions/exec";
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
     if (ccacheKnowsVerbosityFlag) {
-      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+0/);
+      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
     } else {
-      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+0/)
+      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/)
     }
   } else {
-    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+0 bytes/);
+    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
   }
 }
 
@@ -37,6 +37,10 @@ function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
 
 async function run() : Promise<void> {
   try {
+    if (core.getState("shouldSave") !== "true") {
+      core.info("Not saving cache because 'save' is set to 'false'.");
+      return;
+    }
     const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
     if (!ccacheVariant || !primaryKey) {
@@ -47,9 +51,10 @@ async function run() : Promise<void> {
     // Some versions of ccache do not support --verbose
     const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
 
-    core.info(`${ccacheVariant} stats:`);
+    core.startGroup(`${ccacheVariant} stats`);
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
     await exec.exec(`${ccacheVariant} -s${verbosity}`);
+    core.endGroup();
 
     if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
       core.info("Not saving cache because no objects are cached.");
