@@ -5,12 +5,12 @@ import * as exec from "@actions/exec";
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
     if (ccacheKnowsVerbosityFlag) {
-      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+0/);
+      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
     } else {
-      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+0/)
+      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/)
     }
   } else {
-    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+0 bytes/);
+    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
   }
 }
 
