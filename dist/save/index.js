@@ -58331,7 +58331,9 @@ async function run() {
         }
     }
     catch (error) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Saving cache failed: ${error}`);
+        // A failure to save cache shouldn't prevent the entire CI run from
+        // failing, so do not call setFailed() here.
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Saving cache failed: ${error}`);
     }
 }
 run();
