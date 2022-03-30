@@ -66,7 +66,9 @@ async function run() : Promise<void> {
       await cache.saveCache(paths, saveKey);
     }
   } catch (error) {
-    core.setFailed(`Saving cache failed: ${error}`);
+    // A failure to save cache shouldn't prevent the entire CI run from
+    // failing, so do not call setFailed() here.
+    core.warning(`Saving cache failed: ${error}`);
   }
 }
 
