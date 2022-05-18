@@ -58655,7 +58655,7 @@ async function installCcacheLinux() {
     await execBashSudo("apt-get install -y ccache");
 }
 async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.6", "windows-64", "e721aac12692e35fb644c801f3ad1af66d88c3ac5ba10fbe6bdacc347e2a0e3f", 
+    await installCcacheFromGitHub("4.6.1", "windows-x86_64", "bcf4b82faa648ff77dacc11124be2858d48064bae4096d26b396e2846cc22da3", 
     // TODO find a better place
     "C:\\Users\\runneradmin\\.cargo\\bin", "ccache.exe");
 }
