@@ -21,7 +21,7 @@
   "author": "Hendrik Muhs",
   "license": "MIT",
   "dependencies": {
-    "@actions/cache": "^2.0.4",
+    "@actions/cache": "^2.0.6",
     "@actions/core": "^1.8.2",
     "@actions/exec": "^1.1.1",
     "@actions/io": "^1.1.2"
