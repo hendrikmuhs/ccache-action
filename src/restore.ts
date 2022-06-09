@@ -132,6 +132,10 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     const zipName = path.join(tmp, "dl.zip");
     await execBash(`curl -L '${url}' -o '${zipName}'`);
     await execBash(`unzip '${zipName}' -d '${tmp}'`);
+    const dstDir = path.dirname(dstFile);
+    if (!fs.existsSync(dstDir)) {
+      fs.mkdirSync(dstDir, { recursive: true });
+    }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else {
