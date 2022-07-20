@@ -90,17 +90,18 @@ function restoreCache(paths, primaryKey, restoreKeys, options) {
             checkKey(key);
         }
         const compressionMethod = yield utils.getCompressionMethod();
-        // path are needed to compute version
-        const cacheEntry = yield cacheHttpClient.getCacheEntry(keys, paths, {
-            compressionMethod
-        });
-        if (!(cacheEntry === null || cacheEntry === void 0 ? void 0 : cacheEntry.archiveLocation)) {
-            // Cache not found
-            return undefined;
-        }
-        const archivePath = path.join(yield utils.createTempDirectory(), utils.getCacheFileName(compressionMethod));
-        core.debug(`Archive Path: ${archivePath}`);
+        let archivePath = '';
         try {
+            // path are needed to compute version
+            const cacheEntry = yield cacheHttpClient.getCacheEntry(keys, paths, {
+                compressionMethod
+            });
+            if (!(cacheEntry === null || cacheEntry === void 0 ? void 0 : cacheEntry.archiveLocation)) {
+                // Cache not found
+                return undefined;
+            }
+            archivePath = path.join(yield utils.createTempDirectory(), utils.getCacheFileName(compressionMethod));
+            core.debug(`Archive Path: ${archivePath}`);
             // Download the cache from the cache entry
             yield cacheHttpClient.downloadCache(cacheEntry.archiveLocation, archivePath, options);
             if (core.isDebug()) {
@@ -110,6 +111,17 @@ function restoreCache(paths, primaryKey, restoreKeys, options) {
             core.info(`Cache Size: ~${Math.round(archiveFileSize / (1024 * 1024))} MB (${archiveFileSize} B)`);
             yield tar_1.extractTar(archivePath, compressionMethod);
             core.info('Cache restored successfully');
+            return cacheEntry.cacheKey;
+        }
+        catch (error) {
+            const typedError = error;
+            if (typedError.name === ValidationError.name) {
+                throw error;
+            }
+            else {
+                // Supress all non-validation cache related errors because caching should be optional
+                core.warning(`Failed to restore: ${error.message}`);
+            }
         }
         finally {
             // Try to delete the archive to save space
@@ -120,7 +132,7 @@ function restoreCache(paths, primaryKey, restoreKeys, options) {
                 core.debug(`Failed to delete archive: ${error}`);
             }
         }
-        return cacheEntry.cacheKey;
+        return undefined;
     });
 }
 exports.restoreCache = restoreCache;
@@ -138,10 +150,13 @@ function saveCache(paths, key, options) {
         checkPaths(paths);
         checkKey(key);
         const compressionMethod = yield utils.getCompressionMethod();
-        let cacheId = null;
+        let cacheId = -1;
         const cachePaths = yield utils.resolvePaths(paths);
         core.debug('Cache Paths:');
         core.debug(`${JSON.stringify(cachePaths)}`);
+        if (cachePaths.length === 0) {
+            throw new Error(`Path Validation Error: Path(s) specified in the action for caching do(es) not exist, hence no cache is being saved.`);
+        }
         const archiveFolder = yield utils.createTempDirectory();
         const archivePath = path.join(archiveFolder, utils.getCacheFileName(compressionMethod));
         core.debug(`Archive Path: ${archivePath}`);
@@ -173,6 +188,18 @@ function saveCache(paths, key, options) {
             }
             core.debug(`Saving Cache (ID: ${cacheId})`);
             yield cacheHttpClient.saveCache(cacheId, archivePath, options);
+        }
+        catch (error) {
+            const typedError = error;
+            if (typedError.name === ValidationError.name) {
+                throw error;
+            }
+            else if (typedError.name === ReserveCacheError.name) {
+                core.info(`Failed to save: ${typedError.message}`);
+            }
+            else {
+                core.warning(`Failed to save: ${typedError.message}`);
+            }
         }
         finally {
             // Try to delete the archive to save space
@@ -1120,6 +1147,8 @@ function createTar(archiveFolder, sourceDirectories, compressionMethod) {
             ...getCompressionProgram(),
             '-cf',
             cacheFileName.replace(new RegExp(`\\${path.sep}`, 'g'), '/'),
+            '--exclude',
+            cacheFileName.replace(new RegExp(`\\${path.sep}`, 'g'), '/'),
             '-P',
             '-C',
             workingDirectory.replace(new RegExp(`\\${path.sep}`, 'g'), '/'),
@@ -1653,6 +1682,13 @@ Object.defineProperty(exports, "summary", ({ enumerable: true, get: function () 
  */
 var summary_2 = __nccwpck_require__(1327);
 Object.defineProperty(exports, "markdownSummary", ({ enumerable: true, get: function () { return summary_2.markdownSummary; } }));
+/**
+ * Path exports
+ */
+var path_utils_1 = __nccwpck_require__(2981);
+Object.defineProperty(exports, "toPosixPath", ({ enumerable: true, get: function () { return path_utils_1.toPosixPath; } }));
+Object.defineProperty(exports, "toWin32Path", ({ enumerable: true, get: function () { return path_utils_1.toWin32Path; } }));
+Object.defineProperty(exports, "toPlatformPath", ({ enumerable: true, get: function () { return path_utils_1.toPlatformPath; } }));
 //# sourceMappingURL=core.js.map
 
 /***/ }),
@@ -1787,6 +1823,71 @@ class OidcClient {
 }
 exports.OidcClient = OidcClient;
 //# sourceMappingURL=oidc-utils.js.map
+
+/***/ }),
+
+/***/ 2981:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.toPlatformPath = exports.toWin32Path = exports.toPosixPath = void 0;
+const path = __importStar(__nccwpck_require__(1017));
+/**
+ * toPosixPath converts the given path to the posix form. On Windows, \\ will be
+ * replaced with /.
+ *
+ * @param pth. Path to transform.
+ * @return string Posix path.
+ */
+function toPosixPath(pth) {
+    return pth.replace(/[\\]/g, '/');
+}
+exports.toPosixPath = toPosixPath;
+/**
+ * toWin32Path converts the given path to the win32 form. On Linux, / will be
+ * replaced with \\.
+ *
+ * @param pth. Path to transform.
+ * @return string Win32 path.
+ */
+function toWin32Path(pth) {
+    return pth.replace(/[/]/g, '\\');
+}
+exports.toWin32Path = toWin32Path;
+/**
+ * toPlatformPath converts the given path to a platform-specific path. It does
+ * this by replacing instances of / and \ with the platform-specific path
+ * separator.
+ *
+ * @param pth The path to platformize.
+ * @return string The platform-specific path.
+ */
+function toPlatformPath(pth) {
+    return pth.replace(/[/\\]/g, path.sep);
+}
+exports.toPlatformPath = toPlatformPath;
+//# sourceMappingURL=path-utils.js.map
 
 /***/ }),
 
@@ -58758,7 +58859,7 @@ async function installCcacheLinux() {
 async function installCcacheWindows() {
     await installCcacheFromGitHub("4.6.1", "windows-x86_64", "bcf4b82faa648ff77dacc11124be2858d48064bae4096d26b396e2846cc22da3", 
     // TODO find a better place
-    "C:\\Users\\runneradmin\\.cargo\\bin", "ccache.exe");
+    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
 }
 async function installSccacheMac() {
     await execBash("brew install sccache");
@@ -58769,7 +58870,7 @@ async function installSccacheLinux() {
 async function installSccacheWindows() {
     await installSccacheFromGitHub("v0.3.0", "x86_64-pc-windows-msvc", "e58646b1c377c7f873c7e13ae7298631fb490703ee15ad67ce326ed0dde2067e", 
     // TODO find a better place
-    "C:\\Users\\runneradmin\\.cargo\\bin", "sccache.exe");
+    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
 }
 async function execBash(cmd) {
     await exec.exec("bash", ["-xc", cmd]);
@@ -58798,6 +58899,10 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         const zipName = external_path_default().join(tmp, "dl.zip");
         await execBash(`curl -L '${url}' -o '${zipName}'`);
         await execBash(`unzip '${zipName}' -d '${tmp}'`);
+        const dstDir = external_path_default().dirname(dstFile);
+        if (!external_fs_default().existsSync(dstDir)) {
+            external_fs_default().mkdirSync(dstDir, { recursive: true });
+        }
         external_fs_default().copyFileSync(external_path_default().join(tmp, srcFile), dstFile);
         external_fs_default().rmSync(tmp, { recursive: true });
     }
