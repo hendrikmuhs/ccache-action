@@ -71,7 +71,7 @@ async function installCcacheWindows() : Promise<void> {
     "windows-x86_64",
     "bcf4b82faa648ff77dacc11124be2858d48064bae4096d26b396e2846cc22da3",
     // TODO find a better place
-    "C:\\Users\\runneradmin\\.cargo\\bin",
+    `${process.env.USERPROFILE}\\.cargo\\bin`,
     "ccache.exe"
   );
 }
@@ -96,7 +96,7 @@ async function installSccacheWindows() : Promise<void> {
     "x86_64-pc-windows-msvc",
     "e58646b1c377c7f873c7e13ae7298631fb490703ee15ad67ce326ed0dde2067e",
     // TODO find a better place
-    "C:\\Users\\runneradmin\\.cargo\\bin",
+    `${process.env.USERPROFILE}\\.cargo\\bin`,
     "sccache.exe"
   );
 }
@@ -132,6 +132,10 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     const zipName = path.join(tmp, "dl.zip");
     await execBash(`curl -L '${url}' -o '${zipName}'`);
     await execBash(`unzip '${zipName}' -d '${tmp}'`);
+    const dstDir = path.dirname(dstFile);
+    if (!fs.existsSync(dstDir)) {
+      fs.mkdirSync(dstDir, { recursive: true });
+    }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else {
