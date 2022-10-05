@@ -32,7 +32,7 @@ async function getVerbosity(verbositySetting : string) : Promise<string> {
 }
 
 function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
-  return exec.getExecOutput("bash", ["-xc", cmd]);
+  return exec.getExecOutput("bash", ["-xc", cmd], {silent: true});
 }
 
 async function run() : Promise<void> {
