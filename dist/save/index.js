@@ -59496,7 +59496,7 @@ async function getVerbosity(verbositySetting) {
     }
 }
 function getExecBashOutput(cmd) {
-    return _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("bash", ["-xc", cmd]);
+    return _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("bash", ["-xc", cmd], { silent: true });
 }
 async function run() {
     try {
