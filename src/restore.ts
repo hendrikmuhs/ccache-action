@@ -67,9 +67,9 @@ async function installCcacheLinux() : Promise<void> {
 
 async function installCcacheWindows() : Promise<void> {
   await installCcacheFromGitHub(
-    "4.6.1",
+    "4.7",
     "windows-x86_64",
-    "bcf4b82faa648ff77dacc11124be2858d48064bae4096d26b396e2846cc22da3",
+    "b4122740dcb57a4523bd95c83b46e1a4a3543e9a0f8ffaa3d30394619ff796fa",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "ccache.exe"
