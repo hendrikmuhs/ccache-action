@@ -59227,9 +59227,9 @@ async function installCcacheLinux() {
     await execBashSudo("apt-get install -y ccache");
 }
 async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.7.2", "windows-x86_64", 
+    await installCcacheFromGitHub("4.7.4", "windows-x86_64", 
     // sha256sum of ccache.exe
-    "d61defbaabdb75a9bb61b53b08a35bb302bdd938923e3ae83e08ae34a73e7166", 
+    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
     // TODO find a better place
     `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
 }
