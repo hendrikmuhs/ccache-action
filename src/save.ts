@@ -2,16 +2,8 @@ import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as exec from "@actions/exec";
 
-async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
-  if (ccacheVariant === "ccache") {
-    if (ccacheKnowsVerbosityFlag) {
-      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
-    } else {
-      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/)
-    }
-  } else {
-    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
-  }
+async function firebuildIsEmpty() : Promise<boolean> {
+  return !!(await getExecBashOutput("firebuild -s")).stdout.match(/Cache size.+\b 0\.00 kB/);
 }
 
 async function getVerbosity(verbositySetting : string) : Promise<string> {
@@ -41,26 +33,25 @@ async function run() : Promise<void> {
       core.info("Not saving cache because 'save' is set to 'false'.");
       return;
     }
-    const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
-    if (!ccacheVariant || !primaryKey) {
-      core.notice("ccache setup failed, skipping saving.");
+    if (!primaryKey) {
+      core.notice("firebuild setup failed, skipping saving.");
       return;
     }
 
-    // Some versions of ccache do not support --verbose
-    const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
+    // Some versions of firebuild do not support --verbose
+    const firebuildKnowsVerbosityFlag = !!(await getExecBashOutput("firebuild --help")).stdout.includes("--verbose");
 
-    core.startGroup(`${ccacheVariant} stats`);
-    const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
-    await exec.exec(`${ccacheVariant} -s${verbosity}`);
+    core.startGroup("firebuild stats");
+    const verbosity = firebuildKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
+    await exec.exec(`firebuild -s${verbosity}`);
     core.endGroup();
 
-    if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
+    if (await firebuildIsEmpty()) {
       core.info("Not saving cache because no objects are cached.");
     } else {
       const saveKey = primaryKey + new Date().toISOString();
-      const paths = [`.${ccacheVariant}`];
+      const paths = [".cache/firebuild"];
     
       core.info(`Save cache using key "${saveKey}".`);
       await cache.saveCache(paths, saveKey);

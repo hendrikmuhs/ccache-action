@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  CCACHE_ACTION_CI: true
+  FIREBUILD_ACTION_CI: true
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
           npm install
           git diff --exit-code
 
-  test_ccache:
-    # Test that ccache is installed and configured correctly.
+  test_firebuild:
+    # Test that firebuild is installed and configured correctly.
     strategy:
       fail-fast: false
       matrix:
@@ -31,36 +31,35 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache-action
-        id: ccache
+      - name: Run firebuild-action
+        id: firebuild
         uses: ./
         with:
-          verbose: 2
-          max-size: 10M
+          max-size: 0.01
           key: parent
-      - name: Test ccache 1/2
+      - name: Test firebuild 1/2
         run: |
-          [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
-          which ccache
-          ccache -V
-          # Some versions of ccache don't have -v or -s
-          ccache -sv || ccache -s || true
+          [[ ${{ steps.firebuild.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.firebuild.outputs.test-cache-hit }} = false ]]
+          which firebuild
+          firebuild --version
+          firebuild -s
           # Example program
           echo "int x = $RANDOM;" > test.c
-          ccache gcc test.c -c -o test.o
+          firebuild gcc test.c -c -o test.o
       - name: Re-compile test program
         run: |
-          ccache gcc test.c -c -o test.o
-          ccache gcc test.c -c -o test.o
-      - name: Test ccache 2/2
+          firebuild gcc test.c -c -o test.o
+          firebuild gcc test.c -c -o test.o
+      - name: Test firebuild 2/2
         run: |
-          ccache -sv || ccache -s || true
-          ccache -s | grep -E '(Hits:.+2.+/.+3)|cache hit.+2$|Cache hits.+2$'
+          firebuild -s
+          # Only one hit is expected due to https://github.com/firebuild/firebuild/issues/1085
+          firebuild -s | grep -E 'Hits:.+1.+/'
         if: ${{ !matrix.xfail }}
 
   test_cache_hit:
     # Test that loading from the cache works.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
@@ -68,7 +67,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: output
         with:
@@ -79,7 +78,7 @@ jobs:
 
   test_cache_miss:
     # Test that cache misses do not break anything.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
@@ -89,7 +88,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: output
         with:
@@ -100,7 +99,7 @@ jobs:
 
   test_restore_keys:
     # Test the "restore-keys" option.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
@@ -110,7 +109,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: restore-keys
         with:
@@ -128,7 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: apt update
-      - name: Run ccache-action
+      - name: Run firebuild-action
         uses: ./
 
   test_option_save:
@@ -139,7 +138,7 @@ jobs:
         save: [true, false]
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache-action
+      - name: Run firebuild-action
         uses: ./
         with:
           save: ${{ matrix.save }}
