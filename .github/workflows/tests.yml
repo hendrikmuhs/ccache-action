@@ -31,12 +31,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -71,11 +68,6 @@ jobs:
       - name: Re-compile test program in Bash
         run: ${{ matrix.variant }} gcc test.c -c -o test.o
         if: ${{ matrix.shell == 'bash' }}
-      - name: Re-compile test program in PowerShell
-        run: |
-          ${{ matrix.variant }} gcc test.c -c -o test.o
-        shell: powershell
-        if: ${{ matrix.shell == 'powershell' }}
       - name: Test ccache 2/2
         run: |
           ${{ matrix.variant }} -sv || ${{ matrix.variant }} -s || true
@@ -88,12 +80,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -113,12 +102,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -140,12 +126,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
