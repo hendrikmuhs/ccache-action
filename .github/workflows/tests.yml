@@ -8,10 +8,6 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    shell: bash
-
 env:
   CCACHE_ACTION_CI: true
 
@@ -32,7 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
-        shell: [bash]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -53,11 +48,10 @@ jobs:
           # Example program
           echo "int x = $RANDOM;" > test.c
           ccache gcc test.c -c -o test.o
-      - name: Re-compile test program in Bash
-        run: ccache gcc test.c -c -o test.o
-      - name: Re-compile test program in Bash
-        run: ccache gcc test.c -c -o test.o
-        if: ${{ matrix.shell == 'bash' }}
+      - name: Re-compile test program
+        run: |
+          ccache gcc test.c -c -o test.o
+          ccache gcc test.c -c -o test.o
       - name: Test ccache 2/2
         run: |
           ccache -sv || ccache -s || true
@@ -71,7 +65,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
-        shell: [bash]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -91,7 +84,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
-        shell: [bash]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -113,7 +105,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
-        shell: [bash]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -137,7 +128,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: apt update
-        shell: bash
       - name: Run ccache-action
         uses: ./
 
