@@ -8,12 +8,8 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    shell: bash
-
 env:
-  CCACHE_ACTION_CI: true
+  FIREBUILD_ACTION_CI: true
 
 jobs:
   build:
@@ -26,82 +22,55 @@ jobs:
           npm install
           git diff --exit-code
 
-  test_ccache:
-    # Test that ccache/sccache are installed and configured correctly.
+  test_firebuild:
+    # Test that firebuild is installed and configured correctly.
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        shell: [bash]
-        variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
+        os: [ubuntu-latest, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache-action
-        id: ccache
+      - name: Run firebuild-action
+        id: firebuild
         uses: ./
         with:
-          verbose: 2
-          variant: ${{ matrix.variant }}
-          max-size: 10M
+          max-size: 0.01
           key: parent
-      - name: Test ccache 1/2
+      - name: Test firebuild 1/2
         run: |
-          [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
-          if [ ${{ matrix.variant }} = sccache ]; then
-            which sccache
-            sccache -V
-            sccache -s
-            # sccache -s | grep -E 'Max cache size.+10 MiB'
-            sccache -s | grep -E 'Cache location.+ccache-action/\.sccache'
-          else
-            which ccache
-            ccache -V
-            # Some versions of ccache don't have -v or -s
-            ccache -sv || ccache -s || true
-          fi
+          [[ ${{ steps.firebuild.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.firebuild.outputs.test-cache-hit }} = false ]]
+          which firebuild
+          firebuild --version
+          firebuild -s
           # Example program
           echo "int x = $RANDOM;" > test.c
-          ${{ matrix.variant }} gcc test.c -c -o test.o
-      - name: Re-compile test program in Bash
-        run: ${{ matrix.variant }} gcc test.c -c -o test.o
-      - name: Re-compile test program in Bash
-        run: ${{ matrix.variant }} gcc test.c -c -o test.o
-        if: ${{ matrix.shell == 'bash' }}
-      - name: Re-compile test program in PowerShell
+          firebuild gcc test.c -c -o test.o
+      - name: Re-compile test program
         run: |
-          ${{ matrix.variant }} gcc test.c -c -o test.o
-        shell: powershell
-        if: ${{ matrix.shell == 'powershell' }}
-      - name: Test ccache 2/2
+          firebuild gcc test.c -c -o test.o
+          firebuild gcc test.c -c -o test.o
+      - name: Test firebuild 2/2
         run: |
-          ${{ matrix.variant }} -sv || ${{ matrix.variant }} -s || true
-          ${{ matrix.variant }} -s | grep -E '(Hits:.+2.+/.+3)|cache hit.+2$|Cache hits.+2$'
+          firebuild -s
+          # Only one hit is expected due to https://github.com/firebuild/firebuild/issues/1085
+          firebuild -s | grep -E 'Hits:.+1.+/'
         if: ${{ !matrix.xfail }}
 
   test_cache_hit:
     # Test that loading from the cache works.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        shell: [bash]
-        variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+        os: [ubuntu-latest, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: output
         with:
-          variant: ${{ matrix.variant }}
           key: parent
       - name: Test output true
         run: |
@@ -109,26 +78,20 @@ jobs:
 
   test_cache_miss:
     # Test that cache misses do not break anything.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        shell: [bash]
-        variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+        os: [ubuntu-latest, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: output
         with:
-          variant: ${{ matrix.variant }}
           key: random-key-${{ env.RAND }}
       - name: Test output false
         run: |
@@ -136,26 +99,20 @@ jobs:
 
   test_restore_keys:
     # Test the "restore-keys" option.
-    needs: [test_ccache]
+    needs: [test_firebuild]
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        shell: [bash]
-        variant: [sccache, ccache]
-        include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+        os: [ubuntu-latest, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
-      - name: Run ccache action
+      - name: Run firebuild action
         uses: ./
         id: restore-keys
         with:
-          variant: ${{ matrix.variant }}
           key: child-${{ env.RAND }}
           restore-keys: |
             parent
@@ -170,8 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: apt update
-        shell: bash
-      - name: Run ccache-action
+      - name: Run firebuild-action
         uses: ./
 
   test_option_save:
@@ -182,7 +138,7 @@ jobs:
         save: [true, false]
     steps:
       - uses: actions/checkout@v2
-      - name: Run ccache-action
+      - name: Run firebuild-action
         uses: ./
         with:
           save: ${{ matrix.save }}

@@ -59151,18 +59151,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 
-async function ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag) {
-    if (ccacheVariant === "ccache") {
-        if (ccacheKnowsVerbosityFlag) {
-            return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
-        }
-        else {
-            return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/);
-        }
-    }
-    else {
-        return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
-    }
+async function firebuildIsEmpty() {
+    return !!(await getExecBashOutput("firebuild -s")).stdout.match(/Cache size.+\b 0\.00 kB/);
 }
 async function getVerbosity(verbositySetting) {
     switch (verbositySetting) {
@@ -59186,24 +59176,23 @@ async function run() {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because 'save' is set to 'false'.");
             return;
         }
-        const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
         const primaryKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("primaryKey");
-        if (!ccacheVariant || !primaryKey) {
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.notice("ccache setup failed, skipping saving.");
+        if (!primaryKey) {
+            _actions_core__WEBPACK_IMPORTED_MODULE_0__.notice("firebuild setup failed, skipping saving.");
             return;
         }
-        // Some versions of ccache do not support --verbose
-        const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(`${ccacheVariant} stats`);
-        const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose")) : '';
-        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`${ccacheVariant} -s${verbosity}`);
+        // Some versions of firebuild do not support --verbose
+        const firebuildKnowsVerbosityFlag = !!(await getExecBashOutput("firebuild --help")).stdout.includes("--verbose");
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup("firebuild stats");
+        const verbosity = firebuildKnowsVerbosityFlag ? await getVerbosity(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose")) : '';
+        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`firebuild -s${verbosity}`);
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
-        if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
+        if (await firebuildIsEmpty()) {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because no objects are cached.");
         }
         else {
             const saveKey = primaryKey + new Date().toISOString();
-            const paths = [`.${ccacheVariant}`];
+            const paths = [".cache/firebuild"];
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Save cache using key "${saveKey}".`);
             await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, saveKey);
         }

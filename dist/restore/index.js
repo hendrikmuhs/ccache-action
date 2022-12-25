@@ -59089,18 +59089,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -59146,18 +59134,6 @@ __nccwpck_require__.d(__webpack_exports__, {
   "default": () => (/* binding */ src_restore)
 });
 
-// EXTERNAL MODULE: external "crypto"
-var external_crypto_ = __nccwpck_require__(6113);
-var external_crypto_default = /*#__PURE__*/__nccwpck_require__.n(external_crypto_);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
-var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
-var external_os_default = /*#__PURE__*/__nccwpck_require__.n(external_os_);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
-var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
@@ -59174,22 +59150,18 @@ var cache = __nccwpck_require__(7799);
 
 
 
-
-
-
-
-const SELF_CI = external_process_namespaceObject.env.CCACHE_ACTION_CI === "true";
+const SELF_CI = external_process_namespaceObject.env.FIREBUILD_ACTION_CI === "true";
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
-async function restore(ccacheVariant) {
+async function restore() {
     const inputs = {
         primaryKey: core.getInput("key"),
         // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
         restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
     };
-    const keyPrefix = ccacheVariant + "-";
+    const keyPrefix = "firebuild-";
     const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
-    const paths = [`.${ccacheVariant}`];
+    const paths = [".cache/firebuild"];
     core.saveState("primaryKey", primaryKey);
     const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
     if (restoredWith) {
@@ -59205,44 +59177,19 @@ async function restore(ccacheVariant) {
         }
     }
 }
-async function configure(ccacheVariant) {
+async function configure() {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
-    if (ccacheVariant === "ccache") {
-        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
-        await execBash(`ccache --set-config=max_size='${maxSize}'`);
-        await execBash(`ccache --set-config=compression=true`);
-        core.info("Cccache config:");
-        await execBash("ccache -p");
-    }
-    else {
-        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
-        await execBash(`env ${options} sccache --start-server`);
-    }
+    await execBashSudo(`sed -i 's/^max_cache_size = .*/max_cache_size = ${maxSize}/' /etc/firebuild.conf`);
+    external_process_namespaceObject.env.FIREBUILD_CACHE_DIR = `${ghWorkSpace}/.cache/firebuild`;
+    core.info("Firebuild config:");
+    await execBash("cat /etc/firebuild.conf");
 }
-async function installCcacheMac() {
-    await execBash("brew install ccache");
-}
-async function installCcacheLinux() {
-    await execBashSudo("apt-get install -y ccache");
-}
-async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.7.4", "windows-x86_64", 
-    // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
-    // TODO find a better place
-    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
-}
-async function installSccacheMac() {
-    await execBash("brew install sccache");
-}
-async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.3.0", "x86_64-unknown-linux-musl", "594b4323aaee02d3b5e1e19c20eb63acb53fd8ecd3c0a3e43618a6e9e36af2fe", "/usr/local/bin/", "sccache");
-}
-async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.3.0", "x86_64-pc-windows-msvc", "e58646b1c377c7f873c7e13ae7298631fb490703ee15ad67ce326ed0dde2067e", 
-    // TODO find a better place
-    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
+async function installFirebuildLinux() {
+    await execBashSudo("sh -c 'echo debconf firebuild/license-accepted select true | debconf-set-selections'");
+    await execBashSudo("sh -c 'type add-apt-repository 2> /dev/null > /dev/null || apt-get install -y software-properties-common'");
+    await execBashSudo("add-apt-repository -y ppa:firebuild/stable");
+    await execBashSudo("apt-get install -y firebuild");
 }
 async function execBash(cmd) {
     await exec.exec("bash", ["-xc", cmd]);
@@ -59250,75 +59197,25 @@ async function execBash(cmd) {
 async function execBashSudo(cmd) {
     await execBash("$(which sudo) " + cmd);
 }
-async function installCcacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
-    const archiveName = `ccache-${version}-${artifactName}`;
-    const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}.zip`;
-    const binPath = external_path_default().join(binDir, binName);
-    await downloadAndExtract(url, external_path_default().join(archiveName, binName), binPath);
-    checkSha256Sum(binPath, binSha256);
-}
-async function installSccacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
-    const archiveName = `sccache-${version}-${artifactName}`;
-    const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}.tar.gz`;
-    const binPath = external_path_default().join(binDir, binName);
-    await downloadAndExtract(url, `*/${binName}`, binPath);
-    checkSha256Sum(binPath, binSha256);
-    await execBash(`chmod +x '${binPath}'`);
-}
-async function downloadAndExtract(url, srcFile, dstFile) {
-    if (url.endsWith(".zip")) {
-        const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
-        const zipName = external_path_default().join(tmp, "dl.zip");
-        await execBash(`curl -L '${url}' -o '${zipName}'`);
-        await execBash(`unzip '${zipName}' -d '${tmp}'`);
-        const dstDir = external_path_default().dirname(dstFile);
-        if (!external_fs_default().existsSync(dstDir)) {
-            external_fs_default().mkdirSync(dstDir, { recursive: true });
-        }
-        external_fs_default().copyFileSync(external_path_default().join(tmp, srcFile), dstFile);
-        external_fs_default().rmSync(tmp, { recursive: true });
-    }
-    else {
-        await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-    }
-}
-function checkSha256Sum(path, expectedSha256) {
-    const h = external_crypto_default().createHash("sha256");
-    h.update(external_fs_default().readFileSync(path));
-    const actualSha256 = h.digest("hex");
-    if (actualSha256 !== expectedSha256) {
-        throw Error(`SHA256 of ${path} is ${actualSha256}, expected ${expectedSha256}`);
-    }
-}
 async function runInner() {
-    const ccacheVariant = core.getInput("variant");
-    core.saveState("ccacheVariant", ccacheVariant);
     core.saveState("shouldSave", core.getBooleanInput("save"));
-    let ccachePath = await io.which(ccacheVariant);
-    if (!ccachePath) {
-        core.startGroup(`Install ${ccacheVariant}`);
-        const installer = {
-            ["ccache,linux"]: installCcacheLinux,
-            ["ccache,darwin"]: installCcacheMac,
-            ["ccache,win32"]: installCcacheWindows,
-            ["sccache,linux"]: installSccacheLinux,
-            ["sccache,darwin"]: installSccacheMac,
-            ["sccache,win32"]: installSccacheWindows,
-        }[[ccacheVariant, external_process_namespaceObject.platform].join()];
-        if (!installer) {
+    let firebuildPath = await io.which("firebuild");
+    if (!firebuildPath) {
+        core.startGroup("Install firebuild");
+        if (external_process_namespaceObject.platform != "linux") {
             throw Error(`Unsupported platform: ${external_process_namespaceObject.platform}`);
         }
-        await installer();
-        core.info(await io.which(ccacheVariant + ".exe"));
-        ccachePath = await io.which(ccacheVariant, true);
+        await installFirebuildLinux();
+        core.info(await io.which("firebuild.exe"));
+        firebuildPath = await io.which("firebuild", true);
         core.endGroup();
     }
     core.startGroup("Restore cache");
-    await restore(ccacheVariant);
+    await restore();
     core.endGroup();
-    core.startGroup(`Configure ${ccacheVariant}`);
-    await configure(ccacheVariant);
-    await execBash(`${ccacheVariant} -z`);
+    core.startGroup("Configure firebuild");
+    await configure();
+    await execBash("firebuild -z");
     core.endGroup();
 }
 async function run() {

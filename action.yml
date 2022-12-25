@@ -1,6 +1,7 @@
-name: "Ccache for gh actions"
-description: "A GitHub Action that speeds up compiling for C/C++ projects using ccache."
-author: "Hendrik Muhs<hendrik.muhs@gmail.com>"
+name: "Firebuild for gh actions"
+description: "A GitHub Action that speeds up (build) commands using Firebuild."
+author: "Balint Reczey <balint@balintreczey.hu>"
+# original author: "Hendrik Muhs<hendrik.muhs@gmail.com>"
 inputs:
   key:
     description: "An additional key for the cache"
@@ -9,14 +10,8 @@ inputs:
     description: "An ordered list of keys to use for restoring the cache if no cache hit occurred for key"
     required: false
   max-size:
-    description: "Max size of the cache"
-    default: "500M"
-  verbose:
-    description: "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-    default: 0
-  variant:
-    description: 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
-    default: ccache
+    description: "Max size of the cache in GB"
+    default: "0.5"
   save:
     description: "If 'false', do not save the cache, only restore."
     default: true
@@ -26,5 +21,5 @@ runs:
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
 branding:
-  icon: "archive"
-  color: "gray-dark"
+  icon: "zap"
+  color: "black"

@@ -1,24 +1,24 @@
 {
-  "name": "ccache-action",
+  "name": "firebuild-action",
   "version": "1.0.0",
-  "description": "github action to speedup building using ccache",
+  "description": "github action to speedup (build) commands using firebuild",
   "main": "dist/restore/index.js",
   "scripts": {
     "prepare": "ncc build --target es2020 -o dist/restore src/restore.ts && ncc build --target es2020 -o dist/save src/save.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hendrikmuhs/ccache-action.git"
+    "url": "git+https://github.com/firebuild/firebuild-action.git"
   },
   "keywords": [
     "actions",
-    "ccache",
-    "cache",
-    "c++",
-    "cpp",
-    "c"
+    "firebuild",
+    "cache"
   ],
-  "author": "Hendrik Muhs",
+  "author": "Balint Reczey",
+  "contributors" : [
+      "Hendrik Muhs"
+  ],
   "license": "MIT",
   "dependencies": {
     "@actions/cache": "^3.0.6",
@@ -31,7 +31,7 @@
     "typescript": "^4.9.4"
   },
   "bugs": {
-    "url": "https://github.com/hendrikmuhs/ccache-action/issues"
+    "url": "https://github.com/firebuild/firebuild-action/issues"
   },
-  "homepage": "https://github.com/hendrikmuhs/ccache-action#readme"
+  "homepage": "https://github.com/firebuild/firebuild-action#readme"
 }
