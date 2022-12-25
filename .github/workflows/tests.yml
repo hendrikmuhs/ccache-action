@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
         variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
         variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
@@ -102,7 +102,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
         variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
@@ -126,7 +126,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
         variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
