@@ -27,13 +27,12 @@ jobs:
           git diff --exit-code
 
   test_ccache:
-    # Test that ccache/sccache are installed and configured correctly.
+    # Test that ccache is installed and configured correctly.
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
-        variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -42,36 +41,27 @@ jobs:
         uses: ./
         with:
           verbose: 2
-          variant: ${{ matrix.variant }}
           max-size: 10M
           key: parent
       - name: Test ccache 1/2
         run: |
           [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
-          if [ ${{ matrix.variant }} = sccache ]; then
-            which sccache
-            sccache -V
-            sccache -s
-            # sccache -s | grep -E 'Max cache size.+10 MiB'
-            sccache -s | grep -E 'Cache location.+ccache-action/\.sccache'
-          else
-            which ccache
-            ccache -V
-            # Some versions of ccache don't have -v or -s
-            ccache -sv || ccache -s || true
-          fi
+          which ccache
+          ccache -V
+          # Some versions of ccache don't have -v or -s
+          ccache -sv || ccache -s || true
           # Example program
           echo "int x = $RANDOM;" > test.c
-          ${{ matrix.variant }} gcc test.c -c -o test.o
+          ccache gcc test.c -c -o test.o
       - name: Re-compile test program in Bash
-        run: ${{ matrix.variant }} gcc test.c -c -o test.o
+        run: ccache gcc test.c -c -o test.o
       - name: Re-compile test program in Bash
-        run: ${{ matrix.variant }} gcc test.c -c -o test.o
+        run: ccache gcc test.c -c -o test.o
         if: ${{ matrix.shell == 'bash' }}
       - name: Test ccache 2/2
         run: |
-          ${{ matrix.variant }} -sv || ${{ matrix.variant }} -s || true
-          ${{ matrix.variant }} -s | grep -E '(Hits:.+2.+/.+3)|cache hit.+2$|Cache hits.+2$'
+          ccache -sv || ccache -s || true
+          ccache -s | grep -E '(Hits:.+2.+/.+3)|cache hit.+2$|Cache hits.+2$'
         if: ${{ !matrix.xfail }}
 
   test_cache_hit:
@@ -82,7 +72,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
-        variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -90,7 +79,6 @@ jobs:
         uses: ./
         id: output
         with:
-          variant: ${{ matrix.variant }}
           key: parent
       - name: Test output true
         run: |
@@ -104,7 +92,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
-        variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -114,7 +101,6 @@ jobs:
         uses: ./
         id: output
         with:
-          variant: ${{ matrix.variant }}
           key: random-key-${{ env.RAND }}
       - name: Test output false
         run: |
@@ -128,7 +114,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
         shell: [bash]
-        variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -138,7 +123,6 @@ jobs:
         uses: ./
         id: restore-keys
         with:
-          variant: ${{ matrix.variant }}
           key: child-${{ env.RAND }}
           restore-keys: |
             parent
