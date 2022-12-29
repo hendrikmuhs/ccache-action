@@ -7,7 +7,6 @@ Works on Linux
 ## Usage
 
 ```yaml
-- run: apt update  # Only for Docker jobs
 - name: firebuild
   uses: firebuild/firebuild-action@v1.0
 ```
