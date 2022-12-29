@@ -8,7 +8,7 @@ Works on Linux
 
 ```yaml
 - name: firebuild
-  uses: firebuild/firebuild-action@v1.0
+  uses: firebuild/firebuild-action@v2.0
 ```
 
 NB! This should always come after the `actions/checkout` step.
@@ -35,7 +35,7 @@ jobs:
     steps:
       ...
       - name: firebuild
-        uses: firebuild/firebuild-action@v1.0
+        uses: firebuild/firebuild-action@v2.0
         with:
           key: ${{ github.job }}-${{ matrix.os }}  # Eg. "some_build-ubuntu-latest"
   some_other_build:
