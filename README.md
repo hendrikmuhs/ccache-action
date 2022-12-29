@@ -18,7 +18,7 @@ In order to use firebuild in your steps, prefix the commands to be accelerated w
 ```yaml
 - name: build
   run: |
-   firebuild <your build command>
+   firebuild <your command>
     ...
 ```
 
