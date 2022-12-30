@@ -3,6 +3,9 @@ description: "A GitHub Action that speeds up (build) commands using Firebuild."
 author: "Balint Reczey <balint@balintreczey.hu>"
 # original author: "Hendrik Muhs<hendrik.muhs@gmail.com>"
 inputs:
+  accept-firebuild-license:
+    description: "Accept the Firebuild license. See the license at https://firebuild.com"
+    default: false
   key:
     description: "An additional key for the cache"
     required: false

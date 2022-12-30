@@ -47,7 +47,10 @@ async function configure() : Promise<void> {
 }
 
 async function installFirebuildLinux() : Promise<void> {
-  await execBashSudo("sh -c 'echo debconf firebuild/license-accepted select true | debconf-set-selections'");
+  const acceptLicense = core.getInput('accept-firebuild-license');
+  if (acceptLicense) {
+    await execBashSudo("sh -c 'echo debconf firebuild/license-accepted select true | debconf-set-selections'");
+  }
   await execBashSudo("sh -c 'type add-apt-repository 2> /dev/null > /dev/null || apt-get install -y software-properties-common'");
   await execBashSudo("add-apt-repository -y ppa:firebuild/stable");
   await execBashSudo("apt-get install -y firebuild");

@@ -9,9 +9,13 @@ Works on Linux
 ```yaml
 - name: firebuild
   uses: firebuild/firebuild-action@v2.0
+    with:
+      accept-firebuild-license: true
 ```
 
 NB! This should always come after the `actions/checkout` step.
+
+The Firebuild license can be read at [firebuild.com](https://firebuild.com).
 
 In order to use firebuild in your steps, prefix the commands to be accelerated with "firebuild "
 
@@ -38,6 +42,7 @@ jobs:
         uses: firebuild/firebuild-action@v2.0
         with:
           key: ${{ github.job }}-${{ matrix.os }}  # Eg. "some_build-ubuntu-latest"
+          accept-firebuild-license: true
   some_other_build:
     ...
 ```

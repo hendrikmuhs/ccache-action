@@ -37,6 +37,7 @@ jobs:
         with:
           max-size: 0.01
           key: parent
+          accept-firebuild-license: true
       - name: Test firebuild 1/2
         run: |
           [[ ${{ steps.firebuild.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.firebuild.outputs.test-cache-hit }} = false ]]
