@@ -1,6 +1,6 @@
-# Firebuild for gh actions
+# Firebuild for GitHub Actions
 
-A Github action to speedup (build) commands using [Firebuild](https://github.com/firebuild/firebuild)
+A GitHub Action to speed up (build) commands using [Firebuild](https://github.com/firebuild/firebuild)
 
 Works on Linux
 
