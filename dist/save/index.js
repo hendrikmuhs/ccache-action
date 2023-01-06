@@ -59202,7 +59202,10 @@ async function run() {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because no objects are cached.");
         }
         else {
-            const saveKey = primaryKey + new Date().toISOString();
+            let saveKey = primaryKey;
+            if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("useTimestamp")) {
+              saveKey += new Date().toISOString();
+            }
             const paths = [`.${ccacheVariant}`];
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Save cache using key "${saveKey}".`);
             await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, saveKey);
