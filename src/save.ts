@@ -59,7 +59,10 @@ async function run() : Promise<void> {
     if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
       core.info("Not saving cache because no objects are cached.");
     } else {
-      const saveKey = primaryKey + new Date().toISOString();
+      let saveKey = primaryKey;
+      if (core.getState("appendTimestamp")) {
+        saveKey += new Date().toISOString();
+      }
       const paths = [`.${ccacheVariant}`];
     
       core.info(`Save cache using key "${saveKey}".`);
