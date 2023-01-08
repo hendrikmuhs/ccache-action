@@ -60,7 +60,7 @@ async function run() : Promise<void> {
       core.info("Not saving cache because no objects are cached.");
     } else {
       let saveKey = primaryKey;
-      if (core.getState("useTimestamp")) {
+      if (core.getState("appendTimestamp")) {
         saveKey += new Date().toISOString();
       }
       const paths = [`.${ccacheVariant}`];

@@ -20,7 +20,7 @@ inputs:
   save:
     description: "If 'false', do not save the cache, only restore."
     default: true
-  use-timestamp:
+  append-timestamp:
       description: "Append a timestamp to the cache key (default: true)"
       default: true
 runs:

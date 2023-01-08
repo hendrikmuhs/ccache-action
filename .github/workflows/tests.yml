@@ -186,3 +186,16 @@ jobs:
         uses: ./
         with:
           save: ${{ matrix.save }}
+
+  test_option_append_timestamp:
+    # Test that the 'append-timestamp' option is available.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        append-timestamp: [true, false]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache-action
+        uses: ./
+        with:
+          append-timestamp: ${{ matrix.append-timestamp }}
