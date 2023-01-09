@@ -21,8 +21,9 @@ inputs:
     description: "If 'false', do not save the cache, only restore."
     default: true
   append-timestamp:
-      description: "Append a timestamp to the cache key (default: true)"
-      default: true
+    description: "Append a timestamp to the cache key (default: true)"
+    default: true
+    required: false
 runs:
   using: "node16"
   main: "dist/restore/index.js"
