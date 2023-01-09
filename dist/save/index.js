@@ -59339,7 +59339,8 @@ async function run() {
             let saveKey = primaryKey;
             if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("appendTimestamp") == "true") {
                 saveKey += new Date().toISOString();
-            } else {
+            }
+            else {
                 _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not appending timestamp because 'append-timestamp' is set to 'false'.");
             }
             const paths = [`.${ccacheVariant}`];
