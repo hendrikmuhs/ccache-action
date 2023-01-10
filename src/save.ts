@@ -63,7 +63,7 @@ async function run() : Promise<void> {
       if (core.getState("appendTimestamp") == "true") {
         saveKey += new Date().toISOString();
       } else {
-        core.info("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
+        core.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
       }
       const paths = [`.${ccacheVariant}`];
     
