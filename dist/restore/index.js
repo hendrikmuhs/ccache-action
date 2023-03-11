@@ -59358,6 +59358,9 @@ async function installCcacheMac() {
     await execBash("brew install ccache");
 }
 async function installCcacheLinux() {
+    if (!await io.which("apt-get")) {
+        throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
+    }
     await execBashSudo("apt-get install -y ccache");
 }
 async function installCcacheWindows() {
