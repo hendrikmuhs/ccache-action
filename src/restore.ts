@@ -58,8 +58,9 @@ async function configure(ccacheVariant : string) : Promise<void> {
 }
 
 async function installCcacheMac() : Promise<void> {
-  const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  if (variantInstallFromGithub === "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  if (core.getState("variantInstallFromGithub") !== "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "darwin",
@@ -75,8 +76,9 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  if (variantInstallFromGithub === "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  if (core.getState("variantInstallFromGithub") !== "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "linux-x86_64",
@@ -105,8 +107,9 @@ async function installCcacheWindows() : Promise<void> {
 }
 
 async function installSccacheMac() : Promise<void> {
-  const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  if (variantInstallFromGithub === "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  if (core.getState("variantInstallFromGithub") !== "true") {
    switch(process.arch) {
 //   case 'x32':
 //      console.log("This is a 32-bit extended systems");
