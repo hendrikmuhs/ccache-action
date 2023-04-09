@@ -59349,7 +59349,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     }
     else if (url.endsWith(".tar.xz")) {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "/tmp/"));
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(tmp)) {
             fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
         }
@@ -59364,7 +59364,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     else {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
-        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "/tmp/"));
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(tmp)) {
             fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
         }
