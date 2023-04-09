@@ -59396,10 +59396,11 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep8 ${(path__WEBPACK_IMPORTED_MODULE_3___default().sep)}.`);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep9 ${pathsep}.`);
     console.log("pathsep10 " + pathsep);
-    console.log("pathsep11 " + '$path.sep');
+    ////        console.log("pathsep11 " + '$path.sep');
     //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-${pathsep}`));
     //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
-    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `tmp-xxxxxx${pathsep}`));
+    //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-xxxxxx${pathsep}`));
+    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `tmp${pathsep}`));
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
     //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
