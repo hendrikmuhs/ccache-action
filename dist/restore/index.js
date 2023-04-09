@@ -59130,12 +59130,12 @@ else {
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
 }
 await execBash(`set -vx ; uname -a`);
-await execBash(`set -vx ; uname -m`);
-await execBash(`set -vx ; uname -n`);
-await execBash(`set -vx ; uname -r`);
-await execBash(`set -vx ; uname -s`);
-await execBash(`set -vx ; uname -p`);
-await execBash(`set -vx ; uname -v`);
+//        await execBash(`set -vx ; uname -m`);
+//        await execBash(`set -vx ; uname -n`);
+//        await execBash(`set -vx ; uname -r`);
+//        await execBash(`set -vx ; uname -s`);
+//        await execBash(`set -vx ; uname -p`);
+//        await execBash(`set -vx ; uname -v`);
 // on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
 // on macos 21.6.0 // uname: illegal option -- o //       await execBash(`set -vx ; uname -o`);
 const SELF_CI = process__WEBPACK_IMPORTED_MODULE_7__.env.CCACHE_ACTION_CI === "true";
