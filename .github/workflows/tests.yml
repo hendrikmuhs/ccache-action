@@ -38,8 +38,10 @@ jobs:
         variant: [sccache, ccache]
         install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false, xfail: true }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -97,8 +99,12 @@ jobs:
         variant: [sccache, ccache]
         install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -124,8 +130,12 @@ jobs:
         variant: [sccache, ccache]
         install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -153,8 +163,12 @@ jobs:
         variant: [sccache, ccache]
         install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
