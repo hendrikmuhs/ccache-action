@@ -333,7 +333,7 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
 
 async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp-//'));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp-(path.sep)'));
 //    if (!fs.existsSync(tmpdirname)) {
       fs.mkdirSync(tmpdirname, { recursive: true });
   if (url.endsWith(".zip")) {
