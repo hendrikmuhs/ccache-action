@@ -98,7 +98,7 @@ async function installCcacheMac() : Promise<void> {
   }
   if (variantInstallFromGithub) {
     await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "darwin",
     "tar.gz",
     // sha256sum of ccache.exe
@@ -178,7 +178,7 @@ async function installSccacheMac() : Promise<void> {
           "v0.3.3",
           "x86_64-apple-darwin",
           "tar.gz",
-          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "f637e608cb52025fb7254d8d4aabe6abb4eb0dafa0e228cb14f0cd2f0eb5d833",
           "/usr/local/bin/",
           "sccache"
         );

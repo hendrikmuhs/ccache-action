@@ -59192,7 +59192,7 @@ async function installCcacheMac() {
         _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
     }
     if (variantInstallFromGithub) {
-        await installCcacheFromGitHub("4.7.5", "darwin", "tar.gz", 
+        await installCcacheFromGitHub("4.8", "darwin", "tar.gz", 
         // sha256sum of ccache.exe
         "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc", "/usr/local/bin/", "ccache");
     }
@@ -59255,7 +59255,7 @@ async function installSccacheMac() {
             //      console.log("This is a 32-bit extended systems");
             //      break;
             case 'x64':
-                await installSccacheFromGitHub("v0.3.3", "x86_64-apple-darwin", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
+                await installSccacheFromGitHub("v0.3.3", "x86_64-apple-darwin", "tar.gz", "f637e608cb52025fb7254d8d4aabe6abb4eb0dafa0e228cb14f0cd2f0eb5d833", "/usr/local/bin/", "sccache");
                 break;
             case 'arm':
                 console.log("This is a 32-bit Advanced RISC Machine");
