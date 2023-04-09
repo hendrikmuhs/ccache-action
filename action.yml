@@ -17,6 +17,9 @@ inputs:
   variant:
     description: 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
     default: ccache
+  install-from-github:
+    description: 'install Ccache from Github Releases https://github.com/ccache/ccache/releases/'
+    default: false
   save:
     description: "If 'false', do not save the cache, only restore."
     default: true
