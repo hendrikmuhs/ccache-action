@@ -337,7 +337,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const pathsep = (require('node:path').sep);
         core.info(`pathsep "${path.sep}".`);
         console.log("pathsep " + "${path.sep}");
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp-${path.sep}'));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp-"${path.sep}"'));
 //    if (!fs.existsSync(tmpdirname)) {
       fs.mkdirSync(tmpdirname, { recursive: true });
   if (url.endsWith(".zip")) {
