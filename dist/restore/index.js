@@ -59350,9 +59350,9 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     else if (url.endsWith(".tar.xz")) {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
         const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "/tmp/"));
-        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(tmp)) {
-            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
-        }
+        //    if (!fs.existsSync(tmp)) {
+        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
+        //    }
         await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
         const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
@@ -59365,9 +59365,9 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
         const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "/tmp/"));
-        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(tmp)) {
-            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
-        }
+        //    if (!fs.existsSync(tmp)) {
+        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
+        //    }
         await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
         const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
