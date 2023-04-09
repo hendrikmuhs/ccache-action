@@ -103,17 +103,12 @@ async function installCcacheWindows() : Promise<void> {
 }
 
 async function installSccacheMac() : Promise<void> {
-  if (core.getState("variantInstallFromGithub") == "true") {
-    if (process.arch) == "arm64") {
-        await installSccacheFromGitHub(
-          "v0.3.3",
-          "aarch64-apple-darwin",
-          "tar.gz",
-          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
-           "/usr/local/bin/",
-          "sccache"
-        );
-    } else if (process.arch) == "x64") {
+if (core.getState("variantInstallFromGithub") == "true") {
+   switch(process.arch) {
+   case 'x32':
+      console.log("This is a 32-bit extended systems");
+      break;
+   case 'x64':
         await installSccacheFromGitHub(
           "v0.3.3",
           "x86_64-apple-darwin",
@@ -122,12 +117,38 @@ async function installSccacheMac() : Promise<void> {
           "/usr/local/bin/",
           "sccache"
         );
-         }
-    } else {
-      throw Error(`Unsupported platform / arch : ${process.platform} / ${process.arch}`)
-         }
-} else {
-    await execBash("brew install sccache");
+      break;
+   case 'arm':
+      console.log("This is a 32-bit Advanced RISC Machine");
+      break;
+   case 'arm64':
+        await installSccacheFromGitHub(
+          "v0.3.3",
+          "aarch64-apple-darwin",
+          "tar.gz",
+          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+           "/usr/local/bin/",
+          "sccache"
+        );
+      break;
+   case 'mips':
+      console.log("This is a 32-bit Microprocessor without " + "Interlocked Pipelined Stages");
+      break;
+   case 'ia32':
+      console.log("This is a 32-bit Intel Architecture");
+      break;
+   case 'ppc':
+      console.log("This is a PowerPC Architecture.");
+      break;
+   case 'ppc64':
+      console.log("This is a 64-bit PowerPC Architecture.");
+      break;
+   // You can add more architectures if you know...
+   default:
+      colsole.log("This architecture is unknown.");
+     } 
+  } else {
+  await execBash("brew install sccache");
   }
 }
 
