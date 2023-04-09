@@ -58,7 +58,7 @@ async function configure(ccacheVariant : string) : Promise<void> {
 }
 
 async function installCcacheMac() : Promise<void> {
-  if (variantInstallFromGithub === "true") {
+  if (core.getState("variantInstallFromGithub") == "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "darwin",
@@ -74,7 +74,7 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  if (variantInstallFromGithub === "true") {
+  if (core.getState("variantInstallFromGithub") == "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "linux-x86_64",
@@ -91,7 +91,7 @@ async function installCcacheLinux() : Promise<void> {
 
 async function installCcacheWindows() : Promise<void> {
   await installCcacheFromGitHub(
-    "4.7.4",
+    "4.7.5",
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
@@ -103,7 +103,30 @@ async function installCcacheWindows() : Promise<void> {
 }
 
 async function installSccacheMac() : Promise<void> {
-  await execBash("brew install sccache");
+  if (core.getState("variantInstallFromGithub") == "true") {
+    if (process.arch) == "arm64")
+        await installSccacheFromGitHub(
+          "v0.3.3",
+          "aarch64-apple-darwin",
+          "tar.gz",
+          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+           "/usr/local/bin/",
+          "sccache"
+        );
+    } else if (process.arch) == "arm64") {
+        await installSccacheFromGitHub(
+          "v0.3.3",
+          "x86_64-apple-darwin",
+          "tar.gz",
+          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "/usr/local/bin/",
+          "sccache"
+        );
+         }
+    await execBash("brew install sccache");
+    } else {
+      throw Error(`Unsupported platform / arch : ${process.platform} / ${process.arch}`)
+  }
 }
 
 async function installSccacheLinux() : Promise<void> {
