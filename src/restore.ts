@@ -123,9 +123,11 @@ async function installSccacheMac() : Promise<void> {
           "sccache"
         );
          }
-    await execBash("brew install sccache");
     } else {
       throw Error(`Unsupported platform / arch : ${process.platform} / ${process.arch}`)
+         }
+} else {
+    await execBash("brew install sccache");
   }
 }
 
