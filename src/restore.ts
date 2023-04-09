@@ -104,7 +104,7 @@ async function installCcacheWindows() : Promise<void> {
 
 async function installSccacheMac() : Promise<void> {
   if (core.getState("variantInstallFromGithub") == "true") {
-    if (process.arch) == "arm64")
+    if (process.arch) == "arm64") {
         await installSccacheFromGitHub(
           "v0.3.3",
           "aarch64-apple-darwin",
