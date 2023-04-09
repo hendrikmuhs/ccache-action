@@ -148,7 +148,7 @@ async function installCcacheWindows() : Promise<void> {
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
-    "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3",
+    "4bc7e3c80d46835e037ca1d6f1af65be1887019149113a4ac3ea28f1d95dd4c6",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
@@ -246,7 +246,8 @@ async function installSccacheWindows() : Promise<void> {
     "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
-    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
+//    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
+    `${process.env.VCPKG_INSTALLATION_ROOT}`,
     "sccache.exe"
   );
   } else {

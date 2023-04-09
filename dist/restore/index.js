@@ -59230,7 +59230,7 @@ async function installCcacheWindows() {
     if (variantInstallFromGithub) {
         await installCcacheFromGitHub("4.8", "windows-x86_64", "zip", 
         // sha256sum of ccache.exe
-        "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3", 
+        "4bc7e3c80d46835e037ca1d6f1af65be1887019149113a4ac3ea28f1d95dd4c6", 
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
         //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
@@ -59303,7 +59303,8 @@ async function installSccacheWindows() {
         await installSccacheFromGitHub("v0.4.1", "x86_64-pc-windows-msvc", "tar.gz", "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3", 
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
-        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}\\`, "sccache.exe");
+        //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}`, "sccache.exe");
     }
     else {
         await execBash("choco install sccache --version=0.4.1");
