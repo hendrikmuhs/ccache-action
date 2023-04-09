@@ -59334,53 +59334,102 @@ async function installSccacheFromGitHub(version, artifactName, artifactType, bin
     checkSha256Sum(binPath, binSha256);
     await execBash(`chmod +x '${binPath}'`);
 }
+//async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+//  if (url.endsWith(".zip")) {
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const zipName = path.join(tmp, "dl.zip");
+//    await execBash(`curl -L '${url}' -o '${zipName}'`);
+//    await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
+//    fs.rmSync(tmp, { recursive: true });
+//  } else if (url.endsWith(".tar.xz")) {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmp)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  } else {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+////    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmpdirname)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  }
+//}
 async function downloadAndExtract(url, srcFile, dstFile) {
+    //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-"));
+    //    if (!fs.existsSync(tmpdirname)) {
+    fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     if (url.endsWith(".zip")) {
-        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
-        const zipName = path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, "dl.zip");
+        const zipName = path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, "dl.zip");
         await execBash(`curl -L '${url}' -o '${zipName}'`);
-        await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
-        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
-        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
-            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
-        }
-        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
-        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
+        await execBash(`unzip -j -C -d '${tmpdirname}' '${zipName}'`);
     }
     else if (url.endsWith(".tar.xz")) {
-        //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-        //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-        const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-"));
-        //    if (!fs.existsSync(tmp)) {
-        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
-        //    }
+        ////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        ////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+        //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+        ////    if (!fs.existsSync(tmp)) {
+        //      fs.mkdirSync(tmpdirname, { recursive: true });
+        ////    }
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1`);
-        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
-        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
-            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
-        }
-        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), dstFile);
-        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmpdirname, { recursive: true });
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+        //    const dstDir = path.dirname(dstFile);
+        //    if (!fs.existsSync(dstDir)) {
+        //      fs.mkdirSync(dstDir, { recursive: true });
+        //    }
+        //    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+        //    fs.rmSync(tmpdirname, { recursive: true });
     }
     else {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
         //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
         //    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
-        const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-"));
-        //    if (!fs.existsSync(tmpdirname)) {
-        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
-        //    }
+        //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+        ////    if (!fs.existsSync(tmpdirname)) {
+        //      fs.mkdirSync(tmpdirname, { recursive: true });
+        ////    }
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1`);
-        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
-        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
-            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
-        }
-        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), dstFile);
-        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmpdirname, { recursive: true });
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+        //    const dstDir = path.dirname(dstFile);
+        //    if (!fs.existsSync(dstDir)) {
+        //      fs.mkdirSync(dstDir, { recursive: true });
+        //    }
+        //    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+        //    fs.rmSync(tmpdirname, { recursive: true });
     }
+    const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
+    if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
+        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
+    }
+    fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), dstFile);
+    fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmpdirname, { recursive: true });
 }
 function checkSha256Sum(path, expectedSha256) {
     const h = crypto__WEBPACK_IMPORTED_MODULE_0___default().createHash("sha256");

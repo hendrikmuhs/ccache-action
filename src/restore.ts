@@ -283,52 +283,105 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
   await execBash(`chmod +x '${binPath}'`);
 }
 
+//async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+//  if (url.endsWith(".zip")) {
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const zipName = path.join(tmp, "dl.zip");
+//    await execBash(`curl -L '${url}' -o '${zipName}'`);
+//    await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
+//    fs.rmSync(tmp, { recursive: true });
+//  } else if (url.endsWith(".tar.xz")) {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmp)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  } else {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+////    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmpdirname)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  }
+//}
+
 async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
-  if (url.endsWith(".zip")) {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    const zipName = path.join(tmp, "dl.zip");
-    await execBash(`curl -L '${url}' -o '${zipName}'`);
-    await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
-    const dstDir = path.dirname(dstFile);
-    if (!fs.existsSync(dstDir)) {
-      fs.mkdirSync(dstDir, { recursive: true });
-    }
-    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
-    fs.rmSync(tmp, { recursive: true });
-  } else if (url.endsWith(".tar.xz")) {
-//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
-//    if (!fs.existsSync(tmp)) {
+//    if (!fs.existsSync(tmpdirname)) {
       fs.mkdirSync(tmpdirname, { recursive: true });
-//    }
+  if (url.endsWith(".zip")) {
+    const zipName = path.join(tmpdirname, "dl.zip");
+    await execBash(`curl -L '${url}' -o '${zipName}'`);
+    await execBash(`unzip -j -C -d '${tmpdirname}' '${zipName}'`);
+  } else if (url.endsWith(".tar.xz")) {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmp)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1`);
-    const dstDir = path.dirname(dstFile);
-    if (!fs.existsSync(dstDir)) {
-      fs.mkdirSync(dstDir, { recursive: true });
-    }
-    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
-    fs.rmSync(tmpdirname, { recursive: true });
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
   } else {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
-//    if (!fs.existsSync(tmpdirname)) {
-      fs.mkdirSync(tmpdirname, { recursive: true });
-//    }
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmpdirname)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+    
+
+  }
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
     }
     fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
     fs.rmSync(tmpdirname, { recursive: true });
-  }
 }
+
 
 function checkSha256Sum (path : string, expectedSha256 : string) {
   const h = crypto.createHash("sha256");
