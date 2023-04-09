@@ -297,31 +297,34 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     fs.rmSync(tmp, { recursive: true });
   } else if (url.endsWith(".tar.xz")) {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-XXXXXX"));
 //    if (!fs.existsSync(tmp)) {
-      fs.mkdirSync(tmp, { recursive: true });
+      fs.mkdirSync(tmpdirname, { recursive: true });
 //    }
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
     }
-    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
-    fs.rmSync(tmp, { recursive: true });
+    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+    fs.rmSync(tmpdirname, { recursive: true });
   } else {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-//    if (!fs.existsSync(tmp)) {
-      fs.mkdirSync(tmp, { recursive: true });
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-XXXXXX"));
+//    if (!fs.existsSync(tmpdirname)) {
+      fs.mkdirSync(tmpdirname, { recursive: true });
 //    }
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
     }
-    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
-    fs.rmSync(tmp, { recursive: true });
+    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+    fs.rmSync(tmpdirname, { recursive: true });
   }
 }
 

@@ -59349,32 +59349,35 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     }
     else if (url.endsWith(".tar.xz")) {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+        const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-XXXXXX"));
         //    if (!fs.existsSync(tmp)) {
-        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
+        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
         //    }
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
         const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
             fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
         }
-        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
-        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
+        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), dstFile);
+        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmpdirname, { recursive: true });
     }
     else {
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
-        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
-        //    if (!fs.existsSync(tmp)) {
-        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmp, { recursive: true });
+        //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+        //    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+        const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-XXXXXX"));
+        //    if (!fs.existsSync(tmpdirname)) {
+        fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
         //    }
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
         const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
             fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
         }
-        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
-        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
+        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), dstFile);
+        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmpdirname, { recursive: true });
     }
 }
 function checkSha256Sum(path, expectedSha256) {
