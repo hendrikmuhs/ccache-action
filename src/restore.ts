@@ -334,9 +334,13 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
 async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const pathsep = os.path.sep();
-//    const pathsep = (require('node:path').sep);
-        core.info(`pathsep "${path.sep}".`);
-        console.log("pathsep " + "${path.sep}");
+    const pathsep = (require('node:path').sep);
+        console.log("pathsep0 " + "${pathsep}");    
+        console.log(`pathsep1 "${pathsep}".`); 
+        core.info(`pathsep2 "${path.sep}".`);
+        core.info(`pathsep3 "${pathsep}".`);
+        console.log("pathsep4 " + "${pathsep}");
+        console.log("pathsep5 " + "${path.sep}");
     const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-${path.sep}"));
 //    if (!fs.existsSync(tmpdirname)) {
       fs.mkdirSync(tmpdirname, { recursive: true });
