@@ -297,7 +297,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     fs.rmSync(tmp, { recursive: true });
   } else if (url.endsWith(".tar.xz")) {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "/tmp/"));
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-XXXXXX/"));
 //    if (!fs.existsSync(tmp)) {
       fs.mkdirSync(tmp, { recursive: true });
 //    }
@@ -311,7 +311,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
   } else {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "/tmp/"));
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-XXXXXX/"));
 //    if (!fs.existsSync(tmp)) {
       fs.mkdirSync(tmp, { recursive: true });
 //    }
