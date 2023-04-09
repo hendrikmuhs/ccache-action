@@ -145,7 +145,7 @@ if (core.getState("variantInstallFromGithub") == "true") {
       break;
    // You can add more architectures if you know...
    default:
-      colsole.log("This architecture is unknown.");
+      console.log("This architecture is unknown.");
      } 
   } else {
   await execBash("brew install sccache");
