@@ -351,7 +351,8 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
 //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-xxxxxx${pathsep}`));
 //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp${pathsep}`));
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
+// working but not one windows check//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}${pathsep}`));
           fs.mkdirSync(tmpdirname, { recursive: true });
 //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
 //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
