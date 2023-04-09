@@ -59194,7 +59194,7 @@ async function installCcacheMac() {
     if (variantInstallFromGithub) {
         await installCcacheFromGitHub("4.8", "darwin", "tar.gz", 
         // sha256sum of ccache
-        "ffff", "/usr/local/bin/", "ccache");
+        "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc", "/usr/local/bin/", "ccache");
     }
     else {
         await execBash("brew install ccache");
@@ -59214,7 +59214,7 @@ async function installCcacheLinux() {
     if (variantInstallFromGithub) {
         await installCcacheFromGitHub("4.8", "linux-x86_64", "tar.xz", 
         // sha256sum of ccache
-        "ffff", "/usr/local/bin/", "ccache");
+        "81b6113f16e5952e5f0b09eff88503daabb5c1f09674876649fceade646b34b5", "/usr/local/bin/", "ccache");
     }
     else {
         await execBashSudo("apt-get install -y ccache");
@@ -59230,13 +59230,13 @@ async function installCcacheWindows() {
     if (variantInstallFromGithub) {
         await installCcacheFromGitHub("4.8", "windows-x86_64", "zip", 
         // sha256sum of ccache.exe
-        "ffff", 
+        "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3", 
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
         //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
         `${process__WEBPACK_IMPORTED_MODULE_7__.env.SYSTEMDRIVE}\\tools\\zstd`, 
         //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
-        //    `${process.env.VCPKG_INSTALLATION_ROOT}`,
+        //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
         "ccache.exe");
     }
     else {
@@ -59260,13 +59260,13 @@ async function installSccacheMac() {
             //      console.log("This is a 32-bit extended systems");
             //      break;
             case 'x64':
-                await installSccacheFromGitHub("v0.4.1", "x86_64-apple-darwin", "tar.gz", "fff", "/usr/local/bin/", "sccache");
+                await installSccacheFromGitHub("v0.4.1", "x86_64-apple-darwin", "tar.gz", "2c744ee17a4de3d6de25a4fa1ddc971ecee87627113843bca0b242212198aa81", "/usr/local/bin/", "sccache");
                 break;
             case 'arm':
                 console.log("This is a 32-bit Advanced RISC Machine");
                 break;
             case 'arm64':
-                await installSccacheFromGitHub("v0.4.1", "aarch64-apple-darwin", "tar.gz", "AAAAAAAA", "/usr/local/bin/", "sccache");
+                await installSccacheFromGitHub("v0.4.1", "aarch64-apple-darwin", "tar.gz", "fa2a657ad2ede04b7e4483c2ff7985217764960b0798317c1eb1bcd4a5ec6ca4", "/usr/local/bin/", "sccache");
                 break;
             case 'mips':
                 console.log("This is a 32-bit Microprocessor without " + "Interlocked Pipelined Stages");
@@ -59290,7 +59290,7 @@ async function installSccacheMac() {
     }
 }
 async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.4.1", "x86_64-unknown-linux-musl", "tar.gz", "ffffff", "/usr/local/bin/", "sccache");
+    await installSccacheFromGitHub("v0.4.1", "x86_64-unknown-linux-musl", "tar.gz", "073bb28b6a4526ce53c15ae536ad3800d7b786efbd82879dc2ddbeb1098d1e63", "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
     if (variantInstallFromGithub) {
@@ -59300,10 +59300,10 @@ async function installSccacheWindows() {
         _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
     }
     if (variantInstallFromGithub) {
-        await installSccacheFromGitHub("v0.4.1", "x86_64-pc-windows-msvc", "tar.gz", "ffffffff", 
+        await installSccacheFromGitHub("v0.4.1", "x86_64-pc-windows-msvc", "tar.gz", "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3", 
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
-        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}`, "sccache.exe");
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}\\`, "sccache.exe");
     }
     else {
         await execBash("choco install sccache --version=0.4.1");
@@ -59320,7 +59320,8 @@ async function installCcacheFromGitHub(version, artifactName, artifactType, binS
     const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
     const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
     //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
-    await downloadAndExtract(url, `*/${binName}`, binPath);
+    //  await downloadAndExtract(url, `*/${binName}`, binPath);
+    await downloadAndExtract(url, `*${binName}`, binPath);
     checkSha256Sum(binPath, binSha256);
     await execBash(`chmod +x '${binPath}'`);
 }
@@ -59328,7 +59329,8 @@ async function installSccacheFromGitHub(version, artifactName, artifactType, bin
     const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
     const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
     const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
-    await downloadAndExtract(url, `*/${binName}`, binPath);
+    //  await downloadAndExtract(url, `*/${binName}`, binPath);
+    await downloadAndExtract(url, `${binName}`, binPath);
     checkSha256Sum(binPath, binSha256);
     await execBash(`chmod +x '${binPath}'`);
 }
@@ -59337,7 +59339,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
         const zipName = path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, "dl.zip");
         await execBash(`curl -L '${url}' -o '${zipName}'`);
-        await execBash(`unzip '${zipName}' -d '${tmp}'`);
+        await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
         const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
         if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
             fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
@@ -59346,10 +59348,27 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
     }
     else if (url.endsWith(".tar.xz")) {
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
+        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
+            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
+        }
+        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
+        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
     }
     else {
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
+        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
+            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
+        }
+        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
+        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
     }
 }
 function checkSha256Sum(path, expectedSha256) {

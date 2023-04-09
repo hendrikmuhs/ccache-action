@@ -102,7 +102,7 @@ async function installCcacheMac() : Promise<void> {
     "darwin",
     "tar.gz",
     // sha256sum of ccache
-    "ffff",
+    "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc",
     "/usr/local/bin/",
     "ccache"
     );
@@ -127,7 +127,7 @@ async function installCcacheLinux() : Promise<void> {
     "linux-x86_64",
     "tar.xz",
     // sha256sum of ccache
-    "ffff",
+    "81b6113f16e5952e5f0b09eff88503daabb5c1f09674876649fceade646b34b5",
     "/usr/local/bin/",
     "ccache"
     );
@@ -148,13 +148,13 @@ async function installCcacheWindows() : Promise<void> {
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
-    "ffff",
+    "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
       `${process.env.SYSTEMDRIVE}\\tools\\zstd`,
 //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
-//    `${process.env.VCPKG_INSTALLATION_ROOT}`,
+//    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "ccache.exe"
   );
   } else {
@@ -182,7 +182,7 @@ async function installSccacheMac() : Promise<void> {
           "v0.4.1",
           "x86_64-apple-darwin",
           "tar.gz",
-          "fff",
+          "2c744ee17a4de3d6de25a4fa1ddc971ecee87627113843bca0b242212198aa81",
           "/usr/local/bin/",
           "sccache"
         );
@@ -195,7 +195,7 @@ async function installSccacheMac() : Promise<void> {
           "v0.4.1",
           "aarch64-apple-darwin",
           "tar.gz",
-          "AAAAAAAA",
+          "fa2a657ad2ede04b7e4483c2ff7985217764960b0798317c1eb1bcd4a5ec6ca4",
            "/usr/local/bin/",
           "sccache"
         );
@@ -226,7 +226,7 @@ async function installSccacheLinux() : Promise<void> {
     "v0.4.1",
     "x86_64-unknown-linux-musl",
     "tar.gz",
-    "ffffff",
+    "073bb28b6a4526ce53c15ae536ad3800d7b786efbd82879dc2ddbeb1098d1e63",
     "/usr/local/bin/",
     "sccache"
   );
@@ -243,10 +243,10 @@ async function installSccacheWindows() : Promise<void> {
     "v0.4.1",
     "x86_64-pc-windows-msvc",
     "tar.gz",
-    "ffffffff",
+    "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
-    `${process.env.VCPKG_INSTALLATION_ROOT}`,
+    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "sccache.exe"
   );
   } else {
@@ -267,7 +267,8 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
   //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
-  await downloadAndExtract(url, `*/${binName}`, binPath);
+//  await downloadAndExtract(url, `*/${binName}`, binPath);
+  await downloadAndExtract(url, `*${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
@@ -276,7 +277,8 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
   const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
   const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
-  await downloadAndExtract(url, `*/${binName}`, binPath);
+//  await downloadAndExtract(url, `*/${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
@@ -286,7 +288,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     const zipName = path.join(tmp, "dl.zip");
     await execBash(`curl -L '${url}' -o '${zipName}'`);
-    await execBash(`unzip '${zipName}' -d '${tmp}'`);
+    await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
@@ -294,9 +296,26 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else if (url.endsWith(".tar.xz")) {
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+    const dstDir = path.dirname(dstFile);
+    if (!fs.existsSync(dstDir)) {
+      fs.mkdirSync(dstDir, { recursive: true });
+    }
+    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
+    fs.rmSync(tmp, { recursive: true });
   } else {
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+    const dstDir = path.dirname(dstFile);
+    if (!fs.existsSync(dstDir)) {
+      fs.mkdirSync(dstDir, { recursive: true });
+    }
+    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
+    fs.rmSync(tmp, { recursive: true });
   }
 }
 
