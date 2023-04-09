@@ -59401,7 +59401,8 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     const tmpdirname2 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `tmpXXXXXX${pathsep}`));
     const tmpdirname3 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `XXXXXX${pathsep}`));
     const tmpdirname4 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `${pathsep}`));
-    console.log(`tmpdirname "${tmpdirname}".### tmpdirname2 "${tmpdirname2}".### tmpdirname3 "${tmpdirname3}".### tmpdirname4 "${tmpdirname4}".###  `);
+    console.log(`console.log: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`core.info: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
     //    if (!fs.existsSync(tmpdirname)) {
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     if (url.endsWith(".zip")) {
