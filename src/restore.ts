@@ -110,6 +110,7 @@ async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
     "v0.3.3",
     "x86_64-unknown-linux-musl",
+    "tar.gz",
     "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
     "/usr/local/bin/",
     "sccache"
@@ -120,6 +121,7 @@ async function installSccacheWindows() : Promise<void> {
   await installSccacheFromGitHub(
     "v0.3.3",
     "x86_64-pc-windows-msvc",
+    "tar.gz",
     "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
@@ -145,9 +147,9 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   await execBash(`chmod +x '${binPath}'`);
 }
 
-async function installSccacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
-  const archiveName = `sccache-${version}-${artifactName}`;
-  const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}.tar.gz`;
+async function installSccacheFromGitHub(version : string, artifactName : string, artifactType : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
+  const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
+  const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
   await downloadAndExtract(url, `*/${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
@@ -166,7 +168,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
-  } else-if (url.endsWith(".tar.xz")) {
+  } else if (url.endsWith(".tar.xz")) {
     await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   } else {
     await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
