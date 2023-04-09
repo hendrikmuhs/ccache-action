@@ -62,10 +62,12 @@ async function installCcacheMac() : Promise<void> {
   //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
   //if (core.getState("variantInstallFromGithub") !== "true") {
   const variantInstallFromGithub = core.getInput('install-from-github');
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
     core.warning('variantInstallFromGithub was not set');
+      } else {
+    core.warning('variantInstallFromGithub was IS set');
   }
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
     await execBash("brew install ccache");
   } else {
     await installCcacheFromGitHub(
@@ -85,10 +87,12 @@ async function installCcacheLinux() : Promise<void> {
   //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
   //if (core.getState("variantInstallFromGithub") !== "true") {
   const variantInstallFromGithub = core.getInput('install-from-github');
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
     core.warning('variantInstallFromGithub was not set');
+      } else {
+    core.warning('variantInstallFromGithub was IS set');
   }
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
       await execBashSudo("apt-get install -y ccache");
   } else {
     await installCcacheFromGitHub(
@@ -121,10 +125,12 @@ async function installSccacheMac() : Promise<void> {
   //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
   //if (core.getState("variantInstallFromGithub") !== "true") {
   const variantInstallFromGithub = core.getInput('install-from-github');
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
     core.warning('variantInstallFromGithub was not set');
+      } else {
+    core.warning('variantInstallFromGithub was IS set');
   }
-  if (!variantInstallFromGithub) {
+  if (variantInstallFromGithub) {
     await execBash("brew install sccache");
   } else {
    switch(process.arch) {
@@ -236,9 +242,9 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else if (url.endsWith(".tar.xz")) {
-    await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   } else {
-    await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   }
 }
 

@@ -59421,10 +59421,13 @@ async function installCcacheMac() {
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
     const variantInstallFromGithub = core.getInput('install-from-github');
-    if (!variantInstallFromGithub) {
+    if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
-    if (!variantInstallFromGithub) {
+    else {
+        core.warning('variantInstallFromGithub was IS set');
+    }
+    if (variantInstallFromGithub) {
         await execBash("brew install ccache");
     }
     else {
@@ -59438,10 +59441,13 @@ async function installCcacheLinux() {
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
     const variantInstallFromGithub = core.getInput('install-from-github');
-    if (!variantInstallFromGithub) {
+    if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
-    if (!variantInstallFromGithub) {
+    else {
+        core.warning('variantInstallFromGithub was IS set');
+    }
+    if (variantInstallFromGithub) {
         await execBashSudo("apt-get install -y ccache");
     }
     else {
@@ -59462,10 +59468,13 @@ async function installSccacheMac() {
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
     const variantInstallFromGithub = core.getInput('install-from-github');
-    if (!variantInstallFromGithub) {
+    if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
-    if (!variantInstallFromGithub) {
+    else {
+        core.warning('variantInstallFromGithub was IS set');
+    }
+    if (variantInstallFromGithub) {
         await execBash("brew install sccache");
     }
     else {
@@ -59545,10 +59554,10 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         external_fs_default().rmSync(tmp, { recursive: true });
     }
     else if (url.endsWith(".tar.xz")) {
-        await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
     }
     else {
-        await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
     }
 }
 function checkSha256Sum(path, expectedSha256) {

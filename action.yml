@@ -20,6 +20,7 @@ inputs:
   install-from-github:
     description: 'install Ccache from Github Releases https://github.com/ccache/ccache/releases/'
     default: false
+    required: false
   save:
     description: "If 'false', do not save the cache, only restore."
     default: true
