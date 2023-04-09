@@ -335,6 +335,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const pathsep = os.path.sep();
     const pathsep = (require('node:path').sep);
+    const pathsep2 = (require('node:path').sep('node:path').sep);
         console.log("pathsep0 " + "${pathsep}");    
         console.log(`pathsep1 "${pathsep}".`); 
         core.info(`pathsep2 "${path.sep}".`);
@@ -343,6 +344,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
         console.log("pathsep5 " + "${path.sep}");
         console.log("pathsep6 " + '${pathsep}');    
         console.log(`pathsep7 ${pathsep}.`); 
+        console.log(`pathsep7a ${pathsep2}.`); 
         core.info(`pathsep8 ${path.sep}.`);
         core.info(`pathsep9 ${pathsep}.`);
         console.log("pathsep10 " + pathsep);
@@ -352,7 +354,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-xxxxxx${pathsep}`));
 //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp${pathsep}`));
 // working but not one windows check//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}${pathsep}`));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
           fs.mkdirSync(tmpdirname, { recursive: true });
 //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
 //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));

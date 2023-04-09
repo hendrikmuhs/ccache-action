@@ -59385,6 +59385,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     //    const pathsep = os.path.sep();
     const pathsep = ((__nccwpck_require__(9411).sep));
+    const pathsep2 = ((__nccwpck_require__(9411).sep)('node:path').sep);
     console.log("pathsep0 " + "${pathsep}");
     console.log(`pathsep1 "${pathsep}".`);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep2 "${(path__WEBPACK_IMPORTED_MODULE_3___default().sep)}".`);
@@ -59393,6 +59394,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     console.log("pathsep5 " + "${path.sep}");
     console.log("pathsep6 " + '${pathsep}');
     console.log(`pathsep7 ${pathsep}.`);
+    console.log(`pathsep7a ${pathsep2}.`);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep8 ${(path__WEBPACK_IMPORTED_MODULE_3___default().sep)}.`);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep9 ${pathsep}.`);
     console.log("pathsep10 " + pathsep);
@@ -59402,7 +59404,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-xxxxxx${pathsep}`));
     //    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp${pathsep}`));
     // working but not one windows check//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
-    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `${pathsep}${pathsep}`));
+    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `${pathsep}`));
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
     //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
