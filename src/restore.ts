@@ -58,17 +58,42 @@ async function configure(ccacheVariant : string) : Promise<void> {
 }
 
 async function installCcacheMac() : Promise<void> {
-  await execBash("brew install ccache");
+  if (variantInstallFromGithub === "true") {
+    await installCcacheFromGitHub(
+    "4.7.5",
+    "darwin",
+    "tar.gz",
+    // sha256sum of ccache.exe
+    "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc",
+    "/usr/local/bin/",
+    "ccache"
+    );
+  } else {
+      await execBash("brew install ccache");
+   }
 }
 
 async function installCcacheLinux() : Promise<void> {
-  await execBashSudo("apt-get install -y ccache");
+  if (variantInstallFromGithub === "true") {
+    await installCcacheFromGitHub(
+    "4.7.5",
+    "linux-x86_64",
+    "tar.xz",
+    // sha256sum of ccache
+    "4c870947ca2f636b3069f2b9413d6919f5a1518dafbff03cd157564202337a7b",
+    "/usr/local/bin/",
+    "ccache"
+    );
+  } else {
+      await execBashSudo("apt-get install -y ccache");
+   }
 }
 
 async function installCcacheWindows() : Promise<void> {
   await installCcacheFromGitHub(
     "4.7.4",
     "windows-x86_64",
+    "zip",
     // sha256sum of ccache.exe
     "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e",
     // TODO find a better place
@@ -110,12 +135,14 @@ async function execBashSudo(cmd : string) {
   await execBash("$(which sudo) " + cmd);
 }
 
-async function installCcacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
-  const archiveName = `ccache-${version}-${artifactName}`;
-  const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}.zip`;
+async function installCcacheFromGitHub(version : string, artifactName : string, artifactType : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
+  const archiveName = `ccache-${version}-${artifactName}.${artifactType}`;
+  const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
-  await downloadAndExtract(url, path.join(archiveName, binName), binPath);
+  //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
+  await downloadAndExtract(url, `*/${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
+  await execBash(`chmod +x '${binPath}'`);
 }
 
 async function installSccacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
@@ -139,6 +166,8 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
+  } else-if (url.endsWith(".tar.xz")) {
+    await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   } else {
     await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   }
@@ -159,6 +188,7 @@ async function runInner() : Promise<void> {
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
   let ccachePath = await io.which(ccacheVariant);
+  const variantInstallFromGithub = core.getInput("install-from-github");
   if (!ccachePath) {
     core.startGroup(`Install ${ccacheVariant}`);
     const installer = {
