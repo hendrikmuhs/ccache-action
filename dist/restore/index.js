@@ -59234,7 +59234,7 @@ async function installCcacheWindows() {
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
         //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
-        `${process__WEBPACK_IMPORTED_MODULE_7__.env.SYSTEMDRIVE}\\tools\\zstd`, 
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.SYSTEMDRIVE}\\tools\\zstd\\`, 
         //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
         //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
         "ccache.exe");
@@ -59304,7 +59304,7 @@ async function installSccacheWindows() {
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
         //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
-        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}`, "sccache.exe");
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}\\`, "sccache.exe");
     }
     else {
         await execBash("choco install sccache --version=0.4.1");

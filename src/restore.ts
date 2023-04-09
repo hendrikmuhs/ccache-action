@@ -152,7 +152,7 @@ async function installCcacheWindows() : Promise<void> {
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
-      `${process.env.SYSTEMDRIVE}\\tools\\zstd`,
+      `${process.env.SYSTEMDRIVE}\\tools\\zstd\\`,
 //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
 //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "ccache.exe"
@@ -247,7 +247,7 @@ async function installSccacheWindows() : Promise<void> {
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
-    `${process.env.VCPKG_INSTALLATION_ROOT}`,
+    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "sccache.exe"
   );
   } else {
