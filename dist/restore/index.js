@@ -59137,8 +59137,7 @@ await execBash(`set -vx ; uname -s`);
 await execBash(`set -vx ; uname -p`);
 await execBash(`set -vx ; uname -v`);
 // on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
-await execBash(`set -vx ; uname -o`);
-await execBash(`set -vx ; uname -a`);
+// on macos 21.6.0 // uname: illegal option -- o //       await execBash(`set -vx ; uname -o`);
 const SELF_CI = process__WEBPACK_IMPORTED_MODULE_7__.env.CCACHE_ACTION_CI === "true";
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 async function restore(ccacheVariant) {

@@ -34,8 +34,7 @@ const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGi
         await execBash(`set -vx ; uname -p`);
         await execBash(`set -vx ; uname -v`);
 // on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
-        await execBash(`set -vx ; uname -o`);
-        await execBash(`set -vx ; uname -a`);
+// on macos 21.6.0 // uname: illegal option -- o //       await execBash(`set -vx ; uname -o`);
 
 
 const SELF_CI = process.env["CCACHE_ACTION_CI"] === "true"
