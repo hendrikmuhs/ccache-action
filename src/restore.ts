@@ -58,7 +58,7 @@ async function configure(ccacheVariant : string) : Promise<void> {
 }
 
 async function installCcacheMac() : Promise<void> {
-  if (variantInstallFromGithub === "true") {
+  if (core.getState("variantInstallFromGithub") == "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "darwin",
@@ -74,7 +74,7 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  if (variantInstallFromGithub === "true") {
+  if (core.getState("variantInstallFromGithub") == "true") {
     await installCcacheFromGitHub(
     "4.7.5",
     "linux-x86_64",
@@ -91,7 +91,7 @@ async function installCcacheLinux() : Promise<void> {
 
 async function installCcacheWindows() : Promise<void> {
   await installCcacheFromGitHub(
-    "4.7.4",
+    "4.7.5",
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
@@ -103,13 +103,60 @@ async function installCcacheWindows() : Promise<void> {
 }
 
 async function installSccacheMac() : Promise<void> {
+if (core.getState("variantInstallFromGithub") == "true") {
+   switch(process.arch) {
+   case 'x32':
+      console.log("This is a 32-bit extended systems");
+      break;
+   case 'x64':
+        await installSccacheFromGitHub(
+          "v0.3.3",
+          "x86_64-apple-darwin",
+          "tar.gz",
+          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "/usr/local/bin/",
+          "sccache"
+        );
+      break;
+   case 'arm':
+      console.log("This is a 32-bit Advanced RISC Machine");
+      break;
+   case 'arm64':
+        await installSccacheFromGitHub(
+          "v0.3.3",
+          "aarch64-apple-darwin",
+          "tar.gz",
+          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+           "/usr/local/bin/",
+          "sccache"
+        );
+      break;
+   case 'mips':
+      console.log("This is a 32-bit Microprocessor without " + "Interlocked Pipelined Stages");
+      break;
+   case 'ia32':
+      console.log("This is a 32-bit Intel Architecture");
+      break;
+   case 'ppc':
+      console.log("This is a PowerPC Architecture.");
+      break;
+   case 'ppc64':
+      console.log("This is a 64-bit PowerPC Architecture.");
+      break;
+   // You can add more architectures if you know...
+   default:
+      console.log("This architecture is unknown.");
+     } 
+  } else {
   await execBash("brew install sccache");
+  }
 }
 
 async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
     "v0.3.3",
     "x86_64-unknown-linux-musl",
+    "tar.gz",
     "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
     "/usr/local/bin/",
     "sccache"
@@ -120,6 +167,7 @@ async function installSccacheWindows() : Promise<void> {
   await installSccacheFromGitHub(
     "v0.3.3",
     "x86_64-pc-windows-msvc",
+    "tar.gz",
     "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
@@ -145,9 +193,9 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   await execBash(`chmod +x '${binPath}'`);
 }
 
-async function installSccacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
-  const archiveName = `sccache-${version}-${artifactName}`;
-  const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}.tar.gz`;
+async function installSccacheFromGitHub(version : string, artifactName : string, artifactType : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
+  const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
+  const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
   await downloadAndExtract(url, `*/${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
@@ -166,7 +214,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
-  } else-if (url.endsWith(".tar.xz")) {
+  } else if (url.endsWith(".tar.xz")) {
     await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   } else {
     await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
@@ -187,8 +235,8 @@ async function runInner() : Promise<void> {
   core.saveState("ccacheVariant", ccacheVariant);
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
+  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
   let ccachePath = await io.which(ccacheVariant);
-  const variantInstallFromGithub = core.getInput("install-from-github");
   if (!ccachePath) {
     core.startGroup(`Install ${ccacheVariant}`);
     const installer = {
