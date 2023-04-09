@@ -298,7 +298,10 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
   } else if (url.endsWith(".tar.xz")) {
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+    if (!fs.existsSync(tmp)) {
+      fs.mkdirSync(tmp, { recursive: true });
+    }
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
@@ -309,7 +312,10 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
 //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}' --strip-components=1 '${srcFile}'`);
+    if (!fs.existsSync(tmp)) {
+      fs.mkdirSync(tmp, { recursive: true });
+    }
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmp}/' --strip-components=1 '${srcFile}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
