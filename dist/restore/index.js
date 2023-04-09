@@ -59387,7 +59387,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     //    const pathsep = (require('node:path').sep);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep "${(path__WEBPACK_IMPORTED_MODULE_3___default().sep)}".`);
     console.log("pathsep " + "${path.sep}");
-    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), "tmp-${path.sep}"));
+    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), 'tmp-"${path.sep}"'));
     //    if (!fs.existsSync(tmpdirname)) {
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     if (url.endsWith(".zip")) {
