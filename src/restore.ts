@@ -335,7 +335,9 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const pathsep = os.path.sep();
     const pathsep0 = (require('node:path').sep);
-    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`); 
+//    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`);
+    const pathsep = ("tmpfoo-XXXXXX" + pathsep0 );  
+
         console.log("pathsep0 " + "${pathsep}");    
         console.log(`pathsep1 "${pathsep}".`); 
         core.info(`pathsep2 "${path.sep}".`);
