@@ -8,6 +8,35 @@ import * as exec from "@actions/exec";
 import * as process from "process";
 import * as cache from "@actions/cache";
 
+export enum Inputs {
+    VariantInstallFromGithub = "install-from-github" // Input for cache, restore action
+}
+
+export function utilsGetInputAsBool(
+    name: string,
+    options?: core.InputOptions
+): boolean {
+    const result = core.getInput(name, options);
+    return result.toLowerCase() === "true";
+}
+
+const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGithub);
+        if (variantInstallFromGithub) {
+            core.info(`global: variantInstallFromGithub is SET: ${variantInstallFromGithub}`);
+        } else {
+            core.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
+        }
+        await execBash(`set -vx ; uname -a`);
+//        await execBash(`set -vx ; uname -m`);
+//        await execBash(`set -vx ; uname -n`);
+//        await execBash(`set -vx ; uname -r`);
+//        await execBash(`set -vx ; uname -s`);
+//        await execBash(`set -vx ; uname -p`);
+//        await execBash(`set -vx ; uname -v`);
+// on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
+// on macos 21.6.0 // uname: illegal option -- o //       await execBash(`set -vx ; uname -o`);
+
+
 const SELF_CI = process.env["CCACHE_ACTION_CI"] === "true"
 
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
@@ -58,62 +87,102 @@ async function configure(ccacheVariant : string) : Promise<void> {
 }
 
 async function installCcacheMac() : Promise<void> {
-  if (core.getState("variantInstallFromGithub") == "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+//  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
     await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "darwin",
     "tar.gz",
-    // sha256sum of ccache.exe
+    // sha256sum of ccache
     "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc",
     "/usr/local/bin/",
     "ccache"
     );
   } else {
-      await execBash("brew install ccache");
+    await execBash("brew install ccache");
    }
 }
 
 async function installCcacheLinux() : Promise<void> {
-  if (core.getState("variantInstallFromGithub") == "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+//  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
     await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "linux-x86_64",
     "tar.xz",
     // sha256sum of ccache
-    "4c870947ca2f636b3069f2b9413d6919f5a1518dafbff03cd157564202337a7b",
+    "81b6113f16e5952e5f0b09eff88503daabb5c1f09674876649fceade646b34b5",
     "/usr/local/bin/",
     "ccache"
     );
   } else {
-      await execBashSudo("apt-get install -y ccache");
+    await execBashSudo("apt-get install -y ccache");
    }
 }
 
 async function installCcacheWindows() : Promise<void> {
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
   await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e",
+    "4bc7e3c80d46835e037ca1d6f1af65be1887019149113a4ac3ea28f1d95dd4c6",
     // TODO find a better place
-    `${process.env.USERPROFILE}\\.cargo\\bin`,
+//    `${process.env.USERPROFILE}\\.cargo\\bin`,
+//      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
+      `${process.env.SYSTEMDRIVE}\\tools\\zstd\\`,
+//      `${process.env.SYSTEMDRIVE}\\vcpkg`,
+//    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "ccache.exe"
   );
+  } else {
+    await execBash("choco install ccache --version=4.8");
+   }
 }
 
 async function installSccacheMac() : Promise<void> {
-if (core.getState("variantInstallFromGithub") == "true") {
+  //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+//  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
    switch(process.arch) {
 //   case 'x32':
 //      console.log("This is a 32-bit extended systems");
 //      break;
    case 'x64':
         await installSccacheFromGitHub(
-          "v0.3.3",
+          "v0.4.1",
           "x86_64-apple-darwin",
           "tar.gz",
-          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "2c744ee17a4de3d6de25a4fa1ddc971ecee87627113843bca0b242212198aa81",
           "/usr/local/bin/",
           "sccache"
         );
@@ -123,10 +192,10 @@ if (core.getState("variantInstallFromGithub") == "true") {
       break;
    case 'arm64':
         await installSccacheFromGitHub(
-          "v0.3.3",
+          "v0.4.1",
           "aarch64-apple-darwin",
           "tar.gz",
-          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "fa2a657ad2ede04b7e4483c2ff7985217764960b0798317c1eb1bcd4a5ec6ca4",
            "/usr/local/bin/",
           "sccache"
         );
@@ -148,31 +217,42 @@ if (core.getState("variantInstallFromGithub") == "true") {
       console.log("This architecture is unknown.");
      } 
   } else {
-  await execBash("brew install sccache");
+   await execBash("brew install sccache");
   }
 }
 
 async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
-    "v0.3.3",
+    "v0.4.1",
     "x86_64-unknown-linux-musl",
     "tar.gz",
-    "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+    "073bb28b6a4526ce53c15ae536ad3800d7b786efbd82879dc2ddbeb1098d1e63",
     "/usr/local/bin/",
     "sccache"
   );
 }
 
 async function installSccacheWindows() : Promise<void> {
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
   await installSccacheFromGitHub(
-    "v0.3.3",
+    "v0.4.1",
     "x86_64-pc-windows-msvc",
     "tar.gz",
-    "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75",
+    "a193d53f9a159c1ca3b5c29c2d844b90791e3d8da2d745eac48f8553f78b5ff3",
     // TODO find a better place
-    `${process.env.USERPROFILE}\\.cargo\\bin`,
+//    `${process.env.USERPROFILE}\\.cargo\\bin`,
+//    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
+    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "sccache.exe"
   );
+  } else {
+    await execBash("choco install sccache --version=0.4.1");
+   }
 }
 
 async function execBash(cmd : string) {
@@ -188,7 +268,8 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
   //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
-  await downloadAndExtract(url, `*/${binName}`, binPath);
+//  await downloadAndExtract(url, `*/${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
@@ -197,29 +278,149 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
   const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
   const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
-  await downloadAndExtract(url, `*/${binName}`, binPath);
+//  await downloadAndExtract(url, `*/${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
 
+//async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+//  if (url.endsWith(".zip")) {
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const zipName = path.join(tmp, "dl.zip");
+//    await execBash(`curl -L '${url}' -o '${zipName}'`);
+//    await execBash(`unzip -j -C -d '${tmp}' '${zipName}'`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
+//    fs.rmSync(tmp, { recursive: true });
+//  } else if (url.endsWith(".tar.xz")) {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmp)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  } else {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+////    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmpdirname)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+//  }
+//}
+
 async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const pathsep = os.path.sep();
+    const pathsep0 = (require('node:path').sep);
+    const pathsepstr = (require('node:path').sep).toString();
+//    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`);
+    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`).toString();
+//    const pathseptmpfoo = ("tmpfoo-XXXXXX" + pathsep0).toString();
+//    const pathseptmpfoo = ("tmpfoo-XXXXXX" + pathsep0).toString();    
+
+        console.log("pathsep0 " + "${pathsep}");    
+        console.log(`pathsep1 "${pathsep}".`); 
+        core.info(`pathsep2 "${path.sep}".`);
+        core.info(`pathsep3 "${pathsep}".`);
+        console.log("pathsep4 " + "${pathsep}");
+        console.log("pathsep5 " + "${path.sep}");
+        console.log("pathsep6 " + '${pathsep}');    
+        console.log(`pathsep7 ${pathsep}.`); 
+        console.log(`pathsep7a0 ${pathsep0}.`); 
+        console.log(`pathsepstr ${pathsepstr}.`); 
+        core.info(`pathsep8 ${path.sep}.`);
+        core.info(`pathsep9 ${pathsep}.`);
+        console.log("pathsep10 " + pathsep);
+////        console.log("pathsep11 " + '$path.sep');
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-${pathsep}`));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-xxxxxx${pathsep}`));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp${pathsep}`));
+// working but not one windows check//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
+ //   const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
+//    tmpdirname: `${os.tmpdir()}${pathsep}picturama${pathsep}`,
+//    const tmpdirname = os.tmpdir() + '/knex-test-';
+// working but no template    const tmpdirname = (path.join(os.tmpdir() + `${pathsepstr}knex-test-`));
+   const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsepstr}knex-test-`));
+//    const tmpdirname = (path.join(os.tmpdir(), `${pathsepstr}knex-test-`));
+          fs.mkdirSync(tmpdirname, { recursive: true });
+//    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
+//    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
+//        console.log(`console.log: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
+        console.log(`console.log: tmpdirname ${tmpdirname}  `);
+//        core.info(`core.info: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
+//    if (!fs.existsSync(tmpdirname)) {
+      fs.mkdirSync(tmpdirname, { recursive: true });
   if (url.endsWith(".zip")) {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    const zipName = path.join(tmp, "dl.zip");
+    const zipName = path.join(tmpdirname, "dl.zip");
     await execBash(`curl -L '${url}' -o '${zipName}'`);
-    await execBash(`unzip '${zipName}' -d '${tmp}'`);
+    await execBash(`unzip -j -C -d '${tmpdirname}' '${zipName}'`);
+  } else if (url.endsWith(".tar.xz")) {
+////    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+////    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmp)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) -C '${tmpdirname}' --strip-components=1 -xJvf - `);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+  } else {
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - --strip-components=1 '${srcFile}' '${dstFile}'`);
+//    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
+//    const tmpdirname = fs.mkdtempSync(os.tmpdir(), prefix: "tmp-XXXXXX");
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), "tmp-"));
+////    if (!fs.existsSync(tmpdirname)) {
+//      fs.mkdirSync(tmpdirname, { recursive: true });
+////    }
+//    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
+    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) -C '${tmpdirname}' --strip-components=1 -xzvf - `);
+//    const dstDir = path.dirname(dstFile);
+//    if (!fs.existsSync(dstDir)) {
+//      fs.mkdirSync(dstDir, { recursive: true });
+//    }
+//    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+//    fs.rmSync(tmpdirname, { recursive: true });
+    
+
+  }
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
     }
-    fs.copyFileSync(path.join(tmp, srcFile), dstFile);
-    fs.rmSync(tmp, { recursive: true });
-  } else if (url.endsWith(".tar.xz")) {
-    await execBash(`curl -L '${url}' | tar xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-  } else {
-    await execBash(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-  }
+    fs.copyFileSync(path.join(tmpdirname, srcFile), dstFile);
+    fs.rmSync(tmpdirname, { recursive: true });
 }
+
 
 function checkSha256Sum (path : string, expectedSha256 : string) {
   const h = crypto.createHash("sha256");

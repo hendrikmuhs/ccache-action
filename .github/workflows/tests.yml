@@ -22,7 +22,7 @@ jobs:
     # Run npm build and check that the dist/ folder is up to date.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build
         run: |
           npm install
@@ -33,16 +33,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+#        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-22.04, ubuntu-20.04, macos-12, macos-11, macos-10.15, windows-2022, windows-2019]
         shell: [bash]
         variant: [sccache, ccache]
-        install-from-github: [false, true]
+        install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false, xfail: true }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         id: ccache
         uses: ./
@@ -95,13 +98,17 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        install-from-github: [false, true]
+        install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache action
         uses: ./
         id: output
@@ -122,15 +129,19 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        install-from-github: [false, true]
+        install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
-          echo "RAND=$RANDOM" >> $GITHUB_ENV
+          echo "RAND=$RANDOM" >> "$GITHUB_ENV"
       - name: Run ccache action
         uses: ./
         id: output
@@ -151,15 +162,19 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         shell: [bash]
         variant: [sccache, ccache]
-        install-from-github: [false, true]
+        install-from-github: ['false', 'true']
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache }
+#          - { os: windows-latest, shell: powershell, variant: sccache }
+#          - { os: windows-latest, shell: powershell, variant: ccache }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install-from-github: false }
+          - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
-          echo "RAND=$RANDOM" >> $GITHUB_ENV
+          echo "RAND=$RANDOM" >> "$GITHUB_ENV"
       - name: Run ccache action
         uses: ./
         id: restore-keys
@@ -178,7 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: apt update
         shell: bash
       - name: Run ccache-action
@@ -191,7 +206,7 @@ jobs:
       matrix:
         save: [true, false]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         uses: ./
         with:
@@ -204,7 +219,7 @@ jobs:
       matrix:
         append-timestamp: [true, false]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         uses: ./
         with:
