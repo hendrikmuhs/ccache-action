@@ -235,6 +235,7 @@ async function runInner() : Promise<void> {
   core.saveState("ccacheVariant", ccacheVariant);
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
+  const variantInstallFromGithub = core.getBooleanInput("install-from-github");
   core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
   let ccachePath = await io.which(ccacheVariant);
   if (!ccachePath) {
