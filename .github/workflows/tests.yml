@@ -22,7 +22,7 @@ jobs:
     # Run npm build and check that the dist/ folder is up to date.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build
         run: |
           npm install
@@ -44,7 +44,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false, xfail: true }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         id: ccache
         uses: ./
@@ -107,7 +107,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache action
         uses: ./
         id: output
@@ -138,7 +138,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           echo "RAND=$RANDOM" >> "$GITHUB_ENV"
       - name: Run ccache action
@@ -171,7 +171,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache, install-from-github: false }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           echo "RAND=$RANDOM" >> "$GITHUB_ENV"
       - name: Run ccache action
@@ -192,7 +192,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: apt update
         shell: bash
       - name: Run ccache-action
@@ -205,7 +205,7 @@ jobs:
       matrix:
         save: [true, false]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         uses: ./
         with:
@@ -218,7 +218,7 @@ jobs:
       matrix:
         append-timestamp: [true, false]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ccache-action
         uses: ./
         with:
