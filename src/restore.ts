@@ -335,8 +335,11 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const pathsep = os.path.sep();
     const pathsep0 = (require('node:path').sep);
+    const pathsepstr = (require('node:path').sep).toString();
 //    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`);
-    const pathsep = "tmpfoo-XXXXXX" + pathsep0 ;  
+    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`).toString();
+//    const pathseptmpfoo = ("tmpfoo-XXXXXX" + pathsep0).toString();
+//    const pathseptmpfoo = ("tmpfoo-XXXXXX" + pathsep0).toString();    
 
         console.log("pathsep0 " + "${pathsep}");    
         console.log(`pathsep1 "${pathsep}".`); 
@@ -347,6 +350,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
         console.log("pathsep6 " + '${pathsep}');    
         console.log(`pathsep7 ${pathsep}.`); 
         console.log(`pathsep7a0 ${pathsep0}.`); 
+        console.log(`pathsepstr ${pathsepstr}.`); 
         core.info(`pathsep8 ${path.sep}.`);
         core.info(`pathsep9 ${pathsep}.`);
         console.log("pathsep10 " + pathsep);
@@ -358,7 +362,8 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 // working but not one windows check//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
  //   const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
 //    tmpdirname: `${os.tmpdir()}${pathsep}picturama${pathsep}`,
-    const tmpdirname = os.tmpdir() + '/knex-test-';
+//    const tmpdirname = os.tmpdir() + '/knex-test-';
+    const tmpdirname = os.tmpdir() + '${pathsepstr}knex-test-';
           fs.mkdirSync(tmpdirname, { recursive: true });
 //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
 //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
