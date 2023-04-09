@@ -59339,7 +59339,9 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ src_restore)
+  "Inputs": () => (/* binding */ Inputs),
+  "default": () => (/* binding */ src_restore),
+  "utilsGetInputAsBool": () => (/* binding */ utilsGetInputAsBool)
 });
 
 // EXTERNAL MODULE: external "crypto"
@@ -59374,6 +59376,21 @@ var cache = __nccwpck_require__(7799);
 
 
 
+var Inputs;
+(function (Inputs) {
+    Inputs["VariantInstallFromGithub"] = "install-from-github"; // Input for cache, restore action
+})(Inputs || (Inputs = {}));
+function utilsGetInputAsBool(name, options) {
+    const result = core.getInput(name, options);
+    return result.toLowerCase() === "true";
+}
+const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGithub);
+if (variantInstallFromGithub) {
+    core.info(`global: variantInstallFromGithub is SET: ${variantInstallFromGithub}`);
+}
+else {
+    core.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
+}
 const SELF_CI = external_process_namespaceObject.env.CCACHE_ACTION_CI === "true";
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 async function restore(ccacheVariant) {
@@ -59420,7 +59437,7 @@ async function installCcacheMac() {
     //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
-    const variantInstallFromGithub = core.getInput('install-from-github');
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
     if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
@@ -59440,7 +59457,7 @@ async function installCcacheLinux() {
     //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
-    const variantInstallFromGithub = core.getInput('install-from-github');
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
     if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
@@ -59467,7 +59484,7 @@ async function installSccacheMac() {
     //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
     //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
     //if (core.getState("variantInstallFromGithub") !== "true") {
-    const variantInstallFromGithub = core.getInput('install-from-github');
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
     if (variantInstallFromGithub) {
         core.warning('variantInstallFromGithub was not set');
     }
