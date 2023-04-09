@@ -59234,10 +59234,9 @@ async function installCcacheWindows() {
         // TODO find a better place
         //    `${process.env.USERPROFILE}\\.cargo\\bin`,
         //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
-        `${process__WEBPACK_IMPORTED_MODULE_7__.env.SYSTEMDRIVE}\\tools\\zstd\\`, 
+        //      `${process.env.SYSTEMDRIVE}\\tools\\zstd\\`,
         //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
-        //    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
-        "ccache.exe");
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.VCPKG_INSTALLATION_ROOT}\\`, "ccache.exe");
     }
     else {
         await execBash("choco install ccache --version=4.8");
@@ -59322,7 +59321,7 @@ async function installCcacheFromGitHub(version, artifactName, artifactType, binS
     const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
     //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
     //  await downloadAndExtract(url, `*/${binName}`, binPath);
-    await downloadAndExtract(url, `${binName}`, binPath);
+    await downloadAndExtract(url, `${binName}`, binPath, binSha256);
     checkSha256Sum(binPath, binSha256);
     await execBash(`chmod +x '${binPath}'`);
 }
@@ -59331,7 +59330,7 @@ async function installSccacheFromGitHub(version, artifactName, artifactType, bin
     const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
     const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
     //  await downloadAndExtract(url, `*/${binName}`, binPath);
-    await downloadAndExtract(url, `${binName}`, binPath);
+    await downloadAndExtract(url, `${binName}`, binPath, binSha256);
     checkSha256Sum(binPath, binSha256);
     await execBash(`chmod +x '${binPath}'`);
 }
@@ -59381,7 +59380,7 @@ async function installSccacheFromGitHub(version, artifactName, artifactType, bin
 //    fs.rmSync(tmpdirname, { recursive: true });
 //  }
 //}
-async function downloadAndExtract(url, srcFile, dstFile) {
+async function downloadAndExtract(url, srcFile, dstFile, binSha256) {
     //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     //    const pathsep = os.path.sep();
     const pathsep0 = ((__nccwpck_require__(9411).sep));
@@ -59463,6 +59462,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         //    fs.rmSync(tmpdirname, { recursive: true });
     }
     const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
+    checkSha256Sum(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmpdirname, srcFile), binSha256);
     if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
         fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
     }

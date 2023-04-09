@@ -152,9 +152,9 @@ async function installCcacheWindows() : Promise<void> {
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
-      `${process.env.SYSTEMDRIVE}\\tools\\zstd\\`,
+//      `${process.env.SYSTEMDRIVE}\\tools\\zstd\\`,
 //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
-//    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
+    `${process.env.VCPKG_INSTALLATION_ROOT}\\`,
     "ccache.exe"
   );
   } else {
@@ -269,7 +269,7 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   const binPath = path.join(binDir, binName);
   //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
 //  await downloadAndExtract(url, `*/${binName}`, binPath);
-  await downloadAndExtract(url, `${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath, binSha256);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
@@ -279,7 +279,7 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
   const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
   const binPath = path.join(binDir, binName);
 //  await downloadAndExtract(url, `*/${binName}`, binPath);
-  await downloadAndExtract(url, `${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath, binSha256);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
@@ -331,7 +331,7 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
 //  }
 //}
 
-async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+async function downloadAndExtract (url : string, srcFile : string, dstFile : string, binSha256 : string) {
 //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
 //    const pathsep = os.path.sep();
     const pathsep0 = (require('node:path').sep);
@@ -414,6 +414,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
 
   }
     const dstDir = path.dirname(dstFile);
+    checkSha256Sum(path.join(tmpdirname, srcFile), binSha256);
     if (!fs.existsSync(dstDir)) {
       fs.mkdirSync(dstDir, { recursive: true });
     }
