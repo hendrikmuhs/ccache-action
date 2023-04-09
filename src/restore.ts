@@ -113,7 +113,7 @@ async function installSccacheMac() : Promise<void> {
            "/usr/local/bin/",
           "sccache"
         );
-    } else if (process.arch) == "arm64") {
+    } else if (process.arch) == "x64") {
         await installSccacheFromGitHub(
           "v0.3.3",
           "x86_64-apple-darwin",
