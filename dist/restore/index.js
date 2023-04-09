@@ -59383,7 +59383,11 @@ async function installSccacheFromGitHub(version, artifactName, artifactType, bin
 //}
 async function downloadAndExtract(url, srcFile, dstFile) {
     //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
-    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), 'tmp-(path.sep)'));
+    //    const pathsep = os.path.sep();
+    const pathsep = ((__nccwpck_require__(9411).sep));
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep "${pathsep}".`);
+    console.log("pathsep " + "${pathsep}");
+    const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), 'tmp-'));
     //    if (!fs.existsSync(tmpdirname)) {
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     if (url.endsWith(".zip")) {
@@ -59566,6 +59570,14 @@ module.exports = require("https");
 
 "use strict";
 module.exports = require("net");
+
+/***/ }),
+
+/***/ 9411:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:path");
 
 /***/ }),
 
