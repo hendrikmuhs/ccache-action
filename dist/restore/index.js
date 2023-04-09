@@ -59398,6 +59398,10 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     console.log("pathsep10 " + pathsep);
     console.log("pathsep11 " + '$path.sep');
     const tmpdirname = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `tmp-XXXXXX${pathsep}`));
+    const tmpdirname2 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `tmpXXXXXX${pathsep}`));
+    const tmpdirname3 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `XXXXXX${pathsep}`));
+    const tmpdirname4 = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), `${pathsep}`));
+    console.log(`tmpdirname "${tmpdirname}".### tmpdirname2 "${tmpdirname2}".### tmpdirname3 "${tmpdirname3}".### tmpdirname4 "${tmpdirname4}".###  `);
     //    if (!fs.existsSync(tmpdirname)) {
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     if (url.endsWith(".zip")) {
