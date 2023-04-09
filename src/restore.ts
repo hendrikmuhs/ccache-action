@@ -33,7 +33,7 @@ const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGi
         await execBash(`set -vx ; uname -s`);
         await execBash(`set -vx ; uname -p`);
         await execBash(`set -vx ; uname -v`);
-        await execBash(`set -vx ; uname -i`);
+// on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
         await execBash(`set -vx ; uname -o`);
         await execBash(`set -vx ; uname -a`);
 
@@ -138,6 +138,12 @@ async function installCcacheLinux() : Promise<void> {
 }
 
 async function installCcacheWindows() : Promise<void> {
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
   await installCcacheFromGitHub(
     "4.7.5",
     "windows-x86_64",
@@ -148,6 +154,9 @@ async function installCcacheWindows() : Promise<void> {
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "ccache.exe"
   );
+  } else {
+    await execBash("choco install ccache --version=4.8");
+   }
 }
 
 async function installSccacheMac() : Promise<void> {
@@ -221,6 +230,12 @@ async function installSccacheLinux() : Promise<void> {
 }
 
 async function installSccacheWindows() : Promise<void> {
+  if (variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was IS set');
+      } else {
+    core.warning('variantInstallFromGithub was NOT set');
+  }
+  if (variantInstallFromGithub) {
   await installSccacheFromGitHub(
     "v0.3.3",
     "x86_64-pc-windows-msvc",
@@ -230,6 +245,9 @@ async function installSccacheWindows() : Promise<void> {
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "sccache.exe"
   );
+  } else {
+    await execBash("choco install sccache --version=0.4.1");
+   }
 }
 
 async function execBash(cmd : string) {

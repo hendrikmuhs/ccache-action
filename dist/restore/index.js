@@ -59136,7 +59136,7 @@ await execBash(`set -vx ; uname -r`);
 await execBash(`set -vx ; uname -s`);
 await execBash(`set -vx ; uname -p`);
 await execBash(`set -vx ; uname -v`);
-await execBash(`set -vx ; uname -i`);
+// on macos 21.6.0 // uname: illegal option -- i //       await execBash(`set -vx ; uname -i`);
 await execBash(`set -vx ; uname -o`);
 await execBash(`set -vx ; uname -a`);
 const SELF_CI = process__WEBPACK_IMPORTED_MODULE_7__.env.CCACHE_ACTION_CI === "true";
@@ -59222,11 +59222,22 @@ async function installCcacheLinux() {
     }
 }
 async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.7.5", "windows-x86_64", "zip", 
-    // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
-    // TODO find a better place
-    `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
+    if (variantInstallFromGithub) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was IS set');
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
+    }
+    if (variantInstallFromGithub) {
+        await installCcacheFromGitHub("4.7.5", "windows-x86_64", "zip", 
+        // sha256sum of ccache.exe
+        "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
+        // TODO find a better place
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
+    }
+    else {
+        await execBash("choco install ccache --version=4.8");
+    }
 }
 async function installSccacheMac() {
     //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
@@ -59278,9 +59289,20 @@ async function installSccacheLinux() {
     await installSccacheFromGitHub("v0.3.3", "x86_64-unknown-linux-musl", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.3.3", "x86_64-pc-windows-msvc", "tar.gz", "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75", 
-    // TODO find a better place
-    `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
+    if (variantInstallFromGithub) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was IS set');
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
+    }
+    if (variantInstallFromGithub) {
+        await installSccacheFromGitHub("v0.3.3", "x86_64-pc-windows-msvc", "tar.gz", "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75", 
+        // TODO find a better place
+        `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
+    }
+    else {
+        await execBash("choco install sccache --version=0.4.1");
+    }
 }
 async function execBash(cmd) {
     await _actions_exec__WEBPACK_IMPORTED_MODULE_6__.exec("bash", ["-xc", cmd]);
