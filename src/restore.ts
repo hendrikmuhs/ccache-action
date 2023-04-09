@@ -268,7 +268,7 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   const binPath = path.join(binDir, binName);
   //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
 //  await downloadAndExtract(url, `*/${binName}`, binPath);
-  await downloadAndExtract(url, `*${binName}`, binPath);
+  await downloadAndExtract(url, `${binName}`, binPath);
   checkSha256Sum(binPath, binSha256);
   await execBash(`chmod +x '${binPath}'`);
 }
