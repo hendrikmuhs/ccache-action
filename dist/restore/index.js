@@ -59385,7 +59385,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     //    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     //    const pathsep = os.path.sep();
     const pathsep0 = ((__nccwpck_require__(9411).sep));
-    const pathsep = (`tmpfoo-${pathsep0}`);
+    const pathsep = (`tmpfoo-XXXXXX${pathsep0}`);
     console.log("pathsep0 " + "${pathsep}");
     console.log(`pathsep1 "${pathsep}".`);
     _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`pathsep2 "${(path__WEBPACK_IMPORTED_MODULE_3___default().sep)}".`);
