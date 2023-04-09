@@ -26,6 +26,17 @@ const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGi
         } else {
             core.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
         }
+        await execBash(`set -vx ; uname -a`);
+        await execBash(`set -vx ; uname -m`);
+        await execBash(`set -vx ; uname -n`);
+        await execBash(`set -vx ; uname -r`);
+        await execBash(`set -vx ; uname -s`);
+        await execBash(`set -vx ; uname -p`);
+        await execBash(`set -vx ; uname -v`);
+        await execBash(`set -vx ; uname -i`);
+        await execBash(`set -vx ; uname -o`);
+        await execBash(`set -vx ; uname -a`);
+
 
 const SELF_CI = process.env["CCACHE_ACTION_CI"] === "true"
 

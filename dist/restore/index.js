@@ -59076,6 +59076,312 @@ module.exports.implForWrapper = function (wrapper) {
 
 /***/ }),
 
+/***/ 4095:
+/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "Inputs": () => (/* binding */ Inputs),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "utilsGetInputAsBool": () => (/* binding */ utilsGetInputAsBool)
+/* harmony export */ });
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(6113);
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(crypto__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7147);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(2037);
+/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(os__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(1017);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(2186);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _actions_io__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(7436);
+/* harmony import */ var _actions_io__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__nccwpck_require__.n(_actions_io__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(1514);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__nccwpck_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var process__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(7282);
+/* harmony import */ var process__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__nccwpck_require__.n(process__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(7799);
+/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__nccwpck_require__.n(_actions_cache__WEBPACK_IMPORTED_MODULE_8__);
+
+
+
+
+
+
+
+
+
+var Inputs;
+(function (Inputs) {
+    Inputs["VariantInstallFromGithub"] = "install-from-github"; // Input for cache, restore action
+})(Inputs || (Inputs = {}));
+function utilsGetInputAsBool(name, options) {
+    const result = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput(name, options);
+    return result.toLowerCase() === "true";
+}
+const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGithub);
+if (variantInstallFromGithub) {
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`global: variantInstallFromGithub is SET: ${variantInstallFromGithub}`);
+}
+else {
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
+}
+await execBash(`set -vx ; uname -a`);
+await execBash(`set -vx ; uname -m`);
+await execBash(`set -vx ; uname -n`);
+await execBash(`set -vx ; uname -r`);
+await execBash(`set -vx ; uname -s`);
+await execBash(`set -vx ; uname -p`);
+await execBash(`set -vx ; uname -v`);
+await execBash(`set -vx ; uname -i`);
+await execBash(`set -vx ; uname -o`);
+await execBash(`set -vx ; uname -a`);
+const SELF_CI = process__WEBPACK_IMPORTED_MODULE_7__.env.CCACHE_ACTION_CI === "true";
+// based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
+async function restore(ccacheVariant) {
+    const inputs = {
+        primaryKey: _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput("key"),
+        // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
+        restoreKeys: _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
+    };
+    const keyPrefix = ccacheVariant + "-";
+    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
+    const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
+    const paths = [`.${ccacheVariant}`];
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.saveState("primaryKey", primaryKey);
+    const restoredWith = await _actions_cache__WEBPACK_IMPORTED_MODULE_8__.restoreCache(paths, primaryKey, restoreKeys);
+    if (restoredWith) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`Restored from cache key "${restoredWith}".`);
+        if (SELF_CI) {
+            _actions_core__WEBPACK_IMPORTED_MODULE_4__.setOutput("test-cache-hit", true);
+        }
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.info("No cache found.");
+        if (SELF_CI) {
+            _actions_core__WEBPACK_IMPORTED_MODULE_4__.setOutput("test-cache-hit", false);
+        }
+    }
+}
+async function configure(ccacheVariant) {
+    const ghWorkSpace = process__WEBPACK_IMPORTED_MODULE_7__.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+    const maxSize = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput('max-size');
+    if (ccacheVariant === "ccache") {
+        await execBash(`ccache --set-config=cache_dir='${path__WEBPACK_IMPORTED_MODULE_3___default().join(ghWorkSpace, '.ccache')}'`);
+        await execBash(`ccache --set-config=max_size='${maxSize}'`);
+        await execBash(`ccache --set-config=compression=true`);
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.info("Cccache config:");
+        await execBash("ccache -p");
+    }
+    else {
+        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        await execBash(`env ${options} sccache --start-server`);
+    }
+}
+async function installCcacheMac() {
+    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+    //if (core.getState("variantInstallFromGithub") !== "true") {
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
+    if (variantInstallFromGithub) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was IS set');
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
+    }
+    if (variantInstallFromGithub) {
+        await installCcacheFromGitHub("4.7.5", "darwin", "tar.gz", 
+        // sha256sum of ccache.exe
+        "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc", "/usr/local/bin/", "ccache");
+    }
+    else {
+        await execBash("brew install ccache");
+    }
+}
+async function installCcacheLinux() {
+    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+    //if (core.getState("variantInstallFromGithub") !== "true") {
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
+    if (variantInstallFromGithub) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was IS set');
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
+    }
+    if (variantInstallFromGithub) {
+        await installCcacheFromGitHub("4.7.5", "linux-x86_64", "tar.xz", 
+        // sha256sum of ccache
+        "4c870947ca2f636b3069f2b9413d6919f5a1518dafbff03cd157564202337a7b", "/usr/local/bin/", "ccache");
+    }
+    else {
+        await execBashSudo("apt-get install -y ccache");
+    }
+}
+async function installCcacheWindows() {
+    await installCcacheFromGitHub("4.7.5", "windows-x86_64", "zip", 
+    // sha256sum of ccache.exe
+    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
+    // TODO find a better place
+    `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
+}
+async function installSccacheMac() {
+    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
+    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+    //if (core.getState("variantInstallFromGithub") !== "true") {
+    //  const variantInstallFromGithub = core.getInput('install-from-github');
+    if (variantInstallFromGithub) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was IS set');
+    }
+    else {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.warning('variantInstallFromGithub was NOT set');
+    }
+    if (variantInstallFromGithub) {
+        switch (process__WEBPACK_IMPORTED_MODULE_7__.arch) {
+            //   case 'x32':
+            //      console.log("This is a 32-bit extended systems");
+            //      break;
+            case 'x64':
+                await installSccacheFromGitHub("v0.3.3", "x86_64-apple-darwin", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
+                break;
+            case 'arm':
+                console.log("This is a 32-bit Advanced RISC Machine");
+                break;
+            case 'arm64':
+                await installSccacheFromGitHub("v0.3.3", "aarch64-apple-darwin", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
+                break;
+            case 'mips':
+                console.log("This is a 32-bit Microprocessor without " + "Interlocked Pipelined Stages");
+                break;
+            case 'ia32':
+                console.log("This is a 32-bit Intel Architecture");
+                break;
+            case 'ppc':
+                console.log("This is a PowerPC Architecture.");
+                break;
+            case 'ppc64':
+                console.log("This is a 64-bit PowerPC Architecture.");
+                break;
+            // You can add more architectures if you know...
+            default:
+                console.log("This architecture is unknown.");
+        }
+    }
+    else {
+        await execBash("brew install sccache");
+    }
+}
+async function installSccacheLinux() {
+    await installSccacheFromGitHub("v0.3.3", "x86_64-unknown-linux-musl", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
+}
+async function installSccacheWindows() {
+    await installSccacheFromGitHub("v0.3.3", "x86_64-pc-windows-msvc", "tar.gz", "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75", 
+    // TODO find a better place
+    `${process__WEBPACK_IMPORTED_MODULE_7__.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
+}
+async function execBash(cmd) {
+    await _actions_exec__WEBPACK_IMPORTED_MODULE_6__.exec("bash", ["-xc", cmd]);
+}
+async function execBashSudo(cmd) {
+    await execBash("$(which sudo) " + cmd);
+}
+async function installCcacheFromGitHub(version, artifactName, artifactType, binSha256, binDir, binName) {
+    const archiveName = `ccache-${version}-${artifactName}.${artifactType}`;
+    const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
+    const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
+    //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
+    await downloadAndExtract(url, `*/${binName}`, binPath);
+    checkSha256Sum(binPath, binSha256);
+    await execBash(`chmod +x '${binPath}'`);
+}
+async function installSccacheFromGitHub(version, artifactName, artifactType, binSha256, binDir, binName) {
+    const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
+    const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
+    const binPath = path__WEBPACK_IMPORTED_MODULE_3___default().join(binDir, binName);
+    await downloadAndExtract(url, `*/${binName}`, binPath);
+    checkSha256Sum(binPath, binSha256);
+    await execBash(`chmod +x '${binPath}'`);
+}
+async function downloadAndExtract(url, srcFile, dstFile) {
+    if (url.endsWith(".zip")) {
+        const tmp = fs__WEBPACK_IMPORTED_MODULE_1___default().mkdtempSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir(), ""));
+        const zipName = path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, "dl.zip");
+        await execBash(`curl -L '${url}' -o '${zipName}'`);
+        await execBash(`unzip '${zipName}' -d '${tmp}'`);
+        const dstDir = path__WEBPACK_IMPORTED_MODULE_3___default().dirname(dstFile);
+        if (!fs__WEBPACK_IMPORTED_MODULE_1___default().existsSync(dstDir)) {
+            fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(dstDir, { recursive: true });
+        }
+        fs__WEBPACK_IMPORTED_MODULE_1___default().copyFileSync(path__WEBPACK_IMPORTED_MODULE_3___default().join(tmp, srcFile), dstFile);
+        fs__WEBPACK_IMPORTED_MODULE_1___default().rmSync(tmp, { recursive: true });
+    }
+    else if (url.endsWith(".tar.xz")) {
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    }
+    else {
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    }
+}
+function checkSha256Sum(path, expectedSha256) {
+    const h = crypto__WEBPACK_IMPORTED_MODULE_0___default().createHash("sha256");
+    h.update(fs__WEBPACK_IMPORTED_MODULE_1___default().readFileSync(path));
+    const actualSha256 = h.digest("hex");
+    if (actualSha256 !== expectedSha256) {
+        throw Error(`SHA256 of ${path} is ${actualSha256}, expected ${expectedSha256}`);
+    }
+}
+async function runInner() {
+    const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput("variant");
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.saveState("ccacheVariant", ccacheVariant);
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.saveState("shouldSave", _actions_core__WEBPACK_IMPORTED_MODULE_4__.getBooleanInput("save"));
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.saveState("appendTimestamp", _actions_core__WEBPACK_IMPORTED_MODULE_4__.getBooleanInput("append-timestamp"));
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.saveState("variantInstallFromGithub", _actions_core__WEBPACK_IMPORTED_MODULE_4__.getBooleanInput("install-from-github"));
+    let ccachePath = await _actions_io__WEBPACK_IMPORTED_MODULE_5__.which(ccacheVariant);
+    if (!ccachePath) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.startGroup(`Install ${ccacheVariant}`);
+        const installer = {
+            ["ccache,linux"]: installCcacheLinux,
+            ["ccache,darwin"]: installCcacheMac,
+            ["ccache,win32"]: installCcacheWindows,
+            ["sccache,linux"]: installSccacheLinux,
+            ["sccache,darwin"]: installSccacheMac,
+            ["sccache,win32"]: installSccacheWindows,
+        }[[ccacheVariant, process__WEBPACK_IMPORTED_MODULE_7__.platform].join()];
+        if (!installer) {
+            throw Error(`Unsupported platform: ${process__WEBPACK_IMPORTED_MODULE_7__.platform}`);
+        }
+        await installer();
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(await _actions_io__WEBPACK_IMPORTED_MODULE_5__.which(ccacheVariant + ".exe"));
+        ccachePath = await _actions_io__WEBPACK_IMPORTED_MODULE_5__.which(ccacheVariant, true);
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.endGroup();
+    }
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.startGroup("Restore cache");
+    await restore(ccacheVariant);
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.endGroup();
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.startGroup(`Configure ${ccacheVariant}`);
+    await configure(ccacheVariant);
+    await execBash(`${ccacheVariant} -z`);
+    _actions_core__WEBPACK_IMPORTED_MODULE_4__.endGroup();
+}
+async function run() {
+    try {
+        await runInner();
+    }
+    catch (error) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_4__.setFailed(`Restoring cache failed: ${error}`);
+    }
+}
+run();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (run);
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } }, 1);
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -59169,6 +59475,14 @@ module.exports = require("os");
 
 "use strict";
 module.exports = require("path");
+
+/***/ }),
+
+/***/ 7282:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
 
 /***/ }),
 
@@ -59285,6 +59599,75 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
+/******/ 		var resolveQueue = (queue) => {
+/******/ 			if(queue && !queue.d) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		var wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					var queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					var obj = {};
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			var ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__nccwpck_require__.a = (module, body, hasAwait) => {
+/******/ 			var queue;
+/******/ 			hasAwait && ((queue = []).d = 1);
+/******/ 			var depQueues = new Set();
+/******/ 			var exports = module.exports;
+/******/ 			var currentDeps;
+/******/ 			var outerResolve;
+/******/ 			var reject;
+/******/ 			var promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			body((deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				var fn;
+/******/ 				var getResult = () => (currentDeps.map((d) => {
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				var promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					var fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
+/******/ 			queue && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
@@ -59330,307 +59713,12 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-// ESM COMPAT FLAG
-__nccwpck_require__.r(__webpack_exports__);
-
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "Inputs": () => (/* binding */ Inputs),
-  "default": () => (/* binding */ src_restore),
-  "utilsGetInputAsBool": () => (/* binding */ utilsGetInputAsBool)
-});
-
-// EXTERNAL MODULE: external "crypto"
-var external_crypto_ = __nccwpck_require__(6113);
-var external_crypto_default = /*#__PURE__*/__nccwpck_require__.n(external_crypto_);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
-var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
-var external_os_default = /*#__PURE__*/__nccwpck_require__.n(external_os_);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
-var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
-var io = __nccwpck_require__(7436);
-// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
-var exec = __nccwpck_require__(1514);
-;// CONCATENATED MODULE: external "process"
-const external_process_namespaceObject = require("process");
-// EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
-var cache = __nccwpck_require__(7799);
-;// CONCATENATED MODULE: ./src/restore.ts
-
-
-
-
-
-
-
-
-
-var Inputs;
-(function (Inputs) {
-    Inputs["VariantInstallFromGithub"] = "install-from-github"; // Input for cache, restore action
-})(Inputs || (Inputs = {}));
-function utilsGetInputAsBool(name, options) {
-    const result = core.getInput(name, options);
-    return result.toLowerCase() === "true";
-}
-const variantInstallFromGithub = utilsGetInputAsBool(Inputs.VariantInstallFromGithub);
-if (variantInstallFromGithub) {
-    core.info(`global: variantInstallFromGithub is SET: ${variantInstallFromGithub}`);
-}
-else {
-    core.info(`global: variantInstallFromGithub is NOT set: ${variantInstallFromGithub}`);
-}
-const SELF_CI = external_process_namespaceObject.env.CCACHE_ACTION_CI === "true";
-// based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
-async function restore(ccacheVariant) {
-    const inputs = {
-        primaryKey: core.getInput("key"),
-        // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
-        restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
-    };
-    const keyPrefix = ccacheVariant + "-";
-    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
-    const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
-    const paths = [`.${ccacheVariant}`];
-    core.saveState("primaryKey", primaryKey);
-    const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
-    if (restoredWith) {
-        core.info(`Restored from cache key "${restoredWith}".`);
-        if (SELF_CI) {
-            core.setOutput("test-cache-hit", true);
-        }
-    }
-    else {
-        core.info("No cache found.");
-        if (SELF_CI) {
-            core.setOutput("test-cache-hit", false);
-        }
-    }
-}
-async function configure(ccacheVariant) {
-    const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
-    const maxSize = core.getInput('max-size');
-    if (ccacheVariant === "ccache") {
-        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
-        await execBash(`ccache --set-config=max_size='${maxSize}'`);
-        await execBash(`ccache --set-config=compression=true`);
-        core.info("Cccache config:");
-        await execBash("ccache -p");
-    }
-    else {
-        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
-        await execBash(`env ${options} sccache --start-server`);
-    }
-}
-async function installCcacheMac() {
-    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-    //if (core.getState("variantInstallFromGithub") !== "true") {
-    //  const variantInstallFromGithub = core.getInput('install-from-github');
-    if (variantInstallFromGithub) {
-        core.warning('variantInstallFromGithub was IS set');
-    }
-    else {
-        core.warning('variantInstallFromGithub was NOT set');
-    }
-    if (variantInstallFromGithub) {
-        await installCcacheFromGitHub("4.7.5", "darwin", "tar.gz", 
-        // sha256sum of ccache.exe
-        "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc", "/usr/local/bin/", "ccache");
-    }
-    else {
-        await execBash("brew install ccache");
-    }
-}
-async function installCcacheLinux() {
-    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-    //if (core.getState("variantInstallFromGithub") !== "true") {
-    //  const variantInstallFromGithub = core.getInput('install-from-github');
-    if (variantInstallFromGithub) {
-        core.warning('variantInstallFromGithub was IS set');
-    }
-    else {
-        core.warning('variantInstallFromGithub was NOT set');
-    }
-    if (variantInstallFromGithub) {
-        await installCcacheFromGitHub("4.7.5", "linux-x86_64", "tar.xz", 
-        // sha256sum of ccache
-        "4c870947ca2f636b3069f2b9413d6919f5a1518dafbff03cd157564202337a7b", "/usr/local/bin/", "ccache");
-    }
-    else {
-        await execBashSudo("apt-get install -y ccache");
-    }
-}
-async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.7.5", "windows-x86_64", "zip", 
-    // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
-    // TODO find a better place
-    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
-}
-async function installSccacheMac() {
-    //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-    //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-    //if (core.getState("variantInstallFromGithub") !== "true") {
-    //  const variantInstallFromGithub = core.getInput('install-from-github');
-    if (variantInstallFromGithub) {
-        core.warning('variantInstallFromGithub was IS set');
-    }
-    else {
-        core.warning('variantInstallFromGithub was NOT set');
-    }
-    if (variantInstallFromGithub) {
-        switch (external_process_namespaceObject.arch) {
-            //   case 'x32':
-            //      console.log("This is a 32-bit extended systems");
-            //      break;
-            case 'x64':
-                await installSccacheFromGitHub("v0.3.3", "x86_64-apple-darwin", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
-                break;
-            case 'arm':
-                console.log("This is a 32-bit Advanced RISC Machine");
-                break;
-            case 'arm64':
-                await installSccacheFromGitHub("v0.3.3", "aarch64-apple-darwin", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
-                break;
-            case 'mips':
-                console.log("This is a 32-bit Microprocessor without " + "Interlocked Pipelined Stages");
-                break;
-            case 'ia32':
-                console.log("This is a 32-bit Intel Architecture");
-                break;
-            case 'ppc':
-                console.log("This is a PowerPC Architecture.");
-                break;
-            case 'ppc64':
-                console.log("This is a 64-bit PowerPC Architecture.");
-                break;
-            // You can add more architectures if you know...
-            default:
-                console.log("This architecture is unknown.");
-        }
-    }
-    else {
-        await execBash("brew install sccache");
-    }
-}
-async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.3.3", "x86_64-unknown-linux-musl", "tar.gz", "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09", "/usr/local/bin/", "sccache");
-}
-async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.3.3", "x86_64-pc-windows-msvc", "tar.gz", "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75", 
-    // TODO find a better place
-    `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
-}
-async function execBash(cmd) {
-    await exec.exec("bash", ["-xc", cmd]);
-}
-async function execBashSudo(cmd) {
-    await execBash("$(which sudo) " + cmd);
-}
-async function installCcacheFromGitHub(version, artifactName, artifactType, binSha256, binDir, binName) {
-    const archiveName = `ccache-${version}-${artifactName}.${artifactType}`;
-    const url = `https://github.com/ccache/ccache/releases/download/v${version}/${archiveName}`;
-    const binPath = external_path_default().join(binDir, binName);
-    //await downloadAndExtract(url, path.join(archiveName, binName), binPath);
-    await downloadAndExtract(url, `*/${binName}`, binPath);
-    checkSha256Sum(binPath, binSha256);
-    await execBash(`chmod +x '${binPath}'`);
-}
-async function installSccacheFromGitHub(version, artifactName, artifactType, binSha256, binDir, binName) {
-    const archiveName = `sccache-${version}-${artifactName}.${artifactType}`;
-    const url = `https://github.com/mozilla/sccache/releases/download/${version}/${archiveName}`;
-    const binPath = external_path_default().join(binDir, binName);
-    await downloadAndExtract(url, `*/${binName}`, binPath);
-    checkSha256Sum(binPath, binSha256);
-    await execBash(`chmod +x '${binPath}'`);
-}
-async function downloadAndExtract(url, srcFile, dstFile) {
-    if (url.endsWith(".zip")) {
-        const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
-        const zipName = external_path_default().join(tmp, "dl.zip");
-        await execBash(`curl -L '${url}' -o '${zipName}'`);
-        await execBash(`unzip '${zipName}' -d '${tmp}'`);
-        const dstDir = external_path_default().dirname(dstFile);
-        if (!external_fs_default().existsSync(dstDir)) {
-            external_fs_default().mkdirSync(dstDir, { recursive: true });
-        }
-        external_fs_default().copyFileSync(external_path_default().join(tmp, srcFile), dstFile);
-        external_fs_default().rmSync(tmp, { recursive: true });
-    }
-    else if (url.endsWith(".tar.xz")) {
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-    }
-    else {
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
-    }
-}
-function checkSha256Sum(path, expectedSha256) {
-    const h = external_crypto_default().createHash("sha256");
-    h.update(external_fs_default().readFileSync(path));
-    const actualSha256 = h.digest("hex");
-    if (actualSha256 !== expectedSha256) {
-        throw Error(`SHA256 of ${path} is ${actualSha256}, expected ${expectedSha256}`);
-    }
-}
-async function runInner() {
-    const ccacheVariant = core.getInput("variant");
-    core.saveState("ccacheVariant", ccacheVariant);
-    core.saveState("shouldSave", core.getBooleanInput("save"));
-    core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
-    core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-    let ccachePath = await io.which(ccacheVariant);
-    if (!ccachePath) {
-        core.startGroup(`Install ${ccacheVariant}`);
-        const installer = {
-            ["ccache,linux"]: installCcacheLinux,
-            ["ccache,darwin"]: installCcacheMac,
-            ["ccache,win32"]: installCcacheWindows,
-            ["sccache,linux"]: installSccacheLinux,
-            ["sccache,darwin"]: installSccacheMac,
-            ["sccache,win32"]: installSccacheWindows,
-        }[[ccacheVariant, external_process_namespaceObject.platform].join()];
-        if (!installer) {
-            throw Error(`Unsupported platform: ${external_process_namespaceObject.platform}`);
-        }
-        await installer();
-        core.info(await io.which(ccacheVariant + ".exe"));
-        ccachePath = await io.which(ccacheVariant, true);
-        core.endGroup();
-    }
-    core.startGroup("Restore cache");
-    await restore(ccacheVariant);
-    core.endGroup();
-    core.startGroup(`Configure ${ccacheVariant}`);
-    await configure(ccacheVariant);
-    await execBash(`${ccacheVariant} -z`);
-    core.endGroup();
-}
-async function run() {
-    try {
-        await runInner();
-    }
-    catch (error) {
-        core.setFailed(`Restoring cache failed: ${error}`);
-    }
-}
-run();
-/* harmony default export */ const src_restore = (run);
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module used 'module' so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(4095);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
