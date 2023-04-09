@@ -101,8 +101,8 @@ async function installCcacheMac() : Promise<void> {
     "4.8",
     "darwin",
     "tar.gz",
-    // sha256sum of ccache.exe
-    "da05f0030ad083d9a1183dd68d11517c1a93dbd0e061af6fd8709d271150b6fc",
+    // sha256sum of ccache
+    "ffff",
     "/usr/local/bin/",
     "ccache"
     );
@@ -123,11 +123,11 @@ async function installCcacheLinux() : Promise<void> {
   }
   if (variantInstallFromGithub) {
     await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "linux-x86_64",
     "tar.xz",
     // sha256sum of ccache
-    "4c870947ca2f636b3069f2b9413d6919f5a1518dafbff03cd157564202337a7b",
+    "ffff",
     "/usr/local/bin/",
     "ccache"
     );
@@ -144,17 +144,17 @@ async function installCcacheWindows() : Promise<void> {
   }
   if (variantInstallFromGithub) {
   await installCcacheFromGitHub(
-    "4.7.5",
+    "4.8",
     "windows-x86_64",
     "zip",
     // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e",
+    "ffff",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
 //      `${process.env.PROGRAMDATA}\\Chocolatey\\bin`,
-//      `${process.env.SYSTEMDRIVE}\\tools\\zstd`,
+      `${process.env.SYSTEMDRIVE}\\tools\\zstd`,
 //      `${process.env.SYSTEMDRIVE}\\vcpkg`,
-    `${process.env.VCPKG_INSTALLATION_ROOT}`,
+//    `${process.env.VCPKG_INSTALLATION_ROOT}`,
     "ccache.exe"
   );
   } else {
@@ -179,10 +179,10 @@ async function installSccacheMac() : Promise<void> {
 //      break;
    case 'x64':
         await installSccacheFromGitHub(
-          "v0.3.3",
+          "v0.4.1",
           "x86_64-apple-darwin",
           "tar.gz",
-          "f637e608cb52025fb7254d8d4aabe6abb4eb0dafa0e228cb14f0cd2f0eb5d833",
+          "fff",
           "/usr/local/bin/",
           "sccache"
         );
@@ -192,10 +192,10 @@ async function installSccacheMac() : Promise<void> {
       break;
    case 'arm64':
         await installSccacheFromGitHub(
-          "v0.3.3",
+          "v0.4.1",
           "aarch64-apple-darwin",
           "tar.gz",
-          "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+          "AAAAAAAA",
            "/usr/local/bin/",
           "sccache"
         );
@@ -223,10 +223,10 @@ async function installSccacheMac() : Promise<void> {
 
 async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
-    "v0.3.3",
+    "v0.4.1",
     "x86_64-unknown-linux-musl",
     "tar.gz",
-    "8fbcf63f454afce6755fd5865db3e207cdd408b8553e5223c9ed0ed2c6a92a09",
+    "ffffff",
     "/usr/local/bin/",
     "sccache"
   );
@@ -240,10 +240,10 @@ async function installSccacheWindows() : Promise<void> {
   }
   if (variantInstallFromGithub) {
   await installSccacheFromGitHub(
-    "v0.3.3",
+    "v0.4.1",
     "x86_64-pc-windows-msvc",
     "tar.gz",
-    "d4bdb5c60e7419340082283311ba6863def4f27325b08abc896211038a135f75",
+    "ffffffff",
     // TODO find a better place
 //    `${process.env.USERPROFILE}\\.cargo\\bin`,
     `${process.env.VCPKG_INSTALLATION_ROOT}`,
