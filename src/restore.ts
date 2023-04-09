@@ -59,8 +59,15 @@ async function configure(ccacheVariant : string) : Promise<void> {
 
 async function installCcacheMac() : Promise<void> {
   //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-  if (core.getState("variantInstallFromGithub") !== "true") {
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (!variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was not set');
+  }
+  if (!variantInstallFromGithub) {
+    await execBash("brew install ccache");
+  } else {
     await installCcacheFromGitHub(
     "4.7.5",
     "darwin",
@@ -70,15 +77,20 @@ async function installCcacheMac() : Promise<void> {
     "/usr/local/bin/",
     "ccache"
     );
-  } else {
-      await execBash("brew install ccache");
    }
 }
 
 async function installCcacheLinux() : Promise<void> {
   //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-  if (core.getState("variantInstallFromGithub") !== "true") {
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (!variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was not set');
+  }
+  if (!variantInstallFromGithub) {
+      await execBashSudo("apt-get install -y ccache");
+  } else {
     await installCcacheFromGitHub(
     "4.7.5",
     "linux-x86_64",
@@ -88,8 +100,6 @@ async function installCcacheLinux() : Promise<void> {
     "/usr/local/bin/",
     "ccache"
     );
-  } else {
-      await execBashSudo("apt-get install -y ccache");
    }
 }
 
@@ -108,8 +118,15 @@ async function installCcacheWindows() : Promise<void> {
 
 async function installSccacheMac() : Promise<void> {
   //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
-  core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
-  if (core.getState("variantInstallFromGithub") !== "true") {
+  //core.saveState("variantInstallFromGithub", core.getBooleanInput("install-from-github"));
+  //if (core.getState("variantInstallFromGithub") !== "true") {
+  const variantInstallFromGithub = core.getInput('install-from-github');
+  if (!variantInstallFromGithub) {
+    core.warning('variantInstallFromGithub was not set');
+  }
+  if (!variantInstallFromGithub) {
+    await execBash("brew install sccache");
+  } else {
    switch(process.arch) {
 //   case 'x32':
 //      console.log("This is a 32-bit extended systems");
@@ -153,8 +170,6 @@ async function installSccacheMac() : Promise<void> {
    default:
       console.log("This architecture is unknown.");
      } 
-  } else {
-  await execBash("brew install sccache");
   }
 }
 
