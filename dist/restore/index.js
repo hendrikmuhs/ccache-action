@@ -59398,7 +59398,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         //      fs.mkdirSync(tmpdirname, { recursive: true });
         ////    }
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xJvf - -C '${tmpdirname}' --strip-components=1`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) -C '${tmpdirname}' --strip-components=1 -xJvf - `);
         //    const dstDir = path.dirname(dstFile);
         //    if (!fs.existsSync(dstDir)) {
         //      fs.mkdirSync(dstDir, { recursive: true });
@@ -59416,7 +59416,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         //      fs.mkdirSync(tmpdirname, { recursive: true });
         ////    }
         //    await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}/' --strip-components=1 '${srcFile}'`);
-        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) xzvf - -C '${tmpdirname}' --strip-components=1`);
+        await execBash(`curl -L '${url}' | $(command -v gtar || command -v tar) -C '${tmpdirname}' --strip-components=1 -xzvf - `);
         //    const dstDir = path.dirname(dstFile);
         //    if (!fs.existsSync(dstDir)) {
         //      fs.mkdirSync(dstDir, { recursive: true });
