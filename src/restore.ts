@@ -363,7 +363,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
  //   const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
 //    tmpdirname: `${os.tmpdir()}${pathsep}picturama${pathsep}`,
 //    const tmpdirname = os.tmpdir() + '/knex-test-';
-    const tmpdirname = os.tmpdir() + '${pathsepstr}knex-test-';
+    const tmpdirname = (path.join(os.tmpdir() + '${pathsepstr}knex-test-'));
           fs.mkdirSync(tmpdirname, { recursive: true });
 //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
 //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
