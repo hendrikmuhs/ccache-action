@@ -347,12 +347,13 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
         core.info(`pathsep9 ${pathsep}.`);
         console.log("pathsep10 " + pathsep);
         console.log("pathsep11 " + '$path.sep');
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-${pathsep}`));
-    const tmpdirname2 = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
+//    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-${pathsep}`));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
     const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
     const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
-        console.log(`console.log: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
-        core.info(`core.info: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
+//        console.log(`console.log: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
+        console.log(`console.log: tmpdirname ${tmpdirname}  `);
+//        core.info(`core.info: tmpdirname ${tmpdirname} ### tmpdirname2 ${tmpdirname2}.### tmpdirname3 ${tmpdirname3}.### tmpdirname4 ${tmpdirname4}.###  `);
 //    if (!fs.existsSync(tmpdirname)) {
       fs.mkdirSync(tmpdirname, { recursive: true });
   if (url.endsWith(".zip")) {
