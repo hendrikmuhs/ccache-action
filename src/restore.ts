@@ -105,9 +105,9 @@ async function installCcacheWindows() : Promise<void> {
 async function installSccacheMac() : Promise<void> {
 if (core.getState("variantInstallFromGithub") == "true") {
    switch(process.arch) {
-   case 'x32':
-      console.log("This is a 32-bit extended systems");
-      break;
+//   case 'x32':
+//      console.log("This is a 32-bit extended systems");
+//      break;
    case 'x64':
         await installSccacheFromGitHub(
           "v0.3.3",
