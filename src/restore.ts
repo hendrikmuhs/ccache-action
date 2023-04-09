@@ -347,7 +347,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
         core.info(`pathsep9 ${pathsep}.`);
         console.log("pathsep10 " + pathsep);
         console.log("pathsep11 " + '$path.sep');
-    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-XXXXXX${pathsep}`));
+    const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `tmp-${pathsep}`));
     const tmpdirname2 = fs.mkdtempSync(path.join(os.tmpdir(), `tmpXXXXXX${pathsep}`));
     const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
     const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
