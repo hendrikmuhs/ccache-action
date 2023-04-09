@@ -59412,7 +59412,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     //   const tmpdirname = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
     //    tmpdirname: `${os.tmpdir()}${pathsep}picturama${pathsep}`,
     //    const tmpdirname = os.tmpdir() + '/knex-test-';
-    const tmpdirname = (path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir() + `(pathsepstr)knex-test-`));
+    const tmpdirname = (path__WEBPACK_IMPORTED_MODULE_3___default().join(os__WEBPACK_IMPORTED_MODULE_2___default().tmpdir() + `${pathsepstr}knex-test-`));
     fs__WEBPACK_IMPORTED_MODULE_1___default().mkdirSync(tmpdirname, { recursive: true });
     //    const tmpdirname3 = fs.mkdtempSync(path.join(os.tmpdir(), `XXXXXX${pathsep}`));
     //    const tmpdirname4 = fs.mkdtempSync(path.join(os.tmpdir(), `${pathsep}`));
