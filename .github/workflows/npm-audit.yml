@@ -1,4 +1,5 @@
-name: PR buildon:
+name: PR build
+on:
   pull_request:
   workflow_dispatch:
 
@@ -11,7 +12,9 @@ jobs:
       - name: Audit packages
         run: npm audit --audit-level moderate
         env:
-          CI: trueanalyze:
+          CI: true
+
+  analyze:
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
@@ -25,7 +28,9 @@ jobs:
         with:
           languages: javascript
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2build:
+        uses: github/codeql-action/analyze@v2
+
+  build:
     name: Build with Node ${{ matrix.node_version }}
     runs-on: ubuntu-latest
     strategy:
