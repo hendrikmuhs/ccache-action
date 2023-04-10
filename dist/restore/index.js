@@ -59166,17 +59166,21 @@ async function restore(ccacheVariant) {
     }
 }
 async function configure(ccacheVariant) {
-    const ghWorkSpace = process__WEBPACK_IMPORTED_MODULE_7__.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+    //  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+    const ccacheDir = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput('ccache-dir');
+    const sccacheDir = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput('sccache-dir');
     const maxSize = _actions_core__WEBPACK_IMPORTED_MODULE_4__.getInput('max-size');
     if (ccacheVariant === "ccache") {
-        await execBash(`ccache --set-config=cache_dir='${path__WEBPACK_IMPORTED_MODULE_3___default().join(ghWorkSpace, '.ccache')}'`);
+        //await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
+        await execBash(`ccache --set-config=cache_dir='${path__WEBPACK_IMPORTED_MODULE_3___default().join(ccacheDir)}'`);
         await execBash(`ccache --set-config=max_size='${maxSize}'`);
         await execBash(`ccache --set-config=compression=true`);
         _actions_core__WEBPACK_IMPORTED_MODULE_4__.info("Cccache config:");
         await execBash("ccache -p");
     }
     else {
-        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        //const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${sccacheDir}' SCCACHE_CACHE_SIZE='${maxSize}'`;
         await execBash(`env ${options} sccache --start-server`);
     }
 }
