@@ -11,9 +11,9 @@ inputs:
   ccache-dir:
     description: "ccache-dir config"
     default: "~/.ccache"
-  sccache-dir:
-    description: "sccache-dir config"
-    default:
+#  sccache-dir:
+#    description: "sccache-dir config"
+#    default:
   max-size:
     description: "Max size of the cache"
     default: "500M"
@@ -26,6 +26,10 @@ inputs:
   install-from-github:
     description: 'install Ccache from Github Releases https://github.com/ccache/ccache/releases/'
     default: 'false'
+    required: false
+  dont-do-config:
+    description: 'ccache: skip the configuration via this action, as if you allready have a config'
+    default: 'true'
     required: false
   save:
     description: "If 'false', do not save the cache, only restore."
