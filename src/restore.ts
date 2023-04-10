@@ -70,9 +70,9 @@ async function restore(ccacheVariant : string) : Promise<void> {
 }
 
 async function configure(ccacheVariant : string) : Promise<void> {
-//  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const ccacheDir = core.getInput('ccache-dir');
-  const sccacheDir = core.getInput('sccache-dir');
+//  const sccacheDir = core.getInput('sccache-dir');
   const maxSize = core.getInput('max-size');
   
   if (ccacheVariant === "ccache") {
@@ -83,8 +83,8 @@ async function configure(ccacheVariant : string) : Promise<void> {
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
-    //const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
-    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${sccacheDir}' SCCACHE_CACHE_SIZE='${maxSize}'`;
+    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+    // const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${sccacheDir}' SCCACHE_CACHE_SIZE='${maxSize}'`;
     await execBash(`env ${options} sccache --start-server`);
   }
 
