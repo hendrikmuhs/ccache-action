@@ -13,7 +13,7 @@ inputs:
     default: "~/.ccache"
   sccache-dir:
     description: "sccache-dir config"
-    default: "$HOME/.sccache"
+    default: "/home/runner/.sccache"
   max-size:
     description: "Max size of the cache"
     default: "500M"
