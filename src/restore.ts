@@ -70,7 +70,7 @@ async function restore(ccacheVariant : string) : Promise<void> {
 }
 
 async function configure(ccacheVariant : string) : Promise<void> {
-  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+//  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const ccacheDir = core.getInput('ccache-dir');
   const sccacheDir = core.getInput('sccache-dir');
   const maxSize = core.getInput('max-size');
