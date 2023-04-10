@@ -13,7 +13,7 @@ inputs:
     default: "~/.ccache"
   sccache-dir:
     description: "sccache-dir config"
-    default: `${process.env.GITHUB_WORKSPACE}`
+    default: ""
   max-size:
     description: "Max size of the cache"
     default: "500M"
