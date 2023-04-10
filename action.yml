@@ -8,6 +8,12 @@ inputs:
   restore-keys:
     description: "An ordered list of keys to use for restoring the cache if no cache hit occurred for key"
     required: false
+  ccache-dir:
+    description: "ccache-dir config"
+    default: "~/.ccache"
+  sccache-dir:
+    description: "sccache-dir config"
+    default: "~/.sccache"
   max-size:
     description: "Max size of the cache"
     default: "500M"
