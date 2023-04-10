@@ -9,7 +9,8 @@ import * as process from "process";
 import * as cache from "@actions/cache";
 
 export enum Inputs {
-    VariantInstallFromGithub = "install-from-github" // Input for cache, restore action
+    VariantInstallFromGithub = "install-from-github", // Input for cache, restore action
+    DontDoConfig = "dont-do-config" // Input for cache, restore action
 }
 
 export function utilsGetInputAsBool(
@@ -69,22 +70,29 @@ async function restore(ccacheVariant : string) : Promise<void> {
   }
 }
 
+
+    const dontDoConfig = utilsGetInputAsBool(Inputs.DontDoConfig);
 async function configure(ccacheVariant : string) : Promise<void> {
+	if (dontDoConfig) {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+  const ccacheDir = core.getInput('ccache-dir');
+//  const sccacheDir = core.getInput('sccache-dir');
   const maxSize = core.getInput('max-size');
   
   if (ccacheVariant === "ccache") {
-    await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
+    //await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
+    await execBash(`ccache --set-config=cache_dir='${path.join(ccacheDir)}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
     await execBash(`ccache --set-config=compression=true`);
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
     const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+    // const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${sccacheDir}' SCCACHE_CACHE_SIZE='${maxSize}'`;
     await execBash(`env ${options} sccache --start-server`);
+    }
   }
-
-}
+ }
 
 async function installCcacheMac() : Promise<void> {
   //const variantInstallFromGithub = core.getBooleanInput("install-from-github");
