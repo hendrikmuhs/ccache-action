@@ -1,0 +1,18 @@
+Source: ccache
+Section: devel
+Priority: optional
+Maintainer: Joel Rosdahl <joel@debian.org>
+Build-Depends: debhelper-compat (= 13), elfutils, cmake, libzstd-dev, libhiredis-dev (>= 0.14.1), asciidoctor
+Standards-Version: 4.6.1
+Homepage: https://ccache.dev
+Vcs-Browser: https://salsa.debian.org/debian/ccache
+Vcs-Git: https://salsa.debian.org/debian/ccache.git
+
+Package: ccache
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Suggests: distcc | icecc
+Description: Compiler cache for fast recompilation of C/C++ code
+ Ccache is a compiler cache. It speeds up recompilation by caching
+ previous compilations and detecting when the same compilation is
+ being done again.

@@ -1,0 +1,11 @@
+# For more information on what jobs are run see:
+# https://salsa.debian.org/salsa-ci-team/pipeline
+---
+include:
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
+
+variables:
+  #SALSA_CI_LINTIAN_FAIL_WARNING: 0
+  SALSA_CI_DISABLE_LINTIAN: 1
+  SALSA_CI_REPROTEST_ARGS: --variations=-time

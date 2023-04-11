@@ -1,0 +1,9 @@
+Document: ccache
+Title: ccache manual
+Author: Joel Rosdahl
+Abstract: Manual for ccache (compiler cache)
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/ccache/manual.html
+Files: /usr/share/doc/ccache/manual.html

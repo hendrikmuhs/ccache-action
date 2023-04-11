@@ -1,0 +1,2 @@
+Tests: run-testsuites
+Depends: binutils, ccache, elfutils, gcc, libc-dev

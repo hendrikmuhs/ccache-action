@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+export ASMFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+override_dh_install:
+	dh_install
+	sed s/%DEB_HOST_MULTIARCH%/$(DEB_HOST_MULTIARCH)/ debian/update-ccache-symlinks.in >debian/ccache/usr/sbin/update-ccache-symlinks
+
+override_dh_installdocs:
+	dh_installdocs
+	cd debian/ccache/usr/share/doc/ccache && mv NEWS.html changelog.html
+	cd debian/ccache/usr/share/doc/ccache && mv MANUAL.html manual.html
+
+override_dh_installchangelogs:
+	dh_installchangelogs doc/NEWS.adoc
+
+override_dh_installdeb:
+	sed s/%DEB_HOST_MULTIARCH%/$(DEB_HOST_MULTIARCH)/ debian/ccache.triggers.in >debian/ccache.triggers
+	dh_installdeb

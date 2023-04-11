@@ -1,0 +1,705 @@
+#!/bin/bash
+#
+# A simple test suite for ccache.
+#
+# Copyright (C) 2002-2007 Andrew Tridgell
+# Copyright (C) 2009-2023 Joel Rosdahl and other contributors
+#
+# See doc/AUTHORS.adoc for a complete list of contributors.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+skip_code=125
+
+# only use ansi color codes if output is to a terminal
+if [[ -t 1 ]]; then
+    ansi_boldgreen='\033[1;32m'
+    ansi_boldred='\033[1;31m'
+    ansi_boldyellow='\033[1;93m'
+    ansi_bold='\033[1m'
+    ansi_reset='\033[1;0m'
+fi
+
+green() {
+    echo -e "$ansi_boldgreen$*$ansi_reset"
+}
+
+red() {
+    echo -e "$ansi_boldred$*$ansi_reset"
+}
+
+yellow() {
+    echo -e "$ansi_boldyellow$*$ansi_reset"
+}
+
+bold() {
+    echo -e "$ansi_bold$*$ansi_reset"
+}
+
+test_failed_internal() {
+    # Called from functions inside this file, so skip the first caller:
+    local line="$(caller 1)"
+    line=" (line ${line%% *})"
+
+    echo
+    red FAILED
+    echo
+    echo "Test suite:     $(bold $CURRENT_SUITE)$line"
+    echo "Test case:      $(bold $CURRENT_TEST)"
+    echo "Failure reason: $(red "$1")"
+    echo
+    echo "Actual statistics counters"
+    echo "=========================="
+    while read -r key value; do
+        if [[ $value > 0 ]]; then
+            printf "$(yellow %-32s) $(yellow %s)\n" "$key" "$value"
+        else
+            printf "%-32s %s\n" "$key" "$value"
+        fi
+    done < <($CCACHE --print-stats | grep -v '^stats_')
+    echo
+    echo "Test data and log file have been left in $TESTDIR / $TEST_FAILED_SYMLINK"
+    symlink_testdir_on_failure
+    exit 1
+}
+
+# Indirection so the line returned by `caller` is correct.
+test_failed() {
+    test_failed_internal "$@"
+}
+
+find_compiler() {
+    local name=$1
+    perl -e '
+        use File::Basename;
+        my $cc = $ARGV[0];
+        $cc = basename($cc) if readlink($cc) =~ "ccache";
+        if ($cc =~ m!^/!) {
+            print $cc;
+            exit;
+        }
+        foreach my $dir (split(/:/, $ENV{PATH})) {
+            $path = "$dir/$cc";
+            if (-x $path && readlink($path) !~ "ccache") {
+                print $path;
+                exit;
+            }
+        }' $name
+}
+
+generate_code() {
+    local nlines=$1
+    local outfile=$2
+    local i
+
+    rm -f $outfile
+    for ((i = 1; i <= nlines; i++)); do
+        echo "int foo_$i(int x) { return x; }" >>$outfile
+    done
+}
+
+remove_cache() {
+    if [ -d $CCACHE_DIR ]; then
+        chmod -R +w $CCACHE_DIR
+        rm -rf $CCACHE_DIR
+    fi
+}
+
+clear_cache() {
+    $CCACHE -Cz >/dev/null
+}
+
+sed_in_place() {
+    local expr=$1
+    shift
+
+    for file in $*; do
+        sed "$expr" $file >$file.sed
+        mv $file.sed $file
+    done
+}
+
+backdate() {
+    if [[ $1 =~ ^[0-9]+$ ]]; then
+        m=$1
+        shift
+    else
+        m=0
+    fi
+    touch -t $((199901010000 + m)) "$@"
+}
+
+file_size() {
+    wc -c $1 | awk '{print $1}'
+}
+
+objdump_cmd() {
+    local file="$1"
+
+    if $HOST_OS_APPLE; then
+        xcrun dwarfdump -r 0 "$file"
+    elif $HOST_OS_WINDOWS || $HOST_OS_CYGWIN; then
+        # For some reason objdump only shows the basename of the file, so fall
+        # back to brute force and ignorance.
+        strings "$1"
+    else
+        objdump -W "$file"
+    fi
+}
+
+objdump_grep_cmd() {
+    if $HOST_OS_APPLE; then
+        grep -Fq "\"$1\""
+    elif $HOST_OS_WINDOWS || $HOST_OS_CYGWIN; then
+        grep -Fq "$1"
+    else
+        grep -Fq ": $1"
+    fi
+}
+
+expect_stat() {
+    local stat="$1"
+    local expected_value="$2"
+    local line
+    local value=""
+
+    if $HOST_OS_WINDOWS ; then
+        filter="sed -e s/\r//g"
+    else
+        filter=cat
+    fi
+
+    while read -r key value; do
+        if [[ $key == $stat ]]; then
+            break
+        fi
+    done < <($CCACHE --print-stats | $filter )
+
+    if [ "$expected_value" != "$value" ]; then
+        test_failed_internal "Expected $stat to be $expected_value, actual $value"
+    fi
+}
+
+expect_exists() {
+    if [ ! -e "$1" ]; then
+        test_failed_internal "Expected $1 to exist, but it's missing"
+    fi
+}
+
+expect_missing() {
+    if [ -e "$1" ]; then
+        test_failed_internal "Expected $1 to be missing, but it exists"
+    fi
+}
+
+expect_equal_content() {
+    if [ ! -e "$1" ]; then
+        test_failed_internal "expect_equal_content: $1 missing"
+    fi
+    if [ ! -e "$2" ]; then
+        test_failed_internal "expect_equal_content: $2 missing"
+    fi
+    if ! cmp -s "$1" "$2"; then
+        test_failed_internal "$1 and $2 differ"
+    fi
+}
+
+expect_equal_text_content() {
+    if [ ! -e "$1" ]; then
+        test_failed_internal "expect_equal_text_content: $1 missing"
+    fi
+    if [ ! -e "$2" ]; then
+        test_failed_internal "expect_equal_text_content: $2 missing"
+    fi
+    if ! cmp -s "$1" "$2"; then
+        if $HOST_OS_WINDOWS  && diff -u --strip-trailing-cr "$1" "$2" > /dev/null ; then
+            test_failed_internal "$1 and $2 with differ line endings."
+        else
+            test_failed_internal "$1 and $2 differ: $(echo; diff -u "$1" "$2")"
+        fi
+    fi
+}
+
+expect_different_content() {
+    if [ ! -e "$1" ]; then
+        test_failed_internal "expect_different_content: $1 missing"
+    fi
+    if [ ! -e "$2" ]; then
+        test_failed_internal "expect_different_content: $2 missing"
+    fi
+    if cmp -s "$1" "$2"; then
+        test_failed_internal "$1 and $2 are identical"
+    fi
+}
+
+is_equal_object_files() {
+    if $HOST_OS_LINUX && $COMPILER_TYPE_CLANG; then
+        if ! command -v eu-elfcmp >/dev/null; then
+            test_failed_internal "Please install elfutils to get eu-elfcmp"
+        fi
+        eu-elfcmp -q "$1" "$2"
+    elif $HOST_OS_FREEBSD && $COMPILER_TYPE_CLANG; then
+        elfdump -a -w "$1".dump "$1"
+        elfdump -a -w "$2".dump "$2"
+        # these were the elfdump fields that seemed to differ (empirically)
+        diff -I e_shoff -I sh_size -I st_name "$1".dump "$2".dump > /dev/null
+    elif $HOST_OS_WINDOWS && command -v dumpbin.exe >/dev/null; then
+        # Filter out fields that are affected by compilation time or source
+        # filename.
+        local awk_filter='
+            skip {--skip; next}
+
+            /Dump of file/ {next}                 # dumbin header
+            /time date stamp/ {next}              # incremental linker timestamp
+            /number of symbols/ {next}            # symbol count
+            /Filename *\| \.file$/ {skip=1; next} # .file symbol
+
+            {print}
+        '
+        dumpbin.exe -all -nologo "$1" | awk "$awk_filter" > "$1".dump
+        dumpbin.exe -all -nologo "$2" | awk "$awk_filter" > "$2".dump
+        cmp -s "$1".dump "$2".dump
+    else
+        cmp -s "$1" "$2"
+    fi
+}
+
+expect_equal_object_files() {
+    is_equal_object_files "$1" "$2"
+    if [ $? -ne 0 ]; then
+        test_failed_internal "Objects differ: $1 != $2"
+    fi
+}
+
+expect_content() {
+    local file="$1"
+    local content="$2"
+
+    if [ ! -e "$file" ]; then
+        test_failed_internal "$file not found"
+    fi
+    if [ "$(cat $file)" != "$content" ]; then
+        test_failed_internal "Bad content of $file\nExpected: $content\nActual: $(cat $file)"
+    fi
+}
+
+expect_content_pattern() {
+    local file="$1"
+    local pattern="$2"
+
+    if [ ! -e "$file" ]; then
+        test_failed_internal "$file not found"
+    fi
+
+    local content="$(<$file)"
+    if [[ $pattern == !* ]]; then
+        pattern=${pattern:1}
+        if [[ "${content}" == $pattern ]]; then
+            test_failed_internal "Bad content of $file\nContent: $(<$file)\nMatched pattern: $pattern"
+        fi
+    else
+        if [[ "${content}" != $pattern ]]; then
+            test_failed_internal "Bad content of $file\nContent: $(<$file)\nDid not match pattern: $pattern"
+        fi
+    fi
+
+}
+
+expect_contains() {
+    local file="$1"
+    local string="$2"
+
+    if [ ! -e "$file" ]; then
+        test_failed_internal "$file not found"
+    fi
+    if ! grep -Fq -- "$string" "$file"; then
+        test_failed_internal "File $file does not contain \"$string\"\nActual content: $(cat $file)"
+    fi
+}
+
+expect_not_contains() {
+    local file="$1"
+    local string="$2"
+
+    if [ ! -e "$file" ]; then
+        test_failed_internal "$file not found"
+    fi
+    if grep -Fq -- "$string" "$file"; then
+        test_failed_internal "File $file contains \"$string\"\nActual content: $(cat $file)"
+    fi
+}
+
+expect_objdump_contains() {
+    local file="$1"
+    local string="$2"
+
+    if ! objdump_cmd "$file" | objdump_grep_cmd "$string"; then
+        test_failed_internal "File $file does not contain \"$string\""
+    fi
+}
+
+expect_objdump_not_contains() {
+    local file="$1"
+    local string="$2"
+
+    if objdump_cmd "$file" | objdump_grep_cmd "$string"; then
+        test_failed_internal "File $file contains \"$string\""
+    fi
+}
+
+expect_file_count() {
+    local expected=$1
+    local pattern=$2
+    local dir=$3
+    local actual=`find "$dir" -type f -name "$pattern" | wc -l`
+    if [ $actual -ne $expected ]; then
+        test_failed_internal "Found $actual (expected $expected) $pattern files in $dir"
+    fi
+}
+
+# Verify that $1 is newer than (or same age as) $2.
+expect_newer_than() {
+    local newer_file=$1
+    local older_file=$2
+    if [ "$newer_file" -ot "$older_file" ]; then
+        test_failed_internal "$newer_file is older than $older_file"
+    fi
+}
+
+expect_perm() {
+    local path="$1"
+    local expected_perm="$2"
+    local actual_perm=$(ls -ld "$path" | awk '{print substr($1, 1, 10)}')
+    if [ "$expected_perm" != "$actual_perm" ]; then
+        test_failed_internal "Expected permissions for $path to be $expected_perm, actual $actual_perm"
+    fi
+}
+
+reset_environment() {
+    while IFS= read -r name; do
+        if [[ $name =~ ^CCACHE_[A-Z0-9_]*$ ]]; then
+            unset $name
+        fi
+    done < <(compgen -e)
+
+    unset DEPENDENCIES_OUTPUT
+    unset GCC_COLORS
+    unset SUNPRO_DEPENDENCIES
+    unset TERM
+    unset XDG_CACHE_HOME
+    unset XDG_CONFIG_HOME
+    export PWD=$(pwd)
+
+    export CCACHE_DETECT_SHEBANG=1
+    export CCACHE_DIR=$ABS_TESTDIR/.ccache
+    export CCACHE_CONFIGPATH=$CCACHE_DIR/ccache.conf # skip system config
+    export CCACHE_LOGFILE=$ABS_TESTDIR/ccache.log
+    export CCACHE_NODIRECT=1
+
+    # Many tests backdate files, which updates their ctimes. In those tests, we
+    # must ignore ctimes. Might as well do so everywhere.
+    DEFAULT_SLOPPINESS=include_file_ctime
+    export CCACHE_SLOPPINESS="$DEFAULT_SLOPPINESS"
+}
+
+run_suite() {
+    local suite_name=$1
+
+    CURRENT_SUITE=$suite_name
+
+    cd $ABS_TESTDIR
+    rm -rf $ABS_TESTDIR/fixture
+
+    reset_environment
+
+    if type SUITE_${suite_name}_PROBE >/dev/null 2>&1; then
+        mkdir $ABS_TESTDIR/probe
+        cd $ABS_TESTDIR/probe
+        local skip_reason="$(SUITE_${suite_name}_PROBE)"
+        cd $ABS_TESTDIR
+        rm -rf $ABS_TESTDIR/probe
+        if [ -n "$skip_reason" ]; then
+            echo "Skipped test suite $suite_name [$skip_reason]"
+            if [ -n "$EXIT_IF_SKIPPED" ]; then
+                return $skip_code
+            fi
+            return 0
+        fi
+    fi
+
+    printf "Running test suite %s" "$(bold $suite_name)"
+    SUITE_$suite_name
+    echo
+
+    terminate_all_children
+
+    return 0
+}
+
+terminate_all_children() {
+    local pids="$(jobs -p)"
+    if [[ -n "$pids" ]]; then
+        kill $pids >/dev/null 2>&1
+        wait >/dev/null 2>&1
+    fi
+}
+
+TEST() {
+    CURRENT_TEST=$1
+    CCACHE_COMPILE="$CCACHE $COMPILER"
+
+    terminate_all_children
+    reset_environment
+
+    if $verbose; then
+        printf "\n  %s" "$CURRENT_TEST"
+    else
+        printf .
+    fi
+
+    cd /
+    remove_cache
+    rm -rf $ABS_TESTDIR/run $ABS_TESTDIR/run.real
+
+    # Verify that tests behave well when apparent CWD != actual CWD.
+    mkdir $ABS_TESTDIR/run.real
+    ln -s run.real $ABS_TESTDIR/run
+
+    cd $ABS_TESTDIR/run
+    if type SUITE_${suite_name}_SETUP >/dev/null 2>&1; then
+        SUITE_${suite_name}_SETUP
+    fi
+}
+
+# =============================================================================
+# main program
+
+export LC_ALL=C
+
+trap terminate_all_children EXIT # also clean up after exceptional code flow
+
+if pwd | grep '[^A-Za-z0-9/.,=_%+-]' >/dev/null 2>&1; then
+    cat <<EOF
+Error: The test suite doesn't work in directories with whitespace or other
+funny characters in the name. Sorry.
+EOF
+    exit 1
+fi
+
+# Remove common ccache directories on host from PATH variable
+HOST_CCACHE_DIRS="/usr/lib/ccache/bin
+/usr/lib/ccache"
+for HOST_CCACHE_DIR in $HOST_CCACHE_DIRS; do
+    PATH="$(echo "$PATH:" | awk -v RS=: -v ORS=: '$0 != "'$HOST_CCACHE_DIR'"' | sed 's/:*$//')"
+done
+export PATH
+
+if [ -z "$CC" ]; then
+    if [[ "$OSTYPE" == "darwin"* && -x "$(command -v clang)" ]]; then
+        CC=clang
+    else
+        CC=gcc
+    fi
+fi
+
+if [ -z "$CCACHE" ]; then
+    CCACHE=`pwd`/ccache
+fi
+
+COMPILER_TYPE_CLANG=false
+COMPILER_TYPE_GCC=false
+
+COMPILER_USES_LLVM=false
+COMPILER_USES_MINGW=false
+COMPILER_USES_MSVC=false
+
+ABS_ROOT_DIR="$(cd $(dirname "$0"); pwd)"
+readonly HTTP_CLIENT="${ABS_ROOT_DIR}/http-client"
+readonly HTTP_SERVER="${ABS_ROOT_DIR}/http-server"
+
+HOST_OS_APPLE=false
+HOST_OS_LINUX=false
+HOST_OS_FREEBSD=false
+HOST_OS_WINDOWS=false
+HOST_OS_CYGWIN=false
+
+compiler_version="`$CC --version 2>/dev/null | head -1`"
+
+case $compiler_version in
+    *gcc*|*g++*|2.95*)
+        COMPILER_TYPE_GCC=true
+        ;;
+    *clang*)
+        COMPILER_TYPE_CLANG=true
+        CLANG_VERSION_SUFFIX=$(echo "${CC%% *}" | sed 's/.*clang//')
+        ;;
+    *)
+        echo "WARNING: Compiler $CC not supported (version: $compiler_version) -- Skipped running tests" >&2
+        exit $skip_code
+        ;;
+esac
+
+case $CC in
+    *MSVC*|*msvc*)
+        COMPILER_USES_MSVC=true
+        ;;
+esac
+
+case $compiler_version in
+    *llvm*|*LLVM*)
+        COMPILER_USES_LLVM=true
+        ;;
+    *MINGW*|*mingw*)
+        COMPILER_USES_MINGW=true
+        ;;
+    *MSVC*|*msvc*)
+        COMPILER_USES_MSVC=true
+        ;;
+esac
+
+case $(uname -s) in
+    *MINGW*|*mingw*)
+        HOST_OS_WINDOWS=true
+        ;;
+    *CYGWIN*|*MSYS*)
+        HOST_OS_CYGWIN=true
+        ;;
+    *Darwin*)
+        HOST_OS_APPLE=true
+        ;;
+    *Linux*)
+        HOST_OS_LINUX=true
+        ;;
+    *FreeBSD*)
+        HOST_OS_FREEBSD=true
+        ;;
+esac
+
+if $HOST_OS_WINDOWS; then
+    PATH_DELIM=";"
+else
+    PATH_DELIM=":"
+fi
+RUN_WIN_XFAIL=true
+if $HOST_OS_WINDOWS &&  [ -z "${RUN_FAULTY_TESTS}" ] ; then
+    RUN_WIN_XFAIL=false
+fi
+
+
+
+if [[ $OSTYPE = msys* ]]; then
+    # Native symlink support for Windows.
+    export MSYS="${MSYS:-} winsymlinks:nativestrict"
+fi
+
+if $HOST_OS_APPLE; then
+    SDKROOT=$(xcrun --sdk macosx --show-sdk-path 2>/dev/null)
+    if [ "$SDKROOT" = "" ]; then
+        echo "Error: xcrun --show-sdk-path failure"
+        exit 1
+    fi
+    export SDKROOT
+
+    SYSROOT="-isysroot `echo \"$SDKROOT\" | sed 's/ /\\ /g'`"
+else
+    SYSROOT=
+fi
+
+# ---------------------------------------
+
+all_suites="$(sed -En 's/^addtest\((.*)\)$/\1/p' $(dirname $0)/CMakeLists.txt)"
+
+for suite in $all_suites; do
+    . $(dirname $0)/suites/$suite.bash
+done
+
+# ---------------------------------------
+
+TESTDIR=testdir/$$
+TEST_FAILED_SYMLINK=testdir/failed
+ABS_TESTDIR=$PWD/$TESTDIR
+rm -rf $TESTDIR
+mkdir -p $TESTDIR
+
+START_PWD="$PWD"
+symlink_testdir_on_failure() {
+    cd "$START_PWD"
+    rm -f "$TEST_FAILED_SYMLINK"
+    ln -s "$$" "$TEST_FAILED_SYMLINK"
+}
+
+COMPILER_BIN=$(echo $CC | awk '{print $1}')
+COMPILER_ARGS=$(echo $CC | awk '{$1 = ""; print}')
+REAL_COMPILER_BIN=$(find_compiler $COMPILER_BIN)
+REAL_COMPILER="$REAL_COMPILER_BIN$COMPILER_ARGS"
+REAL_NVCC=$(find_compiler nvcc)
+
+if [ "$REAL_COMPILER_BIN" = "$COMPILER_BIN" ]; then
+    echo "Compiler:         $CC"
+else
+    echo "Compiler:         $CC ($REAL_COMPILER)"
+fi
+echo "Compiler version: $($CC --version 2>/dev/null | head -n 1)"
+
+if [ -n "$REAL_NVCC" ]; then
+    echo "CUDA compiler:    $($REAL_NVCC --version | tail -n 1) ($REAL_NVCC)"
+else
+    echo "CUDA compiler:    not available"
+fi
+echo
+
+cd $TESTDIR || exit 1
+
+mkdir compiler
+
+COMPILER="$(pwd)/compiler/$(basename "$REAL_COMPILER_BIN")"
+if $HOST_OS_WINDOWS; then
+    COMPILER="$COMPILER.sh"
+fi
+cat >"$COMPILER" <<EOF
+#!/bin/sh
+
+CCACHE_DISABLE=1 CCACHE_COMPILER= CCACHE_PREFIX= \
+  exec $REAL_COMPILER_BIN$COMPILER_ARGS "\$@"
+EOF
+chmod +x "$COMPILER"
+
+[ -z "${VERBOSE:-}" ] && verbose=false || verbose=true
+[ "$1" = "-v" ] && { verbose=true; shift; }
+
+suites="$*"
+if [ -z "$suites" ]; then
+    suites="$all_suites"
+fi
+
+skipped=false
+for suite in $suites; do
+    run_suite $suite
+    if [ $? -eq $skip_code ]; then
+        skipped=true
+        break
+    fi
+done
+
+cd /
+if [ -z "$KEEP_TESTDIR" ]; then
+    rm -rf $ABS_TESTDIR
+fi
+if $skipped; then
+    exit $skip_code
+else
+    green PASSED
+    exit 0
+fi

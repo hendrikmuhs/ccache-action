@@ -1,0 +1,5 @@
+ConfigurationNotChecked
+missingIncludeSystem
+
+// Ignore third party code.
+*:src/third_party

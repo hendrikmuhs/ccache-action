@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+set -eu
+
+export CCACHE=/usr/bin/ccache
+
+TEST_SUITE_RUNNER="${PWD}/test/run"
+
+cd "${AUTOPKGTEST_TMP}"
+"${TEST_SUITE_RUNNER}"

@@ -1,0 +1,733 @@
+ccache (4.8-1) unstable; urgency=medium
+
+  * New upstream release 4.8, which fixes an issue with hanging processes
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 19 Mar 2023 10:32:54 +0100
+
+ccache (4.7.4-1) unstable; urgency=medium
+
+  * New upstream release 4.7.4
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 21 Nov 2022 20:40:46 +0100
+
+ccache (4.7.3-1) unstable; urgency=medium
+
+  * New upstream release 4.7.3
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 05 Nov 2022 22:29:17 +0100
+
+ccache (4.7.2-1) unstable; urgency=medium
+
+  * New upstream release 4.7.2 (closes: #1022704)
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 29 Oct 2022 16:52:18 +0200
+
+ccache (4.7.1-1) unstable; urgency=medium
+
+  * New upstream release 4.7.1
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 23 Oct 2022 20:20:24 +0200
+
+ccache (4.7-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable)
+
+  [ Joel Rosdahl ]
+  * New upstream release 4.7
+  * Bump Standards-Version to 4.6.1 with no changes
+  * Update Debian-specific documentation patch
+  * Update debian/copyright
+
+ -- Joel Rosdahl <joel@debian.org>  Tue, 18 Oct 2022 21:43:05 +0200
+
+ccache (4.6.3-1) unstable; urgency=medium
+
+  * New upstream release 4.6.3
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 05 Sep 2022 15:05:41 +0200
+
+ccache (4.6.1-1) unstable; urgency=medium
+
+  * New upstream release 4.6.1 (closes: #1007732)
+  * Update debian/copyright
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 15 May 2022 21:48:25 +0200
+
+ccache (4.6-1) unstable; urgency=medium
+
+  * New upstream release 4.6
+  * Update debian/copyright
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 28 Feb 2022 19:36:53 +0100
+
+ccache (4.5.1-1) unstable; urgency=medium
+
+  * New upstream release 4.5.1
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 17 Nov 2021 20:59:25 +0100
+
+ccache (4.5-1) unstable; urgency=medium
+
+  * Refer to common license file for CC0-1.0
+  * New upstream release 4.5
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 13 Nov 2021 16:05:58 +0100
+
+ccache (4.4.2-1) unstable; urgency=high
+
+  * New upstream release 4.4.2, with an important bug fix of a serious
+    regression in ccache 4.4 where ccache could produce false direct cache
+    hits in some situations if it decides to disable the direct mode
+    temporarily (e.g. due to “too new header” file)
+  * Remove now obsolete upstream patch for failing .incbin test
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 29 Sep 2021 08:39:12 +0200
+
+ccache (4.4-1) unstable; urgency=medium
+
+  [ Gregor Jasny ]
+  * Add Salsa CI build pipeline config
+  * Add autopkgtest
+  * Fix blhc CPPFLAGS warnings
+  * Exclude time variation due to test failures
+
+  [ Joel Rosdahl ]
+  * New upstream release 4.4
+  * Bump Standards-Version to 4.6.0 with no changes
+  * Update Build-Depends to match ccache 4.4 requirements
+  * Update debian_specific_usage_docs.patch to match new manual
+  * Apply upstream patch for failing .incbin test with newer binutils
+  * Update debian/copyright to match new release
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 20 Aug 2021 21:44:19 +0200
+
+ccache (4.2-1) unstable; urgency=medium
+
+  * New upstream release 4.2
+  * Bump Standards-Version to 4.5.1 with no changes
+  * Remove obsolete build_html_docs.patch
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 07 Feb 2021 20:50:38 +0100
+
+ccache (4.1-1) unstable; urgency=medium
+
+  * New upstream release 4.1
+  * Use secure copyright file specification URI
+  * Add upstream metadata
+  * Update Build-Depends to match ccache 4.x requirements
+  * Tweak package description
+  * Update patch for Debian-specific installation instructions
+  * Build all documentation by default
+  * Set forwarded status for patches
+  * Upgrade to debhelper compat level 13
+  * Properly find documentation at new location
+  * Update copyright
+
+ -- Joel Rosdahl <joel@debian.org>  Tue, 24 Nov 2020 21:43:36 +0100
+
+ccache (3.7.12-1) unstable; urgency=medium
+
+  * New upstream release 3.7.12
+  * Keep symlinks in /usr/lib/ccache that are not dangling
+  * Install symlink for nvcc (closes: #971834)
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 09 Oct 2020 09:21:48 +0200
+
+ccache (3.7.11-1) unstable; urgency=medium
+
+  * New upstream release 3.7.11
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 26 Jul 2020 17:34:16 +0200
+
+ccache (3.7.10-1) unstable; urgency=medium
+
+  * Add Vcs-Browser and Vcs-Git fields
+  * New upstream release 3.7.10
+  * Bump Standards-Version to 4.5.0 with no changes
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 24 Jun 2020 19:39:30 +0200
+
+ccache (3.7.9-1) unstable; urgency=medium
+
+  * Add elfutils to Build-Depends
+  * New upstream release 3.7.9
+  * Bump Standards-Version to 4.4.1 with no changes
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 29 Mar 2020 19:23:06 +0200
+
+ccache (3.7.7-1) unstable; urgency=medium
+
+  * New upstream release 3.7.7
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 06 Jan 2020 17:12:10 +0100
+
+ccache (3.7.6-1) unstable; urgency=medium
+
+  * New upstream release 3.7.6
+  * Fixes an upstream bug related to "file_macro sloppiness" and identical
+    source files (closes: #944399)
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 17 Nov 2019 20:57:28 +0100
+
+ccache (3.7.5-1) unstable; urgency=medium
+
+  * New upstream release 3.7.5
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 23 Oct 2019 21:27:21 +0200
+
+ccache (3.7.4-1) unstable; urgency=medium
+
+  * New upstream release 3.7.4
+
+ -- Joel Rosdahl <joel@debian.org>  Thu, 12 Sep 2019 21:43:24 +0200
+
+ccache (3.7.3-1) unstable; urgency=medium
+
+  * New upstream release 3.7.3
+  * Remove no longer needed disable_cleanup_size_limit_test.patch
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 18 Aug 2019 19:08:19 +0200
+
+ccache (3.7.2-3) unstable; urgency=medium
+
+  * Source-only upload.
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 03 Aug 2019 11:25:31 +0200
+
+ccache (3.7.2-2) unstable; urgency=medium
+
+  * Disable cleanup test that fails on compressed/encrypted file systems
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 22 Jul 2019 22:01:48 +0200
+
+ccache (3.7.2-1) unstable; urgency=medium
+
+  * New upstream release 3.7.2
+  * Bump to debhelper 12 and rewrite debian/rules to dh
+
+ -- Joel Rosdahl <joel@debian.org>  Mon, 22 Jul 2019 20:51:39 +0200
+
+ccache (3.7.1-1) unstable; urgency=medium
+
+  * New upstream release 3.7.1
+  * Update to new ccache web site
+  * Update debian/watch to check ccache's GitHub releases page
+  * Update debian/copyright to match ccache's LICENSE.adoc
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 01 May 2019 22:06:18 +0200
+
+ccache (3.6-1) unstable; urgency=medium
+
+  * New upstream release 3.6
+  * Update debian/copyright to match ccache's LICENSE.adoc
+  * Bump Standards-Version to 4.3.0 with no changes
+
+ -- Joel Rosdahl <joel@debian.org>  Thu, 17 Jan 2019 22:05:24 +0100
+
+ccache (3.5-1) unstable; urgency=medium
+
+  * New upstream release 3.5
+  * Update debian/copyright to match ccache's LICENSE.adoc
+
+ -- Joel Rosdahl <joel@debian.org>  Tue, 16 Oct 2018 21:36:49 +0200
+
+ccache (3.4.3-1) unstable; urgency=medium
+
+  * New upstream release 3.4.3
+  * Bump Standards-Version to 4.2.1 with no changes
+  * Suggest icecc as an alternative to distcc (closes: #905276)
+  * Install symlinks for versioned clang (closes: #867705)
+  * Remove obsolete Vcs-* control fields
+
+ -- Joel Rosdahl <joel@debian.org>  Tue, 04 Sep 2018 21:38:26 +0200
+
+ccache (3.4.2-1) unstable; urgency=medium
+
+  * New upstream release 3.4.2
+  * Compensate for new doc paths in upstream release
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 25 Mar 2018 22:41:45 +0200
+
+ccache (3.4.1-1) unstable; urgency=medium
+
+  * New upstream release 3.4.1
+  * Update location of upstream manual and changelog files
+  * Update copyright to match new location of source files
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 11 Feb 2018 19:38:13 +0100
+
+ccache (3.3.6-1) unstable; urgency=medium
+
+  * New upstream release 3.3.6
+  * Update copyright years
+  * Bump Standards-Version to 4.1.3 with no changes
+  * Fix Lintian warning debian-rules-sets-dpkg-architecture-variable
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 28 Jan 2018 19:11:42 +0100
+
+ccache (3.3.4-1) unstable; urgency=high
+
+  * New upstream release 3.3.4, which contains the following changes:
+    * Fixes a serious regression in ccache 3.3 related to potentially bad
+      content of dependency files when compiling identical source code but
+      with different source paths (closes: #853834).
+    * Trivial bug fix: Corrects which statistics counter to update for
+      -optf/--options-file failure.
+    * Trivial bug fixes: Fixes undefined behavior warnings found by
+      -fsanitize=undefined.
+    * Documentation update: Adds description of statistics counters to the
+      man page.
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 17 Feb 2017 23:02:40 +0100
+
+ccache (3.3.3-1) unstable; urgency=medium
+
+  * New upstream release 3.3.3
+  * Include new README.md and text version of MANUAL
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 28 Oct 2016 00:00:15 +0200
+
+ccache (3.2.7-1) unstable; urgency=medium
+
+  * New upstream release 3.2.7 (closes: #829088)
+  * Bump Standards-Version to 3.9.8 (no changes)
+  * Update copyright years
+  * Enable pie and bindnow hardening flags
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 20 Jul 2016 20:10:50 +0200
+
+ccache (3.2.5-1) unstable; urgency=medium
+
+  * New upstream release 3.2.5
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 17 Apr 2016 16:54:25 +0200
+
+ccache (3.2.4-2) unstable; urgency=medium
+
+  * Create symlinks for compilers in /usr/lib/gcc-cross (closes: #815210)
+  * Change http URLs to https
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 28 Feb 2016 11:24:57 +0100
+
+ccache (3.2.4-1) unstable; urgency=medium
+
+  * New upstream release 3.2.4
+  * Use debhelper compat level 9
+
+ -- Joel Rosdahl <joel@debian.org>  Thu, 08 Oct 2015 21:48:51 +0200
+
+ccache (3.2.3-1) unstable; urgency=medium
+
+  * New upstream release 3.2.3
+  * Use stand-alone license paragraphs in debian/copyright
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 16 Aug 2015 15:45:28 +0200
+
+ccache (3.2.2-2) unstable; urgency=medium
+
+  * Correct placement of system configuration file (closes: #785409)
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 15 May 2015 23:22:28 +0200
+
+ccache (3.2.2-1) unstable; urgency=medium
+
+  * New upstream release 3.2.2 (closes: #248892, #778388)
+  * Update debian/copyright to match ccache 3.2.2
+  * Create symlinks for clang variants in /usr/lib/ccache (closes: #624589)
+  * Switch package maintainer to Joel Rosdahl
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 10 May 2015 15:00:50 +0200
+
+ccache (3.1.10-1) unstable; urgency=medium
+
+  * Update Vcs-git and Vcs-Browser to use anonscm.debian.org
+  * New upstream release 3.1.10
+  * Switch to interest-noawait dpkg triggers (closes: #764666)
+  * Bump Standards-Version to 3.9.6 (no changes)
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 22 Oct 2014 21:20:54 +0200
+
+ccache (3.1.9-1) unstable; urgency=low
+
+  * New upstream release 3.1.9
+  * Correct debian/copyright to fix Lintian errors
+  * Build with hardening flags
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 06 Jan 2013 18:19:19 +0100
+
+ccache (3.1.8-1) unstable; urgency=low
+
+  * New upstream release 3.1.8 (closes: #656022, #672570, #688508)
+  * Update Standards-Version to 3.9.4 (no changes required)
+  * Update debian/copyright to match current reality
+  * Update debian/copyright to version 1.0 of the machine-readable format
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 25 Nov 2012 12:20:16 +0100
+
+ccache (3.1.7-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 08 Jan 2012 22:19:24 +0100
+
+ccache (3.1.6-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 21 Aug 2011 21:56:05 +0200
+
+ccache (3.1.5-2) unstable; urgency=low
+
+  * Update dpkg triggers and update-ccache-symlinks to find compilers at
+    the new GCC library location. Closes: #630352.
+  * Use dh_prep instead of deprecated "dh_clean -k".
+  * Move patches to debian directory.
+  * Drop obsolete dont_distclean_version.c.patch.
+  * Add build-arch and build-indep targets as hinted by lintian.
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 25 Jun 2011 23:17:56 +0200
+
+ccache (3.1.5-1) unstable; urgency=low
+
+  * New upstream version.
+  * Update Standards-Version to 3.9.2 (no changes required).
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 29 May 2011 17:56:48 +0200
+
+ccache (3.1.4-3) unstable; urgency=low
+
+  * Fix errors in update-ccache-symlinks man page. Closes: #616619.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 06 Mar 2011 09:14:03 +0100
+
+ccache (3.1.4-2) unstable; urgency=low
+
+  * Create "gcc-X.Y"-style symlinks in /usr/lib/ccache. Closes: #610179.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 20 Feb 2011 16:08:06 +0100
+
+ccache (3.1.4-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 12 Jan 2011 23:45:14 +0100
+
+ccache (3.1.3-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Thu, 02 Dec 2010 21:05:17 +0100
+
+ccache (3.1.2-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 21 Nov 2010 21:07:27 +0100
+
+ccache (3.1.1-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Joel Rosdahl <joel@debian.org>  Sun, 07 Nov 2010 21:16:52 +0100
+
+ccache (3.1-1) experimental; urgency=low
+
+  * New upstream version.
+  * It's now possible to set up ccache to hash the output of a custom
+    command to identify the compiler. Closes: #506968.
+
+ -- Joel Rosdahl <joel@debian.org>  Sat, 18 Sep 2010 19:19:07 +0200
+
+ccache (3.0.1-2) experimental; urgency=low
+
+  * Use dpkg triggers to automatically update symlinks in /usr/lib/ccache
+    when compilers are removed or installed. Closes: #494636.
+  * Update man page and manual with Debian-specific usage hints.
+
+ -- Joel Rosdahl <joel@debian.org>  Fri, 10 Sep 2010 19:17:57 +0200
+
+ccache (3.0.1-1) unstable; urgency=low
+
+  [ Francois Marier ]
+  * Remove myself from uploaders
+
+  [ Y Giridhar Appaji Nag ]
+  * Support gcc-4.4 - create links in /usr/lib/ccache.  Thanks Andreas Metzler
+    <ametzler@downhill.at.eu.org> for the bug report (Closes: #532169)
+  * Fix lintian W:debhelper-but-no-misc-depends, add ${misc:Depends} to ccache
+    Depends:
+  * Please welcome Joel Rosdahl <joel@debian.org>, the upstream maintainer of
+    ccache as a co-maintainer.
+
+  [ Joel Rosdahl ]
+  * ccache now correctly falls back to the real compiler when -save-temps
+    is used. Closes: #498005.
+  * The package no longer patches generated files. Closes: #508054.
+  * ccache now has support for rewriting absolute paths (see the
+    CCACHE_BASEDIR variable). Closes: #523480.
+  * The ccache manual has fixed the wording of MD4 being a strong
+    cryptographic hash. Closes: #538821.
+  * A new upstream release has been packaged. Closes: #580944.
+  * Update copyright information in DEP-5 format.
+  * Remove obsolete patches.
+  * Don't mention the CCACHE_UNIFY option in README.Debian as it's more or
+    less obsolete.
+  * Add note in README.Debian that the "NFS Issues" only are relevant when
+    using CCACHE_HARDLINK.
+  * Remove obsolete update-ccache and reference to manage-cache.sh.
+  * Update package description.
+  * Include upstream NEWS.txt (as upstream changelog.gz), NEWS.html (as
+    changelog.html.gz) and manual.html.
+  * Add doc-base entry for the ccache manual.
+  * Switch to dpkg-source 3.0 (quilt) format.
+  * Update Standards-Version to 3.9.1 (no changes required).
+  * Change watch file to check for the .bz2 version of the archive.
+
+ -- Joel Rosdahl <joel@debian.org>  Wed, 04 Aug 2010 22:41:42 +0200
+
+ccache (2.4-17) unstable; urgency=low
+
+  [ Y Giridhar Appaji Nag ]
+  * New patch 15_gcc4.3_warnings to fix gcc 4.3 warnings.  Thanks
+    William S Fulton <wsf@fultondesigns.co.uk> for the bug report and
+    the patch (Closes: #508046)
+  * Refresh all patches to be "git diff" based and to apply cleanly.
+  * Update Standards-Version to 3.8.1 (no changes required)
+
+  [ Francois Marier ]
+  * Make Y Giridhar Appaji Nag <appaji@debian.org> the maintainer and
+    add myself as uploader
+
+ -- Y Giridhar Appaji Nag <appaji@debian.org>  Sun, 22 Mar 2009 22:08:01 +0530
+
+ccache (2.4-16) unstable; urgency=low
+
+  * Fix the documentation references to CCACHE_HARDLINK (patch from Fedora)
+  * Add a patch for the HTML docs in the source (from Fedora)
+  * Remove reference to compilercache in the description (closes: #498006)
+  * Bump Standards-Version to 3.8.0 (no changes)
+  * Move packaging to git and update VCS fields
+
+ -- Francois Marier <francois@debian.org>  Sat, 29 Nov 2008 23:53:39 +1300
+
+ccache (2.4-15) unstable; urgency=low
+
+  * Add a new patch which improve the consistency of timestamps on cached
+    objects to make sure clean-up is based on least recently used objects.
+  * Patch the set_limit call so that non-writable cache directories return
+    an error when attempting to size the max(files|size) (closes: #332527)
+
+ -- Francois Marier <francois@debian.org>  Sun, 13 Apr 2008 15:07:05 +1200
+
+ccache (2.4-14) unstable; urgency=low
+
+  * Mention the long options everywhere in the manpage
+  * Merge Gentoo patches:
+    - respect user's LDFLAGS
+    - use utimes() for timestamp if possible
+
+ -- Francois Marier <francois@debian.org>  Sun, 23 Mar 2008 16:30:11 +1300
+
+ccache (2.4-13) unstable; urgency=low
+
+  * Update CACHEDIR.TAG patch to avoid creating the tag file when the
+    CCACHE_READONLY environment variable is set. (closes: #464356)
+  * Mention the GNU-style long options in the manpage
+
+ -- Francois Marier <francois@debian.org>  Thu, 07 Feb 2008 10:50:42 +1300
+
+ccache (2.4-12) unstable; urgency=low
+
+  * Add symlink for gcc 4.3 (closes: #463590)
+  * Add support for the CACHEDIR.TAG spec, thanks to Karl Chen.
+    (see http://www.brynosaurus.com/cachedir/)
+  * Fix hyphens in manpage (lintian notice)
+  * Bump Standards-Version up to 3.7.3 (no changes)
+  * Bump debhelper compatibility to 6
+
+ -- Francois Marier <francois@debian.org>  Sat, 02 Feb 2008 10:37:22 +1300
+
+ccache (2.4-11) unstable; urgency=low
+
+  * Add the collab-maint repo to debian/control
+
+ -- Francois Marier <francois@debian.org>  Tue, 20 Nov 2007 15:26:37 +1300
+
+ccache (2.4-10) unstable; urgency=low
+
+  * Document where the patches are from in debian/patches/CREDITS
+  * debian/rules:
+    - Fixed "make distclean" lintian warning
+    - Removed commented-out entries
+  * Set debhelper compatibility to 5
+  * Add homepage field in debian/control
+  * Add symlinks for MinGW (closes: #445782)
+  * Bump the version to 5 in the debhelper dependency
+
+ -- Francois Marier <francois@debian.org>  Fri, 19 Oct 2007 16:04:37 +1300
+
+ccache (2.4-9) unstable; urgency=low
+
+  * Add a symlink for gcc 4.2 (closes: #431007)
+  * Fix dependencies when using -o (closes: #217713)
+
+ -- Francois Marier <francois@debian.org>  Sat, 30 Jun 2007 17:58:44 +1200
+
+ccache (2.4-8) unstable; urgency=low
+
+  * Enable zlib compression of the cache by default (closes: #409848).
+    Thanks to Sami Liedes for suggesting this.
+  * Disable ccache when profiling (closes: #215849).
+    Thanks to Ted Percival for the Patch.
+  * Fix NFS renaming issues and add instructions to the README.
+    Thanks to John Coiner and instructions.
+  * Put all patches in debian/patches and apply them at build time.
+
+ -- Francois Marier <francois@debian.org>  Sun, 20 May 2007 19:42:34 +1200
+
+ccache (2.4-7) unstable; urgency=low
+
+  * Use the real compiler when HOME is not set (closes: #396350)
+  * Include user script under doc/examples (closes: #392435)
+    Thanks to Behan Webster!
+  * Add support for GNU --long options (closes: #297126)
+
+ -- Francois Marier <francois@debian.org>  Sat, 18 Nov 2006 00:50:59 -0500
+
+ccache (2.4-6) unstable; urgency=low
+
+  * Include symlinks for gcc 4.1 (closes: #372838)
+  * Update watch file
+
+ -- Francois Marier <francois@debian.org>  Tue, 13 Jun 2006 22:17:37 -0400
+
+ccache (2.4-5) unstable; urgency=low
+
+  * Document the fact that cross-compiling is supported (closes: #349221)
+  * Bump Standards-Version up to 3.7.2 (no changes)
+
+ -- Francois Marier <francois@debian.org>  Sun,  4 Jun 2006 01:20:07 -0400
+
+ccache (2.4-4) unstable; urgency=low
+
+  * Mention another way to use ccache in README.Debian (thanks to Benjamin
+    Drieu for the suggestion) (closes: #267632)
+  * Update FSF address
+  * Fix watch file
+
+ -- Francois Marier <francois@debian.org>  Sat, 26 Nov 2005 00:15:13 -0500
+
+ccache (2.4-3) unstable; urgency=low
+
+  * Actually use the configuration flags in debian/rules
+  * Bump Standards-Version up to 3.6.2 (no changes)
+
+ -- Francois Marier <francois@debian.org>  Sun, 26 Jun 2005 13:33:19 -0400
+
+ccache (2.4-2) unstable; urgency=low
+
+  * Add gcc and g++ symlinks to /usr/lib/ccache (closes: #313490)
+  * Remove invalid entry from Depends
+
+ -- Francois Marier <francois@debian.org>  Wed, 15 Jun 2005 20:51:03 -0400
+
+ccache (2.4-1) unstable; urgency=low
+
+  * New maintainer (closes: #312867)
+  * New upstream version: (closes: #273753, #239640)
+    - New CCACHE_READONLY and CCACHE_TEMPDIR options
+    - Fixed handling of hard-linked compilers on AIX
+    - Fixed handling of HOME environment variable (closes: #299880)
+    - Show cache directory in stats output
+  * Fix copyright file
+  * Add 'distcc' to Suggests (closes: #269158)
+  * Add a note about whitespace in README.Debian (closes: #229116)
+  * Update rules to add symmlinks for gcc 3.4 & 4.0 (closes: #261177)
+  * Acknowledge NMUs (closes: #200185, #177129, #174417)
+
+ -- Francois Marier <francois@debian.org>  Sun, 12 Jun 2005 12:05:34 -0400
+
+ccache (2.3-1.1) unstable; urgency=low
+
+  * Non-maintainer upload during BSP
+  * Re-apply patch for
+    #200185 ccache: Incorrect symlinks in /usr/lib/ccache
+    (Closes: #200185)
+
+ -- Frank Lichtenheld <djpig@debian.org>  Fri, 19 Mar 2004 11:14:50 +0100
+
+ccache (2.3-1) unstable; urgency=low
+
+  * New upstream release: obsoletes existing caches.
+  * Tweak package description in arbitrary way (closes: #181721)
+
+ -- Paul Russell <prussell@debian.org>  Mon, 29 Sep 2003 02:53:20 +0200
+
+ccache (2.2-2) unstable; urgency=low
+
+  * Insert more symlinks in ccache dir (closes: #197468)
+
+ -- Paul Russell <prussell@debian.org>  Mon, 16 Jun 2003 10:52:50 +0100
+
+ccache (2.2-1) unstable; urgency=low
+
+  * New upstream release (closes: #150755)
+  * Insert more symlinks in ccache dir (closes: #144462)
+
+ -- Paul Russell <prussell@debian.org>  Mon, 17 Feb 2003 07:19:36 +0100
+
+ccache (2.1.1-2) unstable; urgency=low
+
+  * Restored /usr/lib/ccache symlinks (closes: #179393)
+  * Fixed manpage typo (closes: #179564)
+  * With thanks to Andreas Rottmann.
+
+ -- Paul Russell <prussell@debian.org>  Wed,  5 Feb 2003 10:01:10 +0100
+
+ccache (2.1.1-1) unstable; urgency=low
+
+  * NMU (with maintainer consent).
+  * New upstream release (closes: #174417, #177129).
+  * debian/control:
+    + Build-Depend on and use dephelper 4 (DH_COMPAT = 4).
+    + Bumped Standards-Version to 3.5.8.
+    + No full stop on short package description (fixes linda warning).
+  * debian/copright:
+    + Make lintian feel comfortable; fixes warnings:
+      - copyright-should-refer-to-common-license-file-for-gpl
+      - copyright-lists-upstream-authors-with-dh_make-boilerplate
+  * Built with g++ 3.2 :-).
+
+ -- Andreas Rottmann <rotty@debian.org>  Thu, 16 Jan 2003 11:42:38 +0100
+
+ccache (1.9-1) unstable; urgency=low
+
+  * New upstream release (closes: #144920)
+
+ -- Paul Russell <prussell@debian.org>  Mon, 13 May 2002 10:01:09 +0200
+
+ccache (1.8-1) unstable; urgency=low
+
+  * New upstream release (closes: #145401)
+
+ -- Paul Russell <prussell@debian.org>  Fri,  3 May 2002 02:26:32 +0200
+
+ccache (1.7-1) unstable; urgency=low
+
+  * New upstream release
+  * Install symlinks in /usr/lib/ccache (closes: #141337)
+
+ -- Paul Russell <prussell@debian.org>  Wed, 10 Apr 2002 17:51:21 +0200
+
+ccache (1.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Paul Russell <prussell@debian.org>  Wed,  3 Apr 2002 03:41:46 +0200
+
+ccache (1.2-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Paul Russell <prussell@debian.org>  Sun, 31 Mar 2002 14:08:57 +0200

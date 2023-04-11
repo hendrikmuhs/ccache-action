@@ -1,0 +1,2 @@
+version=4
+https://github.com/ccache/ccache/releases .*/ccache-([\d.]*)\.tar\.xz

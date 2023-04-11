@@ -1,0 +1,37 @@
+Description: Update manual page with Debian-specific instructions
+Author: Joel Rosdahl <joel@debian.org>
+Forwarded: not-needed
+
+--- a/doc/MANUAL.adoc
++++ b/doc/MANUAL.adoc
+@@ -40,12 +40,15 @@ ccache gcc -c example.c
+ -------------------------------------------------------------------------------
+ +
+ 2. Let ccache masquerade as the compiler. This method is most useful when you
+-   wish to use ccache for all your compilations. To do this, create a symbolic
+-   link to ccache named as the compiler. For example, here is set up ccache to
+-   masquerade as `gcc` and `g++`:
++   wish to use ccache for all your compilations. To do this on a Debian system,
++   it's easiest to just prepend `/usr/lib/ccache` to your `PATH`.
++   `/usr/lib/ccache` contains symlinks for all compilers currently installed as
++   Debian packages.
+++
++Alternatively, you can create any symlinks you like yourself like this:
+ +
+ -------------------------------------------------------------------------------
+-cp ccache /usr/local/bin/
++cp /usr/bin/ccache /usr/local/bin/
+ ln -s ccache /usr/local/bin/gcc
+ ln -s ccache /usr/local/bin/g++
+ -------------------------------------------------------------------------------
+@@ -54,8 +57,8 @@ On platforms that don't support symbolic links you can simply copy ccache to the
+ compiler name instead for a similar effect:
+ +
+ -------------------------------------------------------------------------------
+-cp ccache /usr/local/bin/gcc
+-cp ccache /usr/local/bin/g++
++cp /usr/bin/ccache /usr/local/bin/gcc
++cp /usr/bin/ccache /usr/local/bin/g++
+ -------------------------------------------------------------------------------
+ +
+ And so forth. This will work as long as the directory with symbolic links or

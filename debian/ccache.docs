@@ -1,0 +1,4 @@
+doc/MANUAL.adoc
+obj-${DEB_TARGET_GNU_TYPE}/doc/MANUAL.html
+obj-${DEB_TARGET_GNU_TYPE}/doc/NEWS.html
+README.md

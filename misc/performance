@@ -1,0 +1,351 @@
+#! /usr/bin/env python3
+#
+# Copyright (C) 2010-2020 Joel Rosdahl and other contributors
+#
+# See doc/AUTHORS.adoc for a complete list of contributors.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+from optparse import OptionParser
+from os import access, environ, mkdir, getpid, X_OK
+from os.path import (
+    abspath,
+    basename,
+    exists,
+    isabs,
+    isfile,
+    join as joinpath,
+    realpath,
+    splitext,
+)
+from shutil import rmtree
+from subprocess import call
+from statistics import median
+from time import time
+import sys
+
+USAGE = """%prog [options] <compiler> [compiler options] <source code file>"""
+
+DESCRIPTION = """\
+This program compiles a C/C++ file with/without ccache a number of times to get
+some idea of ccache speedup and overhead in the preprocessor and direct modes.
+The arguments to the program should be the compiler, optionally followed by
+compiler options, and finally the source file to compile. The compiler options
+must not contain -c or -o as these options will be added later. Example:
+misc/performance gcc -g -O2 -Idir file.c
+"""
+
+DEFAULT_CCACHE = "./ccache"
+DEFAULT_DIRECTORY = "."
+DEFAULT_HIT_FACTOR = 1
+DEFAULT_TIMES = 30
+
+PHASES = [
+    "without ccache",
+    "with ccache, preprocessor mode, cache miss",
+    "with ccache, preprocessor mode, cache hit",
+    "with ccache, direct mode, cache miss",
+    "with ccache, direct mode, cache hit",
+    "with ccache, depend mode, cache miss",
+    "with ccache, depend mode, cache hit",
+]
+
+verbose = False
+
+
+def progress(msg):
+    if verbose:
+        sys.stderr.write(msg)
+        sys.stderr.flush()
+
+
+def recreate_dir(x):
+    if exists(x):
+        rmtree(x)
+    mkdir(x)
+
+
+def test(tmp_dir, options, compiler_args, source_file):
+    src_dir = "%s/src" % tmp_dir
+    obj_dir = "%s/obj" % tmp_dir
+    ccache_dir = "%s/ccache" % tmp_dir
+    mkdir(src_dir)
+    mkdir(obj_dir)
+
+    compiler_args += ["-c", "-o"]
+    extension = splitext(source_file)[1]
+    hit_factor = options.hit_factor
+    times = options.times
+
+    progress("Creating source code\n")
+    for i in range(times):
+        with open("%s/%d%s" % (src_dir, i, extension), "w") as fp:
+            with open(source_file) as fp2:
+                content = fp2.read()
+            fp.write(content)
+            fp.write("\nint ccache_perf_test_%d;\n" % i)
+
+    environment = {"CCACHE_DIR": ccache_dir, "PATH": environ["PATH"]}
+    environment["CCACHE_COMPILERCHECK"] = options.compilercheck
+    if options.compression_level:
+        environment["CCACHE_COMPRESSLEVEL"] = str(options.compression_level)
+    if options.file_clone:
+        environment["CCACHE_FILECLONE"] = "1"
+    if options.hardlink:
+        environment["CCACHE_HARDLINK"] = "1"
+    if options.no_compression:
+        environment["CCACHE_NOCOMPRESS"] = "1"
+    if options.no_cpp2:
+        environment["CCACHE_NOCPP2"] = "1"
+    if options.no_stats:
+        environment["CCACHE_NOSTATS"] = "1"
+
+    results = []
+
+    def run(
+        times, *, use_direct, use_depend, use_ccache=True, print_progress=True
+    ):
+        timings = []
+        for i in range(times):
+            obj = "%s/%d.o" % (obj_dir, i)
+            src = "%s/%d%s" % (src_dir, i, extension)
+            if use_ccache:
+                args = [options.ccache]
+            else:
+                args = []
+            args += compiler_args + [obj, src]
+            env = environment.copy()
+            if not use_direct:
+                env["CCACHE_NODIRECT"] = "1"
+            if use_depend:
+                env["CCACHE_DEPEND"] = "1"
+            if print_progress:
+                progress(".")
+            t0 = time()
+            if call(args, env=env) != 0:
+                sys.stderr.write(
+                    'Error running "%s"; please correct\n' % " ".join(args)
+                )
+                sys.exit(1)
+            timings.append(time() - t0)
+        return timings
+
+    # Warm up the disk cache.
+    recreate_dir(ccache_dir)
+    recreate_dir(obj_dir)
+    run(1, use_direct=True, use_depend=False, print_progress=False)
+
+    ###########################################################################
+    # Without ccache
+    recreate_dir(ccache_dir)
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[0])
+    results.append(
+        run(times, use_direct=False, use_depend=False, use_ccache=False)
+    )
+    progress("\n")
+
+    ###########################################################################
+    # Preprocessor mode
+    recreate_dir(ccache_dir)
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[1])
+    results.append(run(times, use_direct=False, use_depend=False))
+    progress("\n")
+
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[2])
+    res = []
+    for j in range(hit_factor):
+        res += run(times, use_direct=False, use_depend=False)
+    results.append(res)
+    progress("\n")
+
+    ###########################################################################
+    # Direct mode
+    recreate_dir(ccache_dir)
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[3])
+    results.append(run(times, use_direct=True, use_depend=False))
+    progress("\n")
+
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[4])
+    res = []
+    for j in range(hit_factor):
+        res += run(times, use_direct=True, use_depend=False)
+    results.append(res)
+    progress("\n")
+
+    ###########################################################################
+    # Direct+depend mode
+    recreate_dir(ccache_dir)
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[5])
+    results.append(run(times, use_direct=True, use_depend=True))
+    progress("\n")
+
+    recreate_dir(obj_dir)
+    progress("Compiling %s\n" % PHASES[6])
+    res = []
+    for j in range(hit_factor):
+        res += run(times, use_direct=True, use_depend=True)
+    results.append(res)
+    progress("\n")
+
+    for i, x in enumerate(results):
+        results[i] = median(x)
+    return results
+
+
+def print_result_as_text(results):
+    for i, x in enumerate(PHASES):
+        print(
+            "%-43s %6.4f s (%8.4f %%) (%8.4f x)"
+            % (
+                x.capitalize() + ":",
+                results[i],
+                100 * (results[i] / results[0]),
+                results[0] / results[i],
+            )
+        )
+
+
+def print_result_as_xml(results):
+    print('<?xml version="1.0" encoding="UTF-8"?>')
+    print("<ccache-perf>")
+    for i, x in enumerate(PHASES):
+        print("<measurement>")
+        print("<name>%s</name>" % x.capitalize())
+        print("<seconds>%.4f</seconds>" % results[i])
+        print("<percent>%.4f</percent>" % (100 * (results[i] / results[0])))
+        print("<times>%.4f</times>" % (results[0] / results[i]))
+        print("</measurement>")
+    print("</ccache-perf>")
+
+
+def on_off(x):
+    return "on" if x else "off"
+
+
+def find_in_path(cmd):
+    if isabs(cmd):
+        return cmd
+    else:
+        for path in environ["PATH"].split(":"):
+            p = joinpath(path, cmd)
+            if isfile(p) and access(p, X_OK):
+                return p
+        return None
+
+
+def main(argv):
+    op = OptionParser(usage=USAGE, description=DESCRIPTION)
+    op.disable_interspersed_args()
+    op.add_option(
+        "--ccache", help="location of ccache (default: %s)" % DEFAULT_CCACHE
+    )
+    op.add_option(
+        "--compilercheck", help="specify compilercheck (default: mtime)"
+    )
+    op.add_option(
+        "--no-compression", help="disable compression", action="store_true"
+    )
+    op.add_option("--compression-level", help="set compression level", type=int)
+    op.add_option(
+        "-d",
+        "--directory",
+        help=(
+            "where to create the temporary directory with the cache and other"
+            " files (default: %s)" % DEFAULT_DIRECTORY
+        ),
+    )
+    op.add_option("--file-clone", help="use file cloning", action="store_true")
+    op.add_option("--hardlink", help="use hard links", action="store_true")
+    op.add_option(
+        "--hit-factor",
+        help=(
+            "how many times more to compile the file for cache hits (default:"
+            " %d)" % DEFAULT_HIT_FACTOR
+        ),
+        type="int",
+    )
+    op.add_option(
+        "--no-cpp2", help="compile preprocessed output", action="store_true"
+    )
+    op.add_option(
+        "--no-stats", help="don't write statistics", action="store_true"
+    )
+    op.add_option(
+        "-n",
+        "--times",
+        help=(
+            "number of times to compile the file (default: %d)" % DEFAULT_TIMES
+        ),
+        type="int",
+    )
+    op.add_option(
+        "-v", "--verbose", help="print progress messages", action="store_true"
+    )
+    op.add_option("--xml", help="print results as XML", action="store_true")
+    op.set_defaults(
+        ccache=DEFAULT_CCACHE,
+        compilercheck="mtime",
+        directory=DEFAULT_DIRECTORY,
+        hit_factor=DEFAULT_HIT_FACTOR,
+        times=DEFAULT_TIMES,
+    )
+    options, args = op.parse_args(argv[1:])
+    if len(args) < 2:
+        op.error("Missing arguments; pass -h/--help for help")
+
+    global verbose
+    verbose = options.verbose
+
+    options.ccache = abspath(options.ccache)
+
+    compiler = find_in_path(args[0])
+    if compiler is None:
+        op.error("Could not find %s in PATH" % args[0])
+    if "ccache" in basename(realpath(compiler)):
+        op.error(
+            "%s seems to be a symlink to ccache; please specify the path to"
+            " the real compiler instead" % compiler
+        )
+
+    if not options.xml:
+        print(
+            "Compilation command: %s -c -o %s.o"
+            % (" ".join(args), splitext(argv[-1])[0])
+        )
+        print("Compilercheck:", options.compilercheck)
+        print("Compression:", on_off(not options.no_compression))
+        print("Compression level:", options.compression_level or "default")
+        print("File cloning:", on_off(options.file_clone))
+        print("Hard linking:", on_off(options.hardlink))
+        print("No cpp2:", on_off(options.no_cpp2))
+        print("No stats:", on_off(options.no_stats))
+
+    tmp_dir = "%s/perfdir.%d" % (abspath(options.directory), getpid())
+    recreate_dir(tmp_dir)
+    results = test(tmp_dir, options, args[:-1], args[-1])
+    rmtree(tmp_dir)
+    if options.xml:
+        print_result_as_xml(results)
+    else:
+        print_result_as_text(results)
+
+
+main(sys.argv)
