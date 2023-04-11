@@ -33,5 +33,15 @@
   "bugs": {
     "url": "https://github.com/hendrikmuhs/ccache-action/issues"
   },
-  "homepage": "https://github.com/hendrikmuhs/ccache-action#readme"
+  "homepage": "https://github.com/hendrikmuhs/ccache-action#readme",
+ 
+  "bin": {
+    "update-ccache-symlinks.sh": "./src/update-ccache-symlinks.sh",
+    "update-ccache-symlinks.in": "./third-party/debian-ccache/debian/update-ccache-symlinks.in"
+  }
+
 }
+
+
+
+
