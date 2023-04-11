@@ -1,0 +1,3 @@
+interest-noawait /usr/lib/gcc
+interest-noawait /usr/lib/gcc-cross
+interest-noawait /usr/lib/%DEB_HOST_MULTIARCH%/gcc

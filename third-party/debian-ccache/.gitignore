@@ -1,0 +1,26 @@
+# Typical build directories
+/build*/
+
+# CLion
+/.idea/
+/cmake-build-*/
+
+# Downloaded tools
+misc/.clang-format-exe
+
+# Emacs save files
+*~
+
+# Vim save files
+.*.sw?
+.*.un~
+
+# Visual Studio settings and build output
+/.vs/
+/out/build/
+
+# Visual Studio Code settings
+/.vscode/
+
+# macOS custom attributes
+.DS_Store/

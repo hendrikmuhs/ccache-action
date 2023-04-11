@@ -1,0 +1,4 @@
+0       beshort         0xCCAC          ccache entry
+>2      byte            x               \b, format version %d
+>3      byte            0               \b, result
+>3      byte            1               \b, manifest

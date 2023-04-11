@@ -1,0 +1,31 @@
+---
+Checks:          '-*,
+                  readability-*,
+                  -readability-implicit-bool-conversion,
+                  -readability-function-cognitive-complexity,
+                  -readability-magic-numbers,
+                  -readability-else-after-return,
+                  -readability-named-parameter,
+                  -readability-qualified-auto,
+                  -readability-redundant-declaration'
+WarningsAsErrors: '*'
+# Only include headers directly in unittest.
+HeaderFilterRegex: 'unittest/[^/]*$'
+CheckOptions:
+  # Always add braces (added here just in case Clang-Tidy default changes).
+  - key:             readability-braces-around-statements.ShortStatementLines
+    value:           0
+
+  # If you hit a limit, please consider changing the code instead of the limit.
+  - key:             readability-function-size.LineThreshold
+    value:           999999
+  - key:             readability-function-size.StatementThreshold
+    value:           999999
+  - key:             readability-function-size.ParameterThreshold
+    value:           7
+  - key:             readability-function-size.NestingThreshold
+    value:           999999
+  - key:             readability-function-size.VariableThreshold
+    value:           999999
+...
+

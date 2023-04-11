@@ -1,0 +1,45 @@
+# This configuration should work with Clang-Format 11 and higher.
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+AllowAllConstructorInitializersOnNextLine: false
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakAfterReturnType: AllDefinitions
+AlwaysBreakBeforeMultilineStrings: true
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterClass: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterUnion: true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"system.hpp"$'
+    Priority: 1
+  - Regex: '^["<]third_party/'
+    Priority: 4
+  # System headers:
+  - Regex: '\.h>$'
+    Priority: 5
+  # C++ headers:
+  - Regex: '^<[^.]+>$'
+    Priority: 6
+  - Regex: '^"'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 3
+IndentPPDirectives: AfterHash
+KeepEmptyLinesAtTheStartOfBlocks: false
+PointerAlignment: Left
+SpaceAfterTemplateKeyword: false
+Standard: Cpp11

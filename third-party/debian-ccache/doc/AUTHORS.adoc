@@ -1,0 +1,162 @@
+= Ccache authors
+
+Ccache was originally written by Andrew Tridgell and is currently developed and
+maintained by Joel Rosdahl.
+
+Ccache is a collective work with contributions from many people, including:
+
+* Abubakar Nur Khalil
+* Aleksander Salwa
+* Alexander Falkenstern
+* Alexander Korsunsky
+* Alexander Lanin
+* Alexey Sheplyakov
+* Alexey Telishev
+* Alexey Tourbin
+* Alfred Landrum
+* Anders F Björklund
+* Andrea Bittau
+* Andreas Huber
+* André Klitzing
+* Andrew Boie
+* Andrew Stubbs
+* Andrew Tridgell
+* Arne Hasselbring
+* Azat Khuzhin
+* Bernhard Bauer
+* Bin Li
+* Björn Jacke
+* Breno Guimaraes
+* Chiaki Ishikawa
+* Chris AtLee
+* Chris Burr
+* Clemens Rabe
+* Cristian Adam
+* Daniel Richtmann
+* David Givone
+* Deepak Yadav
+* Doug Anderson
+* Edward Z. Yang
+* Enrico Sorichetti
+* Erik Flodin
+* Evangelos Foutras
+* Florin Trofin
+* Francois Marier
+* Gabriel Scherer
+* Geert Bosch
+* Geert Kloosterman
+* Gregor Jasny
+* Grigory Entin
+* Harsh Shandilya
+* Havard Graff
+* Hongli Lai
+* Igor Pylypiv
+* Ivan Vaigult
+* Ivan Volnov
+* Jacob Young
+* Jiang Jiang
+* Joel Galenson
+* Joel Rosdahl
+* John Basila
+* John Coiner
+* Jon Bernard
+* Jonny Yu
+* Jon Petrissans
+* Jørgen P. Tjernø
+* Josh Soref
+* Josh Triplett
+* Justin Lebar
+* Ka Ho Ng
+* Karl Chen
+* Khem Raj
+* Kira Bruneau
+* Kona Blend
+* Kovarththanan Rajaratnam
+* Lalit Chhabra
+* Lars Gustäbel
+* Leanid Chaika
+* Loïc Yhuel
+* Louis Caron
+* Luboš Luňák
+* Maarten Maathuis
+* Marius Zwicker
+* Mark Starovoytov
+* Martin Ettl
+* Martin Pool
+* Mathias De Maré
+* Matthias Kretz
+* Matt Whitlock
+* Melven Roehrig-Zoellner
+* Michael Kruse
+* Michael Marineau
+* Michael Meeks
+* Michał Mirosław
+* Mihai Serban
+* Mike Blumenkrantz
+* Mike Frysinger
+* Mike Gulick
+* Mikhail Kolomeytsev
+* Mizuha Himuraki
+* Mostyn Bramley-Moore
+* Neil Mushell
+* Nicholas Hutchinson
+* Nick Schultz
+* Norbert Lange
+* Oded Shimon
+* Oleg Sidorkin
+* Olle Liljenzin
+* Orgad Shaneh
+* Orion Poplawski
+* Owen Mann
+* Patrick von Reth
+* Paul Bunch
+* Paul Fultz II
+* Paul Griffith
+* Pavel Boldin
+* Pavol Sakac
+* Pawel Krysiak
+* Per Nordlöw
+* Peter Budai
+* Peter Steinberger
+* Petr Štetiar
+* Philippe Proulx
+* Philipp Gortan
+* Philipp Storz
+* Rafael Kitover
+* Raihaan Shouhell
+* Ramiro Polla
+* Robert Yang
+* Robin H. Johnson
+* Rolf Bjarne Kvinge
+* Rosen Penev
+* R. Voggenauer
+* Ryan Brown
+* Ryan Burns
+* Ryan Egesdahl
+* Sam Gross
+* Sergei Trofimovich
+* Sergey Semushin
+* Steffen Dettmer
+* Steve Mokris
+* Stuart Henderson
+* Sumit Jamgade
+* Thomas Otto
+* Thomas Röfer
+* Timofei Kushnir
+* Tim Potter
+* Tomasz Miąsko
+* Tom Hughes
+* Tom Stellard
+* Tor Arne Vestbø
+* Vadim Petrochenkov
+* Varun Sharma
+* Vili Väinölä
+* Ville Skyttä
+* William S Fulton
+* Wilson Snyder
+* Xavier René-Corail
+* Yiding Jia
+* Yoshimasa Niwa
+* Yvan Janssens
+
+Thanks!

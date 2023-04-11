@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+echo "Updating symlinks in /usr/lib/ccache ..."
+update-ccache-symlinks
+
+#DEBHELPER#
