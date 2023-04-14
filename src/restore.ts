@@ -62,6 +62,9 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
+  if (!await io.which("apt-get")) {
+    throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.")
+  }
   await execBashSudo("apt-get install -y ccache");
 }
 
