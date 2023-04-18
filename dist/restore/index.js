@@ -59426,10 +59426,15 @@ async function installCcacheMac() {
     await execBash("brew install ccache");
 }
 async function installCcacheLinux() {
-    if (!await io.which("apt-get")) {
-        throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
+    if (await io.which("apt-get")) {
+        await execBashSudo("apt-get install -y ccache");
+        return;
     }
-    await execBashSudo("apt-get install -y ccache");
+    else if (await io.which("apk")) {
+        await execBash("apk add ccache");
+        return;
+    }
+    throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
 }
 async function installCcacheWindows() {
     await installCcacheFromGitHub("4.7.4", "windows-x86_64", 
@@ -59450,7 +59455,7 @@ async function installSccacheWindows() {
     `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
 }
 async function execBash(cmd) {
-    await exec.exec("bash", ["-xc", cmd]);
+    await exec.exec("sh", ["-xc", cmd]);
 }
 async function execBashSudo(cmd) {
     await execBash("$(which sudo) " + cmd);
