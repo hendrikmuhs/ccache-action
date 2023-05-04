@@ -62,10 +62,14 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  if (!await io.which("apt-get")) {
-    throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.")
+  if (await io.which("apt-get")) {
+    await execBashSudo("apt-get install -y ccache");
+    return;
+  } else if (await io.which("apk")) {
+    await execBash("apk add ccache");
+    return;
   }
-  await execBashSudo("apt-get install -y ccache");
+  throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
 }
 
 async function installCcacheWindows() : Promise<void> {
@@ -106,7 +110,7 @@ async function installSccacheWindows() : Promise<void> {
 }
 
 async function execBash(cmd : string) {
-  await exec.exec("bash", ["-xc", cmd]);
+  await exec.exec("sh", ["-xc", cmd]);
 }
 
 async function execBashSudo(cmd : string) {

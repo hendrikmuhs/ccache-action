@@ -163,7 +163,7 @@ jobs:
         run: |
           [[ ${{ steps.restore-keys.outputs.test-cache-hit }} = true ]]
 
-  test_docker:
+  test_docker_ubuntu:
     # Test that it works in a Docker container without sudo.
     runs-on: ubuntu-latest
     container: ubuntu:latest
@@ -171,6 +171,17 @@ jobs:
       - uses: actions/checkout@v2
       - run: apt update
         shell: bash
+      - name: Run ccache-action
+        uses: ./
+
+  test_docker_alpine:
+    # Test that it works in Alpine Docker container with apk package manager.
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: apk update
+        shell: sh
       - name: Run ccache-action
         uses: ./
 
