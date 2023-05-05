@@ -47,6 +47,7 @@ async function configure(ccacheVariant : string) : Promise<void> {
   if (ccacheVariant === "ccache") {
     await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
+    await execBash(`ccache --set-config=compiler_check=content`);
     await execBash(`ccache --set-config=compression=true`);
     core.info("Cccache config:");
     await execBash("ccache -p");
