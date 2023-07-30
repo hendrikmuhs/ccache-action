@@ -59393,7 +59393,6 @@ async function restore(ccacheVariant) {
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
     const paths = [`.${ccacheVariant}`];
     core.saveState("primaryKey", primaryKey);
-	
     const shouldRestore = core.getBooleanInput("restore");
     if (!shouldRestore) {
         core.info("Restore set to false, skip restoring cache.");
