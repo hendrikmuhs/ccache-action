@@ -189,7 +189,8 @@ async function runInner() : Promise<void> {
   core.startGroup("Restore cache");
   if (!shouldRestore) {
     core.info("Restore set to false, skip restoring cache.");
-  } else {
+    const keyPrefix = ccacheVariant + "-";
+    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;  } else {
     await restore(ccacheVariant);
   }
   core.endGroup();
