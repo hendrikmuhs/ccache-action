@@ -187,7 +187,7 @@ async function runInner() : Promise<void> {
   }
 
   core.startGroup("Restore cache");
-  if (core.getState("shouldRestore") == "false") {
+  if (core.getState("shouldRestore") == false) {
     core.info("Restore set to false, skip restoring cache.");
   } else {
     await restore(ccacheVariant);
