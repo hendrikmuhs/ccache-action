@@ -59391,7 +59391,7 @@ async function run() {
         const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
         const primaryKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("primaryKey");
         const doRestore = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("restore");
-        if ((!ccacheVariant || !primaryKey) && !doRestore) {
+        if ((!ccacheVariant || !primaryKey) && doRestore) {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.notice("ccache setup failed, skipping saving.");
             return;
         }
