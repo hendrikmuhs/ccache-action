@@ -26,16 +26,21 @@ async function restore(ccacheVariant : string) : Promise<void> {
 
   core.saveState("primaryKey", primaryKey);
 
-  const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
-  if (restoredWith) {
-    core.info(`Restored from cache key "${restoredWith}".`);
-    if (SELF_CI) {
-      core.setOutput("test-cache-hit", true)
-    }
+  const shouldRestore = core.getBooleanInput("restore");
+  if (!shouldRestore) {
+    core.info("Restore set to false, skip restoring cache.");
   } else {
-    core.info("No cache found.");
-    if (SELF_CI) {
-      core.setOutput("test-cache-hit", false)
+    const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
+    if (restoredWith) {
+      core.info(`Restored from cache key "${restoredWith}".`);
+      if (SELF_CI) {
+        core.setOutput("test-cache-hit", true)
+      }
+    } else {
+      core.info("No cache found.");
+      if (SELF_CI) {
+        core.setOutput("test-cache-hit", false)
+      }
     }
   }
 }
@@ -165,7 +170,6 @@ async function runInner() : Promise<void> {
   core.saveState("ccacheVariant", ccacheVariant);
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
-  const shouldRestore = core.getBooleanInput("restore");
   let ccachePath = await io.which(ccacheVariant);
   if (!ccachePath) {
     core.startGroup(`Install ${ccacheVariant}`);
@@ -187,12 +191,7 @@ async function runInner() : Promise<void> {
   }
 
   core.startGroup("Restore cache");
-  if (!shouldRestore) {
-    core.info("Restore set to false, skip restoring cache.");
-    const keyPrefix = ccacheVariant + "-";
-    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;  } else {
-    await restore(ccacheVariant);
-  }
+  await restore(ccacheVariant);
   core.endGroup();
 
   core.startGroup(`Configure ${ccacheVariant}`);

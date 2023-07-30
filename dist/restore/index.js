@@ -59393,19 +59393,25 @@ async function restore(ccacheVariant) {
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
     const paths = [`.${ccacheVariant}`];
     core.saveState("primaryKey", primaryKey);
-    const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
-    if (restoredWith) {
-        core.info(`Restored from cache key "${restoredWith}".`);
-        if (SELF_CI) {
-            core.setOutput("test-cache-hit", true);
-        }
-    }
-    else {
-        core.info("No cache found.");
-        if (SELF_CI) {
-            core.setOutput("test-cache-hit", false);
-        }
-    }
+	
+    const shouldRestore = core.getBooleanInput("restore");
+	if (!shouldRestore) {
+		core.info("Restore set to false, skip restoring cache.");
+	} else {
+		const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
+		if (restoredWith) {
+			core.info(`Restored from cache key "${restoredWith}".`);
+			if (SELF_CI) {
+				core.setOutput("test-cache-hit", true);
+			}
+		}
+		else {
+			core.info("No cache found.");
+			if (SELF_CI) {
+				core.setOutput("test-cache-hit", false);
+			}
+		}
+	}
 }
 async function configure(ccacheVariant) {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
@@ -59505,7 +59511,6 @@ async function runInner() {
     core.saveState("ccacheVariant", ccacheVariant);
     core.saveState("shouldSave", core.getBooleanInput("save"));
     core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
-    const shouldRestore = core.getBooleanInput("restore");
     let ccachePath = await io.which(ccacheVariant);
     if (!ccachePath) {
         core.startGroup(`Install ${ccacheVariant}`);
@@ -59526,14 +59531,7 @@ async function runInner() {
         core.endGroup();
     }
     core.startGroup("Restore cache");
-    if (!shouldRestore) {
-        core.info("Restore set to false, skip restoring cache.");
-        const keyPrefix = ccacheVariant + "-";
-        const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
-    }
-    else {
-        await restore(ccacheVariant);
-    }
+    await restore(ccacheVariant);
     core.endGroup();
     core.startGroup(`Configure ${ccacheVariant}`);
     await configure(ccacheVariant);
