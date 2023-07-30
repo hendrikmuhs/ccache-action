@@ -59395,23 +59395,24 @@ async function restore(ccacheVariant) {
     core.saveState("primaryKey", primaryKey);
 	
     const shouldRestore = core.getBooleanInput("restore");
-	if (!shouldRestore) {
-		core.info("Restore set to false, skip restoring cache.");
-	} else {
-		const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
-		if (restoredWith) {
-			core.info(`Restored from cache key "${restoredWith}".`);
-			if (SELF_CI) {
-				core.setOutput("test-cache-hit", true);
-			}
-		}
-		else {
-			core.info("No cache found.");
-			if (SELF_CI) {
-				core.setOutput("test-cache-hit", false);
-			}
-		}
-	}
+    if (!shouldRestore) {
+        core.info("Restore set to false, skip restoring cache.");
+    }
+    else {
+        const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
+        if (restoredWith) {
+            core.info(`Restored from cache key "${restoredWith}".`);
+            if (SELF_CI) {
+                core.setOutput("test-cache-hit", true);
+            }
+        }
+        else {
+            core.info("No cache found.");
+            if (SELF_CI) {
+                core.setOutput("test-cache-hit", false);
+            }
+        }
+    }
 }
 async function configure(ccacheVariant) {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";

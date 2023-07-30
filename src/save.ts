@@ -43,7 +43,7 @@ async function run() : Promise<void> {
     }
     const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
-    if (ccacheVariant || !primaryKey) {
+    if (!ccacheVariant || !primaryKey) {
       core.notice("ccache setup failed, skipping saving.");
       return;
     }
