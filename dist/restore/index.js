@@ -59526,7 +59526,7 @@ async function runInner() {
         core.endGroup();
     }
     core.startGroup("Restore cache");
-    if (shouldRestore === "false") {
+    if (`${shouldRestore}` === "false") {
         core.info("Restore set to false, skip restoring cache.");
     }
     else {
