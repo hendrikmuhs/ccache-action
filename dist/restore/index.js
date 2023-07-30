@@ -59530,7 +59530,7 @@ async function runInner() {
         core.info("Restore set to false, skip restoring cache.");
     }
     else {
-        core.info("Test Restore.");
+        core.info("run restore.");
         await restore(ccacheVariant);
     }
     core.endGroup();
