@@ -59505,7 +59505,7 @@ async function runInner() {
     core.saveState("ccacheVariant", ccacheVariant);
     core.saveState("shouldSave", core.getBooleanInput("save"));
     core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
-	core.saveState("shouldRestore", core.getBooleanInput("restore"));
+    core.saveState("shouldRestore", core.getBooleanInput("restore"));
     let ccachePath = await io.which(ccacheVariant);
     if (!ccachePath) {
         core.startGroup(`Install ${ccacheVariant}`);
