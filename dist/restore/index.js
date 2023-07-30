@@ -59505,7 +59505,7 @@ async function runInner() {
     core.saveState("ccacheVariant", ccacheVariant);
     core.saveState("shouldSave", core.getBooleanInput("save"));
     core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
-    core.saveState("shouldRestore", core.getBooleanInput("restore"));
+    const shouldRestore = core.getBooleanInput("restore");
     let ccachePath = await io.which(ccacheVariant);
     if (!ccachePath) {
         core.startGroup(`Install ${ccacheVariant}`);
@@ -59526,13 +59526,13 @@ async function runInner() {
         core.endGroup();
     }
     core.startGroup("Restore cache");
-    if (`${shouldRestore}` === "false") {
+    if (shouldRestore === "false") {
         core.info("Restore set to false, skip restoring cache.");
     }
     else {
         core.info(core.getState("shouldRestore"));
         core.info(core.getState("shouldSave"));
-        core.info(`Configure ${ccacheVariant}`);
+        core.info(`Configure ${shouldRestore}`);
         await restore(ccacheVariant);
     }
     core.endGroup();
