@@ -165,6 +165,7 @@ async function runInner() : Promise<void> {
   core.saveState("ccacheVariant", ccacheVariant);
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
+  core.saveState("shouldRestore", core.getBooleanInput("restore"));
   let ccachePath = await io.which(ccacheVariant);
   if (!ccachePath) {
     core.startGroup(`Install ${ccacheVariant}`);
@@ -186,7 +187,11 @@ async function runInner() : Promise<void> {
   }
 
   core.startGroup("Restore cache");
-  await restore(ccacheVariant);
+  if (core.getState("shouldRestore") == "false") {
+    core.info("Restore set to false, skip restoring cache.");
+  } else {
+	await restore(ccacheVariant);
+  }
   core.endGroup();
 
   core.startGroup(`Configure ${ccacheVariant}`);
