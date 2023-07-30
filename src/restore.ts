@@ -192,6 +192,7 @@ async function runInner() : Promise<void> {
   } else {
     core.info(core.getState("shouldRestore"));
     core.info(core.getState("shouldSave"));
+	core.info("test");
     await restore(ccacheVariant);
   }
   core.endGroup();

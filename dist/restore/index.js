@@ -59532,6 +59532,7 @@ async function runInner() {
     else {
         core.info(core.getState("shouldRestore"));
         core.info(core.getState("shouldSave"));
+        core.info("test");
         await restore(ccacheVariant);
     }
     core.endGroup();
