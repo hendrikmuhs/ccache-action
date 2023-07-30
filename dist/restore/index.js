@@ -59530,9 +59530,6 @@ async function runInner() {
         core.info("Restore set to false, skip restoring cache.");
     }
     else {
-        core.info(core.getState("shouldRestore"));
-        core.info(core.getState("shouldSave"));
-        core.info(`Configure ${shouldRestore}`);
         await restore(ccacheVariant);
     }
     core.endGroup();
