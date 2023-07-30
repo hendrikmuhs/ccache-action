@@ -59526,10 +59526,11 @@ async function runInner() {
         core.endGroup();
     }
     core.startGroup("Restore cache");
-    if (core.getState("shouldRestore") == false) {
+    if (core.getState("shouldRestore") == "false") {
         core.info("Restore set to false, skip restoring cache.");
     }
     else {
+        core.info("Test Restore.");
         await restore(ccacheVariant);
     }
     core.endGroup();
