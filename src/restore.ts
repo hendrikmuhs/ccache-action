@@ -29,18 +29,18 @@ async function restore(ccacheVariant : string) : Promise<void> {
   const shouldRestore = core.getBooleanInput("restore");
   if (!shouldRestore) {
     core.info("Restore set to false, skip restoring cache.");
+    return;
+  }
+  const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
+  if (restoredWith) {
+    core.info(`Restored from cache key "${restoredWith}".`);
+    if (SELF_CI) {
+      core.setOutput("test-cache-hit", true)
+    }
   } else {
-    const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
-    if (restoredWith) {
-      core.info(`Restored from cache key "${restoredWith}".`);
-      if (SELF_CI) {
-        core.setOutput("test-cache-hit", true)
-      }
-    } else {
-      core.info("No cache found.");
-      if (SELF_CI) {
-        core.setOutput("test-cache-hit", false)
-      }
+    core.info("No cache found.");
+    if (SELF_CI) {
+      core.setOutput("test-cache-hit", false)
     }
   }
 }
