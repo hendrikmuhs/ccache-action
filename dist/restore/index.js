@@ -59396,7 +59396,7 @@ async function restore(ccacheVariant) {
     const shouldRestore = core.getBooleanInput("restore");
     if (!shouldRestore) {
         core.info("Restore set to false, skip restoring cache.");
-		return;
+        return;
     }
     const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
     if (restoredWith) {
