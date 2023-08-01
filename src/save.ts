@@ -37,6 +37,13 @@ function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
 
 async function run() : Promise<void> {
   try {
+    const ccacheVariant = core.getState("ccacheVariant");
+    const primaryKey = core.getState("primaryKey");
+    if (!ccacheVariant || !primaryKey) {
+      core.notice("ccache setup failed, skipping saving.");
+      return;
+    }
+
     // Some versions of ccache do not support --verbose
     const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
 
@@ -47,12 +54,6 @@ async function run() : Promise<void> {
     
     if (core.getState("shouldSave") !== "true") {
       core.info("Not saving cache because 'save' is set to 'false'.");
-      return;
-    }
-    const ccacheVariant = core.getState("ccacheVariant");
-    const primaryKey = core.getState("primaryKey");
-    if (!ccacheVariant || !primaryKey) {
-      core.notice("ccache setup failed, skipping saving.");
       return;
     }
 
