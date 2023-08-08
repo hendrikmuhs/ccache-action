@@ -26,6 +26,11 @@ async function restore(ccacheVariant : string) : Promise<void> {
 
   core.saveState("primaryKey", primaryKey);
 
+  const shouldRestore = core.getBooleanInput("restore");
+  if (!shouldRestore) {
+    core.info("Restore set to false, skip restoring cache.");
+    return;
+  }
   const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
   if (restoredWith) {
     core.info(`Restored from cache key "${restoredWith}".`);

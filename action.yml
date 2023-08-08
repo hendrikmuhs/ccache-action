@@ -8,6 +8,10 @@ inputs:
   restore-keys:
     description: "An ordered list of keys to use for restoring the cache if no cache hit occurred for key"
     required: false
+  restore:
+    description: "Flag for if you should restore cache or not, useful for generating clean cache."
+    default: true
+    required: false
   max-size:
     description: "Max size of the cache"
     default: "500M"

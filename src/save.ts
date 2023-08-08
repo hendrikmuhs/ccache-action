@@ -37,10 +37,6 @@ function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
 
 async function run() : Promise<void> {
   try {
-    if (core.getState("shouldSave") !== "true") {
-      core.info("Not saving cache because 'save' is set to 'false'.");
-      return;
-    }
     const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
     if (!ccacheVariant || !primaryKey) {
@@ -55,6 +51,11 @@ async function run() : Promise<void> {
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
     await exec.exec(`${ccacheVariant} -s${verbosity}`);
     core.endGroup();
+    
+    if (core.getState("shouldSave") !== "true") {
+      core.info("Not saving cache because 'save' is set to 'false'.");
+      return;
+    }
 
     if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
       core.info("Not saving cache because no objects are cached.");
