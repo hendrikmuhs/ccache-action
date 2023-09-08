@@ -59616,13 +59616,16 @@ async function restore(ccacheVariant) {
         }
     }
 }
-async function configure(ccacheVariant) {
+async function configure(ccacheVariant, platform) {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
     if (ccacheVariant === "ccache") {
         await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
         await execBash(`ccache --set-config=max_size='${maxSize}'`);
         await execBash(`ccache --set-config=compression=true`);
+        if (platform === "darwin") {
+            await execBash(`ccache --set-config=compiler_check=content`);
+        }
         core.info("Cccache config:");
         await execBash("ccache -p");
     }
@@ -59736,8 +59739,8 @@ async function runInner() {
     core.startGroup("Restore cache");
     await restore(ccacheVariant);
     core.endGroup();
-    core.startGroup(`Configure ${ccacheVariant}`);
-    await configure(ccacheVariant);
+    core.startGroup(`Configure ${ccacheVariant}, ${external_process_namespaceObject.platform}`);
+    await configure(ccacheVariant, external_process_namespaceObject.platform);
     await execBash(`${ccacheVariant} -z`);
     core.endGroup();
 }
