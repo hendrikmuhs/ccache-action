@@ -45,7 +45,7 @@ async function restore(ccacheVariant : string) : Promise<void> {
   }
 }
 
-async function configure(ccacheVariant : string) : Promise<void> {
+async function configure(ccacheVariant : string, platform : string) : Promise<void> {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const maxSize = core.getInput('max-size');
   
@@ -53,6 +53,9 @@ async function configure(ccacheVariant : string) : Promise<void> {
     await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
     await execBash(`ccache --set-config=compression=true`);
+    if (platform === "darwin") {
+      await execBash(`ccache --set-config=compiler_check=content`);
+    }
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
@@ -194,8 +197,8 @@ async function runInner() : Promise<void> {
   await restore(ccacheVariant);
   core.endGroup();
 
-  core.startGroup(`Configure ${ccacheVariant}`);
-  await configure(ccacheVariant);
+  core.startGroup(`Configure ${ccacheVariant}, ${process.platform}`);
+  await configure(ccacheVariant, process.platform);
   await execBash(`${ccacheVariant} -z`);
   core.endGroup();
 }
