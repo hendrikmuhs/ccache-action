@@ -56,6 +56,15 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
     if (platform === "darwin") {
       await execBash(`ccache --set-config=compiler_check=content`);
     }
+    if (core.getBooleanInput("create-symlink")) {
+      const ccache = await io.which("ccache");
+      await execBash(`ln -s ${ccache} /usr/local/bin/gcc`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/g++`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/cc`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/c++`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/clang`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/clang++`);
+    }
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {

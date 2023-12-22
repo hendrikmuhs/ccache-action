@@ -28,6 +28,10 @@ inputs:
     description: "Append a timestamp to the cache key (default: true)"
     default: true
     required: false
+  create-symlink:
+    description: "If set to 'true', create symlinks for ccache in /usr/local/bin to override default toolchains"
+    default: false
+    required: false
 runs:
   using: "node16"
   main: "dist/restore/index.js"
