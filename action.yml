@@ -33,7 +33,7 @@ inputs:
     default: false
     required: false
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
 branding:
