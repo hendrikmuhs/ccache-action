@@ -35,7 +35,7 @@ function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
   return exec.getExecOutput("bash", ["-xc", cmd], {silent: true});
 }
 
-async function run() : Promise<void> {
+async function run(earlyExit : boolean | undefined) : Promise<void> {
   try {
     const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
@@ -75,9 +75,20 @@ async function run() : Promise<void> {
     // A failure to save cache shouldn't prevent the entire CI run from
     // failing, so do not call setFailed() here.
     core.warning(`Saving cache failed: ${error}`);
+
+    // Early exit process so node doesn't want for hanging promises
+    if (earlyExit) {
+      process.exit(-1);
+    }
+  }
+
+  // Since we are not using http requests after this
+  // we can safely exit early
+  if (earlyExit) {
+    process.exit(0);
   }
 }
 
-run();
+run(true);
 
 export default run;

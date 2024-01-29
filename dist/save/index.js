@@ -59582,7 +59582,7 @@ async function getVerbosity(verbositySetting) {
 function getExecBashOutput(cmd) {
     return _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("bash", ["-xc", cmd], { silent: true });
 }
-async function run() {
+async function run(earlyExit) {
     try {
         const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
         const primaryKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("primaryKey");
@@ -59620,9 +59620,18 @@ async function run() {
         // A failure to save cache shouldn't prevent the entire CI run from
         // failing, so do not call setFailed() here.
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Saving cache failed: ${error}`);
+        // Early exit process so node doesn't want for hanging promises
+        if (earlyExit) {
+            process.exit(-1);
+        }
+    }
+    // Since we are not using http requests after this
+    // we can safely exit early
+    if (earlyExit) {
+        process.exit(0);
     }
 }
-run();
+run(true);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (run);
 
 })();
