@@ -76,7 +76,7 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     // failing, so do not call setFailed() here.
     core.warning(`Saving cache failed: ${error}`);
 
-    // Early exit process so node doesn't want for hanging promises
+    // Early exit process so node doesn't wait for hanging promises
     if (earlyExit) {
       process.exit(-1);
     }

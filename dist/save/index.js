@@ -59620,7 +59620,7 @@ async function run(earlyExit) {
         // A failure to save cache shouldn't prevent the entire CI run from
         // failing, so do not call setFailed() here.
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Saving cache failed: ${error}`);
-        // Early exit process so node doesn't want for hanging promises
+        // Early exit process so node doesn't wait for hanging promises
         if (earlyExit) {
             process.exit(-1);
         }
