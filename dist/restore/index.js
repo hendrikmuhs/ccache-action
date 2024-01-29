@@ -59654,9 +59654,9 @@ async function installCcacheLinux() {
     throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
 }
 async function installCcacheWindows() {
-    await installCcacheFromGitHub("4.7.4", "windows-x86_64", 
+    await installCcacheFromGitHub("4.9", "windows-x86_64", 
     // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e", 
+    "cf18d274a54b49dcd77f6c289c26eeb89d180cb8329711e607478ed5ef74918c", 
     // TODO find a better place
     `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "ccache.exe");
 }
