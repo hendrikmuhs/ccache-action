@@ -35,6 +35,16 @@ or by manipulating `PATH` (ccache only):
 
 (works for both `ubuntu` and `macos`)
 
+or by setting create-symlink to `true`:
+
+```yaml
+- name: ccache
+  uses: hendrikmuhs/ccache-action@v1.2
+  with:
+    create-symlink: true
+```
+
+
 Ccache/sccache gets installed by this action if it is not installed yet.
 
 ### Example workflow

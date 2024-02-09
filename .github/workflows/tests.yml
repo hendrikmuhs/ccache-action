@@ -210,3 +210,23 @@ jobs:
         uses: ./
         with:
           append-timestamp: ${{ matrix.append-timestamp }}
+
+  test_option_create_symlink:
+    # Test that the 'create-symlink' option is available.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        create-symlink: [true, false]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache-action
+        uses: ./
+        with:
+          create-symlink: ${{ matrix.create-symlink }}
+      - name: Test symlink
+        run: |
+          if [ ${{ matrix.create-symlink }} = true ]; then
+            ls -l $(which gcc) | grep $(which ccache)
+          else
+            ls -l $(which gcc) | grep -v $(which ccache)
+          fi

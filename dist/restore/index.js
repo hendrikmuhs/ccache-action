@@ -319,7 +319,8 @@ function createHttpClient() {
     return new http_client_1.HttpClient('actions/cache', [bearerCredentialHandler], getRequestOptions());
 }
 function getCacheVersion(paths, compressionMethod, enableCrossOsArchive = false) {
-    const components = paths;
+    // don't pass changes upstream
+    const components = paths.slice();
     // Add compression method to cache version to restore
     // compressed cache as per compression method
     if (compressionMethod) {
@@ -608,26 +609,21 @@ function resolvePaths(patterns) {
             implicitDescendants: false
         });
         try {
-            for (var _e = true, _f = __asyncValues(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
+            for (var _e = true, _f = __asyncValues(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a; _e = true) {
                 _c = _g.value;
                 _e = false;
-                try {
-                    const file = _c;
-                    const relativeFile = path
-                        .relative(workspace, file)
-                        .replace(new RegExp(`\\${path.sep}`, 'g'), '/');
-                    core.debug(`Matched: ${relativeFile}`);
-                    // Paths are made relative so the tar entries are all relative to the root of the workspace.
-                    if (relativeFile === '') {
-                        // path.relative returns empty string if workspace and file are equal
-                        paths.push('.');
-                    }
-                    else {
-                        paths.push(`${relativeFile}`);
-                    }
+                const file = _c;
+                const relativeFile = path
+                    .relative(workspace, file)
+                    .replace(new RegExp(`\\${path.sep}`, 'g'), '/');
+                core.debug(`Matched: ${relativeFile}`);
+                // Paths are made relative so the tar entries are all relative to the root of the workspace.
+                if (relativeFile === '') {
+                    // path.relative returns empty string if workspace and file are equal
+                    paths.push('.');
                 }
-                finally {
-                    _e = true;
+                else {
+                    paths.push(`${relativeFile}`);
                 }
             }
         }
@@ -729,7 +725,7 @@ var CacheFilename;
 (function (CacheFilename) {
     CacheFilename["Gzip"] = "cache.tgz";
     CacheFilename["Zstd"] = "cache.tzst";
-})(CacheFilename = exports.CacheFilename || (exports.CacheFilename = {}));
+})(CacheFilename || (exports.CacheFilename = CacheFilename = {}));
 var CompressionMethod;
 (function (CompressionMethod) {
     CompressionMethod["Gzip"] = "gzip";
@@ -737,12 +733,12 @@ var CompressionMethod;
     // This enum is for earlier version of zstd that does not have --long support
     CompressionMethod["ZstdWithoutLong"] = "zstd-without-long";
     CompressionMethod["Zstd"] = "zstd";
-})(CompressionMethod = exports.CompressionMethod || (exports.CompressionMethod = {}));
+})(CompressionMethod || (exports.CompressionMethod = CompressionMethod = {}));
 var ArchiveToolType;
 (function (ArchiveToolType) {
     ArchiveToolType["GNU"] = "gnu";
     ArchiveToolType["BSD"] = "bsd";
-})(ArchiveToolType = exports.ArchiveToolType || (exports.ArchiveToolType = {}));
+})(ArchiveToolType || (exports.ArchiveToolType = ArchiveToolType = {}));
 // The default number of retry attempts.
 exports.DefaultRetryAttempts = 2;
 // The default delay in milliseconds between retry attempts.
@@ -2233,7 +2229,7 @@ class OidcClient {
                 .catch(error => {
                 throw new Error(`Failed to get ID Token. \n 
         Error Code : ${error.statusCode}\n 
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
             if (!id_token) {
@@ -59626,6 +59622,15 @@ async function configure(ccacheVariant, platform) {
         if (platform === "darwin") {
             await execBash(`ccache --set-config=compiler_check=content`);
         }
+        if (core.getBooleanInput("create-symlink")) {
+            const ccache = await io.which("ccache");
+            await execBash(`ln -s ${ccache} /usr/local/bin/gcc`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/g++`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/cc`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/c++`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/clang`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/clang++`);
+        }
         core.info("Cccache config:");
         await execBash("ccache -p");
     }
@@ -59659,10 +59664,10 @@ async function installSccacheMac() {
     await execBash("brew install sccache");
 }
 async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.5.3", "x86_64-unknown-linux-musl", "2c1dcc0ea0266482d83f81a2dc5f359cf526d4f96c79825301f47dff12d87c49", "/usr/local/bin/", "sccache");
+    await installSccacheFromGitHub("v0.7.4", "x86_64-unknown-linux-musl", "5022d140adae985c0ad018667797aec03f7fe24781c848f770d1a52fbab02057", "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.5.3", "x86_64-pc-windows-msvc", "621f02f826ba8d5eea0eb6fb7119dd71806dbb32c321afedd2db7c5d089bdd45", 
+    await installSccacheFromGitHub("v0.7.4", "x86_64-pc-windows-msvc", "820d60f1a5e6bf9aa2a39d9cfd54be45ede019067b7e5d9cb22fc27dc332611f", 
     // TODO find a better place
     `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
 }

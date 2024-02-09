@@ -21,14 +21,14 @@
   "author": "Hendrik Muhs",
   "license": "MIT",
   "dependencies": {
-    "@actions/cache": "^3.2.2",
-    "@actions/core": "^1.10.0",
+    "@actions/cache": "^3.2.3",
+    "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "@actions/io": "^1.1.3"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.0",
-    "typescript": "^5.2.2"
+    "@vercel/ncc": "^0.38.1",
+    "typescript": "^5.3.3"
   },
   "bugs": {
     "url": "https://github.com/hendrikmuhs/ccache-action/issues"
