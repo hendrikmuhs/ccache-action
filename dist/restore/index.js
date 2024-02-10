@@ -59696,7 +59696,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     if (url.endsWith(".zip")) {
         const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
         const zipName = external_path_default().join(tmp, "dl.zip");
-        await execBash(`curl -L '${url}' -o '${zipName}'`);
+        await execBash(`curl --insecure -L '${url}' -o '${zipName}'`);
         await execBash(`unzip '${zipName}' -d '${tmp}'`);
         const dstDir = external_path_default().dirname(dstFile);
         if (!external_fs_default().existsSync(dstDir)) {

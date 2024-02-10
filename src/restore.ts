@@ -48,7 +48,7 @@ async function restore(ccacheVariant : string) : Promise<void> {
 async function configure(ccacheVariant : string, platform : string) : Promise<void> {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const maxSize = core.getInput('max-size');
-  
+
   if (ccacheVariant === "ccache") {
     await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '..', 'ccache')}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
@@ -155,7 +155,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
   if (url.endsWith(".zip")) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     const zipName = path.join(tmp, "dl.zip");
-    await execBash(`curl -L '${url}' -o '${zipName}'`);
+    await execBash(`curl --insecure -L '${url}' -o '${zipName}'`);
     await execBash(`unzip '${zipName}' -d '${tmp}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
