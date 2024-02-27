@@ -59606,7 +59606,7 @@ async function run() {
         else {
             let saveKey = primaryKey;
             if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("appendTimestamp") == "true") {
-                saveKey += new Date().toISOString();
+                saveKey += `-${new Date().toISOString()}`;
             }
             else {
                 _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");

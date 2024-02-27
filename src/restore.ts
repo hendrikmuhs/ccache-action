@@ -19,9 +19,8 @@ async function restore(ccacheVariant : string) : Promise<void> {
     restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
   };
 
-  const keyPrefix = ccacheVariant + "-";
-  const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
-  const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-")
+  const primaryKey = inputs.primaryKey ? ccacheVariant + "-" + inputs.primaryKey : ccacheVariant;
+  const restoreKeys = inputs.restoreKeys.map(k => ccacheVariant + "-" + k)
   const paths = [`.${ccacheVariant}`];
 
   core.saveState("primaryKey", primaryKey);
