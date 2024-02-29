@@ -64,6 +64,8 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
       await execBash(`ln -s ${ccache} /usr/local/bin/c++`);
       await execBash(`ln -s ${ccache} /usr/local/bin/clang`);
       await execBash(`ln -s ${ccache} /usr/local/bin/clang++`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/emcc`);
+      await execBash(`ln -s ${ccache} /usr/local/bin/em++`);
     }
     core.info("Cccache config:");
     await execBash("ccache -p");
