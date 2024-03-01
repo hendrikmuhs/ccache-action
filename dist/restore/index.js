@@ -59630,6 +59630,8 @@ async function configure(ccacheVariant, platform) {
             await execBash(`ln -s ${ccache} /usr/local/bin/c++`);
             await execBash(`ln -s ${ccache} /usr/local/bin/clang`);
             await execBash(`ln -s ${ccache} /usr/local/bin/clang++`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/emcc`);
+            await execBash(`ln -s ${ccache} /usr/local/bin/em++`);
         }
         core.info("Cccache config:");
         await execBash("ccache -p");
