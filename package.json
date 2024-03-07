@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   },
   "bugs": {
     "url": "https://github.com/hendrikmuhs/ccache-action/issues"
