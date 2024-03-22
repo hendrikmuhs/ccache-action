@@ -59591,9 +59591,8 @@ async function restore(ccacheVariant) {
         // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
         restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
     };
-    const keyPrefix = ccacheVariant + "-";
-    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
-    const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
+    const primaryKey = inputs.primaryKey ? ccacheVariant + "-" + inputs.primaryKey : ccacheVariant;
+    const restoreKeys = inputs.restoreKeys.map(k => ccacheVariant + "-" + k);
     const paths = [`.${ccacheVariant}`];
     core.saveState("primaryKey", primaryKey);
     const shouldRestore = core.getBooleanInput("restore");
