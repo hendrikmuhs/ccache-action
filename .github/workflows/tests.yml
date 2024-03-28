@@ -56,7 +56,7 @@ jobs:
             sccache -V
             sccache -s
             # sccache -s | grep -E 'Max cache size.+10 MiB'
-            sccache -s | grep -E 'Cache location.+ccache-action/\.sccache'
+            sccache -s | grep -E 'Cache location.+ccache-action/../sccache'
           else
             which ccache
             ccache -V

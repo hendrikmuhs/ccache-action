@@ -59594,7 +59594,7 @@ async function restore(ccacheVariant) {
     const keyPrefix = ccacheVariant + "-";
     const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
-    const paths = [`.${ccacheVariant}`];
+    const paths = [`../${ccacheVariant}`];
     core.saveState("primaryKey", primaryKey);
     const shouldRestore = core.getBooleanInput("restore");
     if (!shouldRestore) {
@@ -59619,7 +59619,7 @@ async function configure(ccacheVariant, platform) {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
     if (ccacheVariant === "ccache") {
-        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
+        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '..', 'ccache')}'`);
         await execBash(`ccache --set-config=max_size='${maxSize}'`);
         await execBash(`ccache --set-config=compression=true`);
         if (platform === "darwin") {
@@ -59640,7 +59640,7 @@ async function configure(ccacheVariant, platform) {
         await execBash("ccache -p");
     }
     else {
-        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/../sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
         await execBash(`env ${options} sccache --start-server`);
     }
 }
@@ -59701,7 +59701,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
     if (url.endsWith(".zip")) {
         const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
         const zipName = external_path_default().join(tmp, "dl.zip");
-        await execBash(`curl -L '${url}' -o '${zipName}'`);
+        await execBash(`curl --insecure -L '${url}' -o '${zipName}'`);
         await execBash(`unzip '${zipName}' -d '${tmp}'`);
         const dstDir = external_path_default().dirname(dstFile);
         if (!external_fs_default().existsSync(dstDir)) {

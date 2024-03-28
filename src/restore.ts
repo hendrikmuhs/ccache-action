@@ -22,7 +22,7 @@ async function restore(ccacheVariant : string) : Promise<void> {
   const keyPrefix = ccacheVariant + "-";
   const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
   const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-")
-  const paths = [`.${ccacheVariant}`];
+  const paths = [`../${ccacheVariant}`];
 
   core.saveState("primaryKey", primaryKey);
 
@@ -48,9 +48,9 @@ async function restore(ccacheVariant : string) : Promise<void> {
 async function configure(ccacheVariant : string, platform : string) : Promise<void> {
   const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const maxSize = core.getInput('max-size');
-  
+
   if (ccacheVariant === "ccache") {
-    await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
+    await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '..', 'ccache')}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
     await execBash(`ccache --set-config=compression=true`);
     if (platform === "darwin") {
@@ -70,7 +70,7 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
-    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/../sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
     await execBash(`env ${options} sccache --start-server`);
   }
 
@@ -157,7 +157,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
   if (url.endsWith(".zip")) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     const zipName = path.join(tmp, "dl.zip");
-    await execBash(`curl -L '${url}' -o '${zipName}'`);
+    await execBash(`curl --insecure -L '${url}' -o '${zipName}'`);
     await execBash(`unzip '${zipName}' -d '${tmp}'`);
     const dstDir = path.dirname(dstFile);
     if (!fs.existsSync(dstDir)) {
