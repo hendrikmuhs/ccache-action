@@ -35,7 +35,7 @@ function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
   return exec.getExecOutput("bash", ["-xc", cmd], {silent: true});
 }
 
-async function run() : Promise<void> {
+async function run(earlyExit : boolean | undefined) : Promise<void> {
   try {
     const ccacheVariant = core.getState("ccacheVariant");
     const primaryKey = core.getState("primaryKey");
@@ -76,8 +76,14 @@ async function run() : Promise<void> {
     // failing, so do not call setFailed() here.
     core.warning(`Saving cache failed: ${error}`);
   }
+
+  // Since we are not using http requests after this
+  // we can safely exit early
+  if (earlyExit) {
+    process.exit(0);
+  }
 }
 
-run();
+run(true);
 
 export default run;
