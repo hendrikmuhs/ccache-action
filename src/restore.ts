@@ -93,10 +93,10 @@ async function installCcacheLinux() : Promise<void> {
 
 async function installCcacheWindows() : Promise<void> {
   await installCcacheFromGitHub(
-    "4.7.4",
+    "4.9",
     "windows-x86_64",
     // sha256sum of ccache.exe
-    "ac5918ea5df06d4cd2f2ca085955d29fe2a161f229e7cdf958dcf3e8fd5fe80e",
+    "cf18d274a54b49dcd77f6c289c26eeb89d180cb8329711e607478ed5ef74918c",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "ccache.exe"
@@ -109,9 +109,9 @@ async function installSccacheMac() : Promise<void> {
 
 async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
-    "v0.7.4",
+    "v0.7.6",
     "x86_64-unknown-linux-musl",
-    "5022d140adae985c0ad018667797aec03f7fe24781c848f770d1a52fbab02057",
+    "59793c3b6ac65f2f3b7e3f20f93192c705838335f44a175e1f6767132016a1f6",
     "/usr/local/bin/",
     "sccache"
   );
@@ -119,9 +119,9 @@ async function installSccacheLinux() : Promise<void> {
 
 async function installSccacheWindows() : Promise<void> {
   await installSccacheFromGitHub(
-    "v0.7.4",
+    "v0.7.6",
     "x86_64-pc-windows-msvc",
-    "820d60f1a5e6bf9aa2a39d9cfd54be45ede019067b7e5d9cb22fc27dc332611f",
+    "48e88be2ba87dca8d74364f045894ec214b6c850e65e61ab44e5071055c9e6d3",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "sccache.exe"
