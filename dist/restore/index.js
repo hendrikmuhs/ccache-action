@@ -59669,7 +59669,7 @@ async function installSccacheMac() {
     await execBash("brew install sccache");
 }
 async function installSccacheLinux() {
-    await installSccacheFromGitHub("v0.7.6", "x86_64-unknown-linux-musl", "59793c3b6ac65f2f3b7e3f20f93192c705838335f44a175e1f6767132016a1f6", "/usr/local/bin/", "sccache");
+    await installSccacheFromGitHub("v0.7.6", "x86_64-unknown-linux-musl", "8c2bb0805983a6fe334fa8b5c26db2c5fc3a7fc3dbf51522a08f2e4c50e4fbe7", "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
     await installSccacheFromGitHub("v0.7.6", "x86_64-pc-windows-msvc", "48e88be2ba87dca8d74364f045894ec214b6c850e65e61ab44e5071055c9e6d3", 

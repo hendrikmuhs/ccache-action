@@ -111,7 +111,7 @@ async function installSccacheLinux() : Promise<void> {
   await installSccacheFromGitHub(
     "v0.7.6",
     "x86_64-unknown-linux-musl",
-    "59793c3b6ac65f2f3b7e3f20f93192c705838335f44a175e1f6767132016a1f6",
+    "8c2bb0805983a6fe334fa8b5c26db2c5fc3a7fc3dbf51522a08f2e4c50e4fbe7",
     "/usr/local/bin/",
     "sccache"
   );
