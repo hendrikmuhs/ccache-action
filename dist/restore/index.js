@@ -59695,6 +59695,7 @@ async function installSccacheFromGitHub(version, artifactName, binSha256, binDir
     const binPath = external_path_default().join(binDir, binName);
     await downloadAndExtract(url, `*/${binName}`, binPath);
     checkSha256Sum(binPath, binSha256);
+    core.addPath(binDir);
     await execBash(`chmod +x '${binPath}'`);
 }
 async function downloadAndExtract(url, srcFile, dstFile) {
