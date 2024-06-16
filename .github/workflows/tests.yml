@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 defaults:
   run:
@@ -290,3 +291,25 @@ jobs:
       - name: Fail if previous step succeeded without update
         if: steps.ccache.outcome == 'success'
         run: exit 1
+  test_executable_output:
+    # Test the "executable" output.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        shell: [bash]
+        variant: [sccache, ccache]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache action
+        uses: ./
+        id: ccache
+        with:
+          variant: ${{ matrix.variant }}
+          key: parent
+      - name: Test output.executable exists
+        run: |
+          test -f "${{ steps.ccache.outputs.executable }}"
+          test -x "${{ steps.ccache.outputs.executable }}"
+          "${{ steps.ccache.outputs.executable }}" --version
