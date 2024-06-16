@@ -53,6 +53,11 @@ inputs:
       - detect (default): install ccache if not available
       - no: do not attempt to install ccache"
     default: detect
+
+outputs:
+  executable: 
+    description: 'Path to the cache tool'
+
 runs:
   using: "node24"
   main: "dist/restore/index.js"

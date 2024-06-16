@@ -411,6 +411,8 @@ async function runInner(): Promise<void> {
   core.info(`${ccacheVariant} installed at ${ccachePath}`)
   core.endGroup();
 
+  core.setOutput("executable", core.toPosixPath(ccachePath));
+
   core.startGroup("Restore cache");
   await restore(ccacheVariant);
   core.endGroup();
