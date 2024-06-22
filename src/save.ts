@@ -62,7 +62,7 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     } else {
       let saveKey = primaryKey;
       if (core.getState("appendTimestamp") == "true") {
-        saveKey += new Date().toISOString();
+        saveKey += `-${new Date().toISOString()}`;
       } else {
         core.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
       }
