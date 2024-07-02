@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/node": "^20.14.9",
     "@vercel/ncc": "^0.38.1",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   },
   "bugs": {
     "url": "https://github.com/hendrikmuhs/ccache-action/issues"
