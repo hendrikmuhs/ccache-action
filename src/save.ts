@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as exec from "@actions/exec";
+import { cacheDir } from "./common";
 
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
@@ -51,7 +52,7 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
     await exec.exec(`${ccacheVariant} -s${verbosity}`);
     core.endGroup();
-    
+
     if (core.getState("shouldSave") !== "true") {
       core.info("Not saving cache because 'save' is set to 'false'.");
       return;
@@ -66,8 +67,9 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
       } else {
         core.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
       }
-      const paths = [`.${ccacheVariant}`];
-    
+
+      const paths = [cacheDir(ccacheVariant)];
+
       core.info(`Save cache using key "${saveKey}".`);
       await cache.saveCache(paths, saveKey);
     }
