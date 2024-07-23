@@ -59573,7 +59573,21 @@ var exec = __nccwpck_require__(1514);
 const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
 var cache = __nccwpck_require__(7799);
+;// CONCATENATED MODULE: ./src/common.ts
+
+function cacheDir(ccacheVariant) {
+    const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+    if (ccacheVariant === "ccache") {
+        return process.env.CCACHE_DIR || external_path_default().join(ghWorkSpace, ".ccache");
+    }
+    else if (ccacheVariant === "sccache") {
+        return process.env.SCCACHE_DIR || external_path_default().join(ghWorkSpace, ".sccache");
+    }
+    throw Error("Unknown ccache variant: " + ccacheVariant);
+}
+
 ;// CONCATENATED MODULE: ./src/restore.ts
+
 
 
 
@@ -59594,7 +59608,7 @@ async function restore(ccacheVariant) {
     const keyPrefix = ccacheVariant + "-";
     const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
-    const paths = [`.${ccacheVariant}`];
+    const paths = [cacheDir(ccacheVariant)];
     core.saveState("primaryKey", primaryKey);
     const shouldRestore = core.getBooleanInput("restore");
     if (!shouldRestore) {
@@ -59616,10 +59630,9 @@ async function restore(ccacheVariant) {
     }
 }
 async function configure(ccacheVariant, platform) {
-    const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     const maxSize = core.getInput('max-size');
     if (ccacheVariant === "ccache") {
-        await execBash(`ccache --set-config=cache_dir='${external_path_default().join(ghWorkSpace, '.ccache')}'`);
+        await execBash(`ccache --set-config=cache_dir='${cacheDir(ccacheVariant)}'`);
         await execBash(`ccache --set-config=max_size='${maxSize}'`);
         await execBash(`ccache --set-config=compression=true`);
         if (platform === "darwin") {
@@ -59640,7 +59653,7 @@ async function configure(ccacheVariant, platform) {
         await execBash("ccache -p");
     }
     else {
-        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+        const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${cacheDir(ccacheVariant)}' SCCACHE_CACHE_SIZE='${maxSize}'`;
         await execBash(`env ${options} sccache --start-server`);
     }
 }

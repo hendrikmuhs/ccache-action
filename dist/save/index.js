@@ -59543,16 +59543,38 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7799);
-/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_cache__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(1514);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_2__);
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "default": () => (/* binding */ save)
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
+var cache = __nccwpck_require__(7799);
+// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
+var exec = __nccwpck_require__(1514);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
+;// CONCATENATED MODULE: ./src/common.ts
+
+function cacheDir(ccacheVariant) {
+    const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
+    if (ccacheVariant === "ccache") {
+        return process.env.CCACHE_DIR || external_path_default().join(ghWorkSpace, ".ccache");
+    }
+    else if (ccacheVariant === "sccache") {
+        return process.env.SCCACHE_DIR || external_path_default().join(ghWorkSpace, ".sccache");
+    }
+    throw Error("Unknown ccache variant: " + ccacheVariant);
+}
+
+;// CONCATENATED MODULE: ./src/save.ts
+
 
 
 
@@ -59578,51 +59600,51 @@ async function getVerbosity(verbositySetting) {
         case '2':
             return ' -vv';
         default:
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Invalid value "${verbositySetting}" of "verbose" option ignored.`);
+            core.warning(`Invalid value "${verbositySetting}" of "verbose" option ignored.`);
             return '';
     }
 }
 function getExecBashOutput(cmd) {
-    return _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput("bash", ["-xc", cmd], { silent: true });
+    return exec.getExecOutput("bash", ["-xc", cmd], { silent: true });
 }
 async function run(earlyExit) {
     try {
-        const ccacheVariant = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("ccacheVariant");
-        const primaryKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("primaryKey");
+        const ccacheVariant = core.getState("ccacheVariant");
+        const primaryKey = core.getState("primaryKey");
         if (!ccacheVariant || !primaryKey) {
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.notice("ccache setup failed, skipping saving.");
+            core.notice("ccache setup failed, skipping saving.");
             return;
         }
         // Some versions of ccache do not support --verbose
         const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(`${ccacheVariant} stats`);
-        const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("verbose")) : '';
-        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec(`${ccacheVariant} -s${verbosity}`);
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
-        if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("shouldSave") !== "true") {
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because 'save' is set to 'false'.");
+        core.startGroup(`${ccacheVariant} stats`);
+        const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
+        await exec.exec(`${ccacheVariant} -s${verbosity}`);
+        core.endGroup();
+        if (core.getState("shouldSave") !== "true") {
+            core.info("Not saving cache because 'save' is set to 'false'.");
             return;
         }
         if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Not saving cache because no objects are cached.");
+            core.info("Not saving cache because no objects are cached.");
         }
         else {
             let saveKey = primaryKey;
-            if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getState("appendTimestamp") == "true") {
+            if (core.getState("appendTimestamp") == "true") {
                 saveKey += new Date().toISOString();
             }
             else {
-                _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
+                core.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
             }
-            const paths = [`.${ccacheVariant}`];
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Save cache using key "${saveKey}".`);
-            await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, saveKey);
+            const paths = [cacheDir(ccacheVariant)];
+            core.info(`Save cache using key "${saveKey}".`);
+            await cache.saveCache(paths, saveKey);
         }
     }
     catch (error) {
         // A failure to save cache shouldn't prevent the entire CI run from
         // failing, so do not call setFailed() here.
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.warning(`Saving cache failed: ${error}`);
+        core.warning(`Saving cache failed: ${error}`);
     }
     // Since we are not using http requests after this
     // we can safely exit early
@@ -59631,7 +59653,7 @@ async function run(earlyExit) {
     }
 }
 run(true);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (run);
+/* harmony default export */ const save = (run);
 
 })();
 

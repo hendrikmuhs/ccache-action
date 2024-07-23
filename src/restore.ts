@@ -7,6 +7,7 @@ import * as io from "@actions/io";
 import * as exec from "@actions/exec";
 import * as process from "process";
 import * as cache from "@actions/cache";
+import { cacheDir } from "./common";
 
 const SELF_CI = process.env["CCACHE_ACTION_CI"] === "true"
 
@@ -22,8 +23,8 @@ async function restore(ccacheVariant : string) : Promise<void> {
   const keyPrefix = ccacheVariant + "-";
   const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
   const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-")
-  const paths = [`.${ccacheVariant}`];
-
+  const paths = [cacheDir(ccacheVariant)];
+  
   core.saveState("primaryKey", primaryKey);
 
   const shouldRestore = core.getBooleanInput("restore");
@@ -46,11 +47,10 @@ async function restore(ccacheVariant : string) : Promise<void> {
 }
 
 async function configure(ccacheVariant : string, platform : string) : Promise<void> {
-  const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
   const maxSize = core.getInput('max-size');
   
   if (ccacheVariant === "ccache") {
-    await execBash(`ccache --set-config=cache_dir='${path.join(ghWorkSpace, '.ccache')}'`);
+    await execBash(`ccache --set-config=cache_dir='${cacheDir(ccacheVariant)}'`);
     await execBash(`ccache --set-config=max_size='${maxSize}'`);
     await execBash(`ccache --set-config=compression=true`);
     if (platform === "darwin") {
@@ -70,7 +70,7 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
     core.info("Cccache config:");
     await execBash("ccache -p");
   } else {
-    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${ghWorkSpace}'/.sccache SCCACHE_CACHE_SIZE='${maxSize}'`;
+    const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${cacheDir(ccacheVariant)}' SCCACHE_CACHE_SIZE='${maxSize}'`;
     await execBash(`env ${options} sccache --start-server`);
   }
 
