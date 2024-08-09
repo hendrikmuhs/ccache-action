@@ -54,8 +54,8 @@ Ccache/sccache gets installed by this action if it is not installed yet.
 
 ### Notes on Windows support
 
-Note that using Ccache on Windows is still experimental and [works only in Bash](https://github.com/ccache/ccache/issues/1023).
-Use Sccache for stable Windows support.
+Note that using Ccache on Windows [probably works](https://ccache.dev/platform-compiler-language-support.html), but 
+Sccache is recommended for stable Windows support.
 
 ### If you have multiple jobs
 
