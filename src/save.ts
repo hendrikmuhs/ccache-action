@@ -6,12 +6,12 @@ import { cacheDir } from "./common";
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
     if (ccacheKnowsVerbosityFlag) {
-      return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
+      return !!(await getExecShellOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
     } else {
-      return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/)
+      return !!(await getExecShellOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/)
     }
   } else {
-    return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
+    return !!(await getExecShellOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
   }
 }
 
@@ -32,8 +32,8 @@ async function getVerbosity(verbositySetting : string) : Promise<string> {
   }
 }
 
-function getExecBashOutput(cmd : string) : Promise<exec.ExecOutput> {
-  return exec.getExecOutput("bash", ["-xc", cmd], {silent: true});
+function getExecShellOutput(cmd : string) : Promise<exec.ExecOutput> {
+  return exec.getExecOutput("sh", ["-xc", cmd], {silent: true});
 }
 
 async function run(earlyExit : boolean | undefined) : Promise<void> {
@@ -46,7 +46,7 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     }
 
     // Some versions of ccache do not support --verbose
-    const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
+    const ccacheKnowsVerbosityFlag = !!(await getExecShellOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
 
     core.startGroup(`${ccacheVariant} stats`);
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';

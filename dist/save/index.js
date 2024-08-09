@@ -59581,14 +59581,14 @@ function cacheDir(ccacheVariant) {
 async function ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag) {
     if (ccacheVariant === "ccache") {
         if (ccacheKnowsVerbosityFlag) {
-            return !!(await getExecBashOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
+            return !!(await getExecShellOutput("ccache -s -v")).stdout.match(/Files:.+\b0\b/);
         }
         else {
-            return !!(await getExecBashOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/);
+            return !!(await getExecShellOutput("ccache -s")).stdout.match(/files in cache.+\b0\b/);
         }
     }
     else {
-        return !!(await getExecBashOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
+        return !!(await getExecShellOutput("sccache -s")).stdout.match(/Cache size.+\b0 bytes/);
     }
 }
 async function getVerbosity(verbositySetting) {
@@ -59604,8 +59604,8 @@ async function getVerbosity(verbositySetting) {
             return '';
     }
 }
-function getExecBashOutput(cmd) {
-    return exec.getExecOutput("bash", ["-xc", cmd], { silent: true });
+function getExecShellOutput(cmd) {
+    return exec.getExecOutput("sh", ["-xc", cmd], { silent: true });
 }
 async function run(earlyExit) {
     try {
@@ -59616,7 +59616,7 @@ async function run(earlyExit) {
             return;
         }
         // Some versions of ccache do not support --verbose
-        const ccacheKnowsVerbosityFlag = !!(await getExecBashOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
+        const ccacheKnowsVerbosityFlag = !!(await getExecShellOutput(`${ccacheVariant} --help`)).stdout.includes("--verbose");
         core.startGroup(`${ccacheVariant} stats`);
         const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
         await exec.exec(`${ccacheVariant} -s${verbosity}`);
