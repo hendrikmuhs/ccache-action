@@ -51,6 +51,13 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     core.startGroup(`${ccacheVariant} stats`);
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
     await exec.exec(`${ccacheVariant} -s${verbosity}`);
+
+    const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"]);
+    await core.summary
+        .addHeading("CCache Stats")
+        .addCodeBlock(jsonStats.stdout, "json")
+        .write()
+
     core.endGroup();
 
     if (core.getState("shouldSave") !== "true") {
