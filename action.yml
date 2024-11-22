@@ -32,6 +32,9 @@ inputs:
     description: "If set to 'true', create symlinks for ccache in /usr/local/bin to override default toolchains"
     default: false
     required: false
+  job-summary:
+    description: "Publish stats as part of the job summary. Set to the title of the job summary section. Requires CCache 4.10+"
+    default: ''
 runs:
   using: "node20"
   main: "dist/restore/index.js"
