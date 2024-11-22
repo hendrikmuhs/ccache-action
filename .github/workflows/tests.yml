@@ -26,6 +26,15 @@ jobs:
           npm install
           git diff --exit-code
 
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests
+        run: |
+          npm install
+          npm test
+
   test_ccache:
     # Test that ccache/sccache are installed and configured correctly.
     strategy:

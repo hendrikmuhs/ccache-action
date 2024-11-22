@@ -4,7 +4,8 @@
   "description": "github action to speedup building using ccache",
   "main": "dist/restore/index.js",
   "scripts": {
-    "prepare": "ncc build --target es2020 -o dist/restore src/restore.ts && ncc build --target es2020 -o dist/save src/save.ts"
+    "prepare": "ncc build --target es2020 -o dist/restore src/restore.ts && ncc build --target es2020 -o dist/save src/save.ts",
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
