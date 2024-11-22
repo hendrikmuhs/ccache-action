@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as exec from "@actions/exec";
-import { cacheDir } from "./common";
+import * as common from "./common";
 
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
@@ -36,6 +36,23 @@ function getExecShellOutput(cmd : string) : Promise<exec.ExecOutput> {
   return exec.getExecOutput("sh", ["-xc", cmd], {silent: true});
 }
 
+/**
+ * Get if ccache supports output of stats in JSON format (from 4.10)
+ * @param ccacheVariant
+ */
+async function hasJsonStats(ccacheVariant: string) : Promise<boolean> {
+
+  if (ccacheVariant !== "ccache") {
+    return false;
+  }
+  const result = await exec.getExecOutput(`${ccacheVariant} --version`)
+  if (result.exitCode != 0) {
+    return false
+  }
+  const version = common.parseCCacheVersion(result.stdout);
+  return version != null && version[0] >= 4 && version[1] >= 10;
+}
+
 async function run(earlyExit : boolean | undefined) : Promise<void> {
   try {
     const ccacheVariant = core.getState("ccacheVariant");
@@ -52,12 +69,15 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     const verbosity = ccacheKnowsVerbosityFlag ? await getVerbosity(core.getInput("verbose")) : '';
     await exec.exec(`${ccacheVariant} -s${verbosity}`);
 
-    const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"]);
-    await core.summary
-        .addHeading("CCache Stats")
-        .addCodeBlock(jsonStats.stdout, "json")
-        .write()
-
+    if (await hasJsonStats(ccacheVariant)) {
+      const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"]);
+      await core.summary
+          .addHeading("CCache Stats")
+          .addCodeBlock(jsonStats.stdout, "json")
+          .write()
+    } else {
+      core.info("stats in JSON format is not supported.");
+    }
     core.endGroup();
 
     if (core.getState("shouldSave") !== "true") {
@@ -75,7 +95,7 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
         core.debug("Not appending timestamp because 'append-timestamp' is not set to 'true'.");
       }
 
-      const paths = [cacheDir(ccacheVariant)];
+      const paths = [common.cacheDir(ccacheVariant)];
 
       core.info(`Save cache using key "${saveKey}".`);
       await cache.saveCache(paths, saveKey);
