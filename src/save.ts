@@ -74,11 +74,17 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
       if (!await hasJsonStats(ccacheVariant)) {
         core.warning("job summary requested but is not supported")
       } else {
-        const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"]);
-        await core.summary
-            .addHeading(jobSummaryTitle)
-            .addCodeBlock(jsonStats.stdout, "json")
-            .write()
+        const jsonStats =
+            await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"], {silent: true});
+        const formattedStats = common.formatStatsAsTable(jsonStats.stdout)
+        if (formattedStats === null) {
+          core.warning("Could not parse json stats")
+        } else {
+          await core.summary
+              .addHeading(jobSummaryTitle)
+              .addTable(formattedStats)
+              .write()
+        }
       }
     }
 

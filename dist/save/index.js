@@ -59557,8 +59557,13 @@ var external_path_ = __nccwpck_require__(1017);
 var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 ;// CONCATENATED MODULE: ./src/common.ts
 
+/**
+ * Parse the output of ccache --version to extract the semantic version components
+ * @param ccacheOutput
+ */
 function parseCCacheVersion(ccacheOutput) {
     const firstLine = ccacheOutput.split("\n", 1)[0];
+    // short version of https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     const semver = /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/;
     const result = firstLine.match(semver);
     if (!result) {
@@ -59568,6 +59573,19 @@ function parseCCacheVersion(ccacheOutput) {
         return null;
     }
     return [Number.parseInt(result[1]), Number.parseInt(result[2]), Number.parseInt(result[3])];
+}
+function formatStatsAsTable(statsJson) {
+    const stats = JSON.parse(statsJson);
+    if (stats === undefined) {
+        return null;
+    }
+    // @ts-ignore
+    const hits = stats["direct_cache_hit"] + stats["preprocessed_cache_hit"];
+    const misses = stats["cache_miss"];
+    const total = hits + misses;
+    return [
+        [{ data: "Cache hits", header: true }, `${hits} / ${total}`, `${((hits / total) * 100).toPrecision(3)}%`]
+    ];
 }
 function cacheDir(ccacheVariant) {
     const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
@@ -59648,10 +59666,16 @@ async function run(earlyExit) {
                 core.warning("job summary requested but is not supported");
             }
             else {
-                const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"]);
-                await core.summary.addHeading(jobSummaryTitle)
-                    .addCodeBlock(jsonStats.stdout, "json")
-                    .write();
+                const jsonStats = await exec.getExecOutput(ccacheVariant, ["--print-stats", "--format=json"], { silent: true });
+                const formattedStats = formatStatsAsTable(jsonStats.stdout);
+                if (formattedStats === null) {
+                    core.warning("Could not parse json stats");
+                }
+                else {
+                    await core.summary.addHeading(jobSummaryTitle)
+                        .addTable(formattedStats)
+                        .write();
+                }
             }
         }
         core.endGroup();
