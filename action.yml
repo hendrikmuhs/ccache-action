@@ -33,8 +33,9 @@ inputs:
     default: false
     required: false
   job-summary:
-    description: "Publish stats as part of the job summary. Set to the title of the job summary section. Requires CCache 4.10+"
-    default: ''
+    description: "Publish stats as part of the job summary. Set to the title of the job summary section, or to the 
+     empty string to disable this feature. Requires CCache 4.10+"
+    default: 'CCache Statistics'
 runs:
   using: "node20"
   main: "dist/restore/index.js"
