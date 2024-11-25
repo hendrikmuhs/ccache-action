@@ -45216,15 +45216,15 @@ function populateMaps (extensions, types) {
 module.exports = minimatch
 minimatch.Minimatch = Minimatch
 
-const path = (() => { try { return __nccwpck_require__(6928) } catch (e) {}})() || {
+var path = (function () { try { return __nccwpck_require__(6928) } catch (e) {}}()) || {
   sep: '/'
 }
 minimatch.sep = path.sep
 
-const GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
-const expand = __nccwpck_require__(4691)
+var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
+var expand = __nccwpck_require__(4691)
 
-const plTypes = {
+var plTypes = {
   '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
   '?': { open: '(?:', close: ')?' },
   '+': { open: '(?:', close: ')+' },
@@ -45234,22 +45234,22 @@ const plTypes = {
 
 // any single thing other than /
 // don't need to escape / when using new RegExp()
-const qmark = '[^/]'
+var qmark = '[^/]'
 
 // * => any number of characters
-const star = qmark + '*?'
+var star = qmark + '*?'
 
 // ** when dots are allowed.  Anything goes, except .. and .
 // not (^ or / followed by one or two dots followed by $ or /),
 // followed by anything, any number of times.
-const twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
+var twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
 
 // not a ^ or / followed by a dot,
 // followed by anything, any number of times.
-const twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
+var twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
 
 // characters that need to be escaped in RegExp.
-const reSpecials = charSet('().*{}+?[]^$\\!')
+var reSpecials = charSet('().*{}+?[]^$\\!')
 
 // "abc" -> { a:true, b:true, c:true }
 function charSet (s) {
@@ -45260,7 +45260,7 @@ function charSet (s) {
 }
 
 // normalizes slashes.
-const slashSplit = /\/+/
+var slashSplit = /\/+/
 
 minimatch.filter = filter
 function filter (pattern, options) {
@@ -45271,9 +45271,8 @@ function filter (pattern, options) {
 }
 
 function ext (a, b) {
-  a = a || {}
   b = b || {}
-  const t = {}
+  var t = {}
   Object.keys(a).forEach(function (k) {
     t[k] = a[k]
   })
@@ -45288,16 +45287,16 @@ minimatch.defaults = function (def) {
     return minimatch
   }
 
-  const orig = minimatch
+  var orig = minimatch
 
-  const m = function minimatch (p, pattern, options) {
+  var m = function minimatch (p, pattern, options) {
     return orig(p, pattern, ext(def, options))
   }
 
   m.Minimatch = function Minimatch (pattern, options) {
     return new orig.Minimatch(pattern, ext(def, options))
   }
-  m.Minimatch.defaults = options => {
+  m.Minimatch.defaults = function defaults (options) {
     return orig.defaults(ext(def, options)).Minimatch
   }
 
@@ -45338,9 +45337,6 @@ function minimatch (p, pattern, options) {
     return false
   }
 
-  // "" only matches ""
-  if (pattern.trim() === '') return p === ''
-
   return new Minimatch(pattern, options).match(p)
 }
 
@@ -45352,10 +45348,11 @@ function Minimatch (pattern, options) {
   assertValidPattern(pattern)
 
   if (!options) options = {}
+
   pattern = pattern.trim()
 
   // windows support: need to use /, not \
-  if (path.sep !== '/') {
+  if (!options.allowWindowsEscape && path.sep !== '/') {
     pattern = pattern.split(path.sep).join('/')
   }
 
@@ -45366,6 +45363,7 @@ function Minimatch (pattern, options) {
   this.negate = false
   this.comment = false
   this.empty = false
+  this.partial = !!options.partial
 
   // make the set of regexps etc.
   this.make()
@@ -45375,9 +45373,6 @@ Minimatch.prototype.debug = function () {}
 
 Minimatch.prototype.make = make
 function make () {
-  // don't do it more than once.
-  if (this._made) return
-
   var pattern = this.pattern
   var options = this.options
 
@@ -45397,7 +45392,7 @@ function make () {
   // step 2: expand braces
   var set = this.globSet = this.braceExpand()
 
-  if (options.debug) this.debug = console.error
+  if (options.debug) this.debug = function debug() { console.error.apply(console, arguments) }
 
   this.debug(this.pattern, set)
 
@@ -45479,6 +45474,8 @@ function braceExpand (pattern, options) {
 
   assertValidPattern(pattern)
 
+  // Thanks to Yeting Li <https://github.com/yetingli> for
+  // improving this regexp to avoid a ReDOS vulnerability.
   if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
     // shortcut. no need to expand.
     return [pattern]
@@ -45487,8 +45484,8 @@ function braceExpand (pattern, options) {
   return expand(pattern)
 }
 
-const MAX_PATTERN_LENGTH = 1024 * 64
-const assertValidPattern = pattern => {
+var MAX_PATTERN_LENGTH = 1024 * 64
+var assertValidPattern = function (pattern) {
   if (typeof pattern !== 'string') {
     throw new TypeError('invalid pattern')
   }
@@ -45510,18 +45507,23 @@ const assertValidPattern = pattern => {
 // of * is equivalent to a single *.  Globstar behavior is enabled by
 // default, and can be disabled by setting options.noglobstar.
 Minimatch.prototype.parse = parse
-const SUBPARSE = {}
+var SUBPARSE = {}
 function parse (pattern, isSub) {
   assertValidPattern(pattern)
 
   var options = this.options
 
   // shortcuts
-  if (!options.noglobstar && pattern === '**') return GLOBSTAR
+  if (pattern === '**') {
+    if (!options.noglobstar)
+      return GLOBSTAR
+    else
+      pattern = '*'
+  }
   if (pattern === '') return ''
 
   var re = ''
-  var hasMagic = false
+  var hasMagic = !!options.nocase
   var escaping = false
   // ? => one single character
   var patternListStack = []
@@ -45573,7 +45575,8 @@ function parse (pattern, isSub) {
     }
 
     switch (c) {
-      case '/': /* istanbul ignore next */ {
+      /* istanbul ignore next */
+      case '/': {
         // completely not allowed, even escaped.
         // Should already be path-split by now.
         return false
@@ -45696,25 +45699,23 @@ function parse (pattern, isSub) {
 
         // handle the case where we left a class open.
         // "[z-a]" is valid, equivalent to "\[z-a\]"
-        if (inClass) {
-          // split where the last [ was, make sure we don't have
-          // an invalid re. if so, re-walk the contents of the
-          // would-be class to re-translate any characters that
-          // were passed through as-is
-          // TODO: It would probably be faster to determine this
-          // without a try/catch and a new RegExp, but it's tricky
-          // to do safely.  For now, this is safe and works.
-          var cs = pattern.substring(classStart + 1, i)
-          try {
-            RegExp('[' + cs + ']')
-          } catch (er) {
-            // not a valid class!
-            var sp = this.parse(cs, SUBPARSE)
-            re = re.substr(0, reClassStart) + '\\[' + sp[0] + '\\]'
-            hasMagic = hasMagic || sp[1]
-            inClass = false
-            continue
-          }
+        // split where the last [ was, make sure we don't have
+        // an invalid re. if so, re-walk the contents of the
+        // would-be class to re-translate any characters that
+        // were passed through as-is
+        // TODO: It would probably be faster to determine this
+        // without a try/catch and a new RegExp, but it's tricky
+        // to do safely.  For now, this is safe and works.
+        var cs = pattern.substring(classStart + 1, i)
+        try {
+          RegExp('[' + cs + ']')
+        } catch (er) {
+          // not a valid class!
+          var sp = this.parse(cs, SUBPARSE)
+          re = re.substr(0, reClassStart) + '\\[' + sp[0] + '\\]'
+          hasMagic = hasMagic || sp[1]
+          inClass = false
+          continue
         }
 
         // finish up the class.
@@ -45798,9 +45799,7 @@ function parse (pattern, isSub) {
   // something that could conceivably capture a dot
   var addPatternStart = false
   switch (re.charAt(0)) {
-    case '.':
-    case '[':
-    case '(': addPatternStart = true
+    case '[': case '.': case '(': addPatternStart = true
   }
 
   // Hack to work around lack of negative lookbehind in JS
@@ -45928,7 +45927,7 @@ function makeRe () {
 
 minimatch.match = function (list, pattern, options) {
   options = options || {}
-  const mm = new Minimatch(pattern, options)
+  var mm = new Minimatch(pattern, options)
   list = list.filter(function (f) {
     return mm.match(f)
   })
@@ -45938,8 +45937,8 @@ minimatch.match = function (list, pattern, options) {
   return list
 }
 
-Minimatch.prototype.match = match
-function match (f, partial) {
+Minimatch.prototype.match = function match (f, partial) {
+  if (typeof partial === 'undefined') partial = this.partial
   this.debug('match', f, this.pattern)
   // short-circuit in the case of busted things.
   // comments, etc.
@@ -46109,11 +46108,7 @@ Minimatch.prototype.matchOne = function (file, pattern, partial) {
     // patterns with magic have been turned into regexps.
     var hit
     if (typeof p === 'string') {
-      if (options.nocase) {
-        hit = f.toLowerCase() === p.toLowerCase()
-      } else {
-        hit = f === p
-      }
+      hit = f === p
       this.debug('string match', p, f, hit)
     } else {
       hit = f.match(p)
@@ -58835,6 +58830,36 @@ const external_process_namespaceObject = require("process");
 var cache = __nccwpck_require__(5116);
 ;// CONCATENATED MODULE: ./src/common.ts
 
+/**
+ * Parse the output of ccache --version to extract the semantic version components
+ * @param ccacheOutput
+ */
+function parseCCacheVersion(ccacheOutput) {
+    const firstLine = ccacheOutput.split("\n", 1)[0];
+    // short version of https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+    const semver = /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/;
+    const result = firstLine.match(semver);
+    if (!result) {
+        return null;
+    }
+    if (result.length != 4) {
+        return null;
+    }
+    return [Number.parseInt(result[1]), Number.parseInt(result[2]), Number.parseInt(result[3])];
+}
+function formatStatsAsTable(statsJson) {
+    const stats = JSON.parse(statsJson);
+    if (stats === undefined) {
+        return null;
+    }
+    // @ts-ignore
+    const hits = stats["direct_cache_hit"] + stats["preprocessed_cache_hit"];
+    const misses = stats["cache_miss"];
+    const total = hits + misses;
+    return [
+        [{ data: "Cache hits", header: true }, `${hits} / ${total}`, `${((hits / total) * 100).toPrecision(3)}%`]
+    ];
+}
 function cacheDir(ccacheVariant) {
     const ghWorkSpace = process.env.GITHUB_WORKSPACE || "unreachable, make ncc happy";
     if (ccacheVariant === "ccache") {
