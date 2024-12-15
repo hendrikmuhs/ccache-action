@@ -182,6 +182,7 @@ function checkSha256Sum (path : string, expectedSha256 : string) {
 
 async function runInner() : Promise<void> {
   const ccacheVariant = core.getInput("variant");
+  core.saveState("startTimestamp", Date.now());
   core.saveState("ccacheVariant", ccacheVariant);
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));

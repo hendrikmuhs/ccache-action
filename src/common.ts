@@ -1,7 +1,13 @@
 import path from "path";
 import {SummaryTableRow} from "@actions/core/lib/summary";
+import * as core from "@actions/core";
 
 type Version = [number,number,number];
+
+export function getJobDurationInSeconds() : number  {
+    const startTime = Number.parseInt(core.getState("startTimestamp"));
+    return Math.floor((Date.now() - startTime) * 0.001);
+}
 
 /**
  * Parse the output of ccache --version to extract the semantic version components
