@@ -58819,7 +58819,7 @@ var external_os_default = /*#__PURE__*/__nccwpck_require__.n(external_os_);
 var external_path_ = __nccwpck_require__(6928);
 var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(7484);
+var lib_core = __nccwpck_require__(7484);
 // EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
 var io = __nccwpck_require__(4994);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
@@ -58830,6 +58830,11 @@ const external_process_namespaceObject = require("process");
 var cache = __nccwpck_require__(5116);
 ;// CONCATENATED MODULE: ./src/common.ts
 
+
+function getJobDurationInSeconds() {
+    const startTime = Number.parseInt(core.getState("startTimestamp"));
+    return Math.floor((Date.now() - startTime) * 0.001);
+}
 /**
  * Parse the output of ccache --version to extract the semantic version components
  * @param ccacheOutput
@@ -58886,36 +58891,36 @@ const SELF_CI = external_process_namespaceObject.env["CCACHE_ACTION_CI"] === "tr
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 async function restore(ccacheVariant) {
     const inputs = {
-        primaryKey: core.getInput("key"),
+        primaryKey: lib_core.getInput("key"),
         // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
-        restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
+        restoreKeys: lib_core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
     };
     const keyPrefix = ccacheVariant + "-";
     const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
     const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
     const paths = [cacheDir(ccacheVariant)];
-    core.saveState("primaryKey", primaryKey);
-    const shouldRestore = core.getBooleanInput("restore");
+    lib_core.saveState("primaryKey", primaryKey);
+    const shouldRestore = lib_core.getBooleanInput("restore");
     if (!shouldRestore) {
-        core.info("Restore set to false, skip restoring cache.");
+        lib_core.info("Restore set to false, skip restoring cache.");
         return;
     }
     const restoredWith = await cache.restoreCache(paths, primaryKey, restoreKeys);
     if (restoredWith) {
-        core.info(`Restored from cache key "${restoredWith}".`);
+        lib_core.info(`Restored from cache key "${restoredWith}".`);
         if (SELF_CI) {
-            core.setOutput("test-cache-hit", true);
+            lib_core.setOutput("test-cache-hit", true);
         }
     }
     else {
-        core.info("No cache found.");
+        lib_core.info("No cache found.");
         if (SELF_CI) {
-            core.setOutput("test-cache-hit", false);
+            lib_core.setOutput("test-cache-hit", false);
         }
     }
 }
 async function configure(ccacheVariant, platform) {
-    const maxSize = core.getInput('max-size');
+    const maxSize = lib_core.getInput('max-size');
     if (ccacheVariant === "ccache") {
         await execShell(`ccache --set-config=cache_dir='${cacheDir(ccacheVariant)}'`);
         await execShell(`ccache --set-config=max_size='${maxSize}'`);
@@ -58923,7 +58928,7 @@ async function configure(ccacheVariant, platform) {
         if (platform === "darwin") {
             await execShell(`ccache --set-config=compiler_check=content`);
         }
-        if (core.getBooleanInput("create-symlink")) {
+        if (lib_core.getBooleanInput("create-symlink")) {
             const ccache = await io.which("ccache");
             await execShell(`ln -s ${ccache} /usr/local/bin/gcc`);
             await execShell(`ln -s ${ccache} /usr/local/bin/g++`);
@@ -58934,7 +58939,7 @@ async function configure(ccacheVariant, platform) {
             await execShell(`ln -s ${ccache} /usr/local/bin/emcc`);
             await execShell(`ln -s ${ccache} /usr/local/bin/em++`);
         }
-        core.info("Cccache config:");
+        lib_core.info("Cccache config:");
         await execShell("ccache -p");
     }
     else {
@@ -58993,7 +58998,7 @@ async function installSccacheFromGitHub(version, artifactName, binSha256, binDir
     const binPath = external_path_default().join(binDir, binName);
     await downloadAndExtract(url, `*/${binName}`, binPath);
     checkSha256Sum(binPath, binSha256);
-    core.addPath(binDir);
+    lib_core.addPath(binDir);
     await execShell(`chmod +x '${binPath}'`);
 }
 async function downloadAndExtract(url, srcFile, dstFile) {
@@ -59022,13 +59027,15 @@ function checkSha256Sum(path, expectedSha256) {
     }
 }
 async function runInner() {
-    const ccacheVariant = core.getInput("variant");
-    core.saveState("ccacheVariant", ccacheVariant);
-    core.saveState("shouldSave", core.getBooleanInput("save"));
-    core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
+    const ccacheVariant = lib_core.getInput("variant");
+    lib_core.saveState("startTimestamp", Date.now());
+    lib_core.saveState("ccacheVariant", ccacheVariant);
+    lib_core.saveState("evictOldFiles", lib_core.getBooleanInput("evict-old-files"));
+    lib_core.saveState("shouldSave", lib_core.getBooleanInput("save"));
+    lib_core.saveState("appendTimestamp", lib_core.getBooleanInput("append-timestamp"));
     let ccachePath = await io.which(ccacheVariant);
     if (!ccachePath) {
-        core.startGroup(`Install ${ccacheVariant}`);
+        lib_core.startGroup(`Install ${ccacheVariant}`);
         const installer = {
             ["ccache,linux"]: installCcacheLinux,
             ["ccache,darwin"]: installCcacheMac,
@@ -59041,24 +59048,24 @@ async function runInner() {
             throw Error(`Unsupported platform: ${external_process_namespaceObject.platform}`);
         }
         await installer();
-        core.info(await io.which(ccacheVariant + ".exe"));
+        lib_core.info(await io.which(ccacheVariant + ".exe"));
         ccachePath = await io.which(ccacheVariant, true);
-        core.endGroup();
+        lib_core.endGroup();
     }
-    core.startGroup("Restore cache");
+    lib_core.startGroup("Restore cache");
     await restore(ccacheVariant);
-    core.endGroup();
-    core.startGroup(`Configure ${ccacheVariant}, ${external_process_namespaceObject.platform}`);
+    lib_core.endGroup();
+    lib_core.startGroup(`Configure ${ccacheVariant}, ${external_process_namespaceObject.platform}`);
     await configure(ccacheVariant, external_process_namespaceObject.platform);
     await execShell(`${ccacheVariant} -z`);
-    core.endGroup();
+    lib_core.endGroup();
 }
 async function run() {
     try {
         await runInner();
     }
     catch (error) {
-        core.setFailed(`Restoring cache failed: ${error}`);
+        lib_core.setFailed(`Restoring cache failed: ${error}`);
     }
 }
 run();
