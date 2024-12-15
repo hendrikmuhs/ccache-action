@@ -184,6 +184,7 @@ async function runInner() : Promise<void> {
   const ccacheVariant = core.getInput("variant");
   core.saveState("startTimestamp", Date.now());
   core.saveState("ccacheVariant", ccacheVariant);
+  core.saveState("evictOldFiles", core.getBooleanInput("evict-old-files"));
   core.saveState("shouldSave", core.getBooleanInput("save"));
   core.saveState("appendTimestamp", core.getBooleanInput("append-timestamp"));
   let ccachePath = await io.which(ccacheVariant);
