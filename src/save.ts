@@ -53,6 +53,15 @@ async function hasJsonStats(ccacheVariant: string) : Promise<boolean> {
   return version != null && version[0] >= 4 && version[1] >= 10;
 }
 
+export async function evictOldFiles(seconds : number) : Promise<void> {
+  try {
+    await exec.exec(`ccache --evict-older-than ${seconds}s`);
+  }
+  catch (error) {
+    core.warning(`Error occurred evicting old cache files: ${error}`);
+  }
+}
+
 async function run(earlyExit : boolean | undefined) : Promise<void> {
   try {
     const ccacheVariant = core.getState("ccacheVariant");
@@ -89,6 +98,12 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     if (core.getState("shouldSave") !== "true") {
       core.info("Not saving cache because 'save' is set to 'false'.");
       return;
+    }
+
+    if (core.getState("evictOldFiles") === "true" && ccacheVariant === "ccache") {
+      const jobDuration = common.getJobDurationInSeconds();
+      core.debug(`Evicting cache files older than ${jobDuration} seconds`);
+      await evictOldFiles(jobDuration);
     }
 
     if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {

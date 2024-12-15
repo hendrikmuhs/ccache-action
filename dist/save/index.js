@@ -58803,7 +58803,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ save)
+  "default": () => (/* binding */ save),
+  evictOldFiles: () => (/* binding */ evictOldFiles)
 });
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
@@ -58817,6 +58818,11 @@ var external_path_ = __nccwpck_require__(6928);
 var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 ;// CONCATENATED MODULE: ./src/common.ts
 
+
+function getJobDurationInSeconds() {
+    const startTime = Number.parseInt(core.getState("startTimestamp"));
+    return Math.floor((Date.now() - startTime) * 0.001);
+}
 /**
  * Parse the output of ccache --version to extract the semantic version components
  * @param ccacheOutput
@@ -58907,6 +58913,14 @@ async function hasJsonStats(ccacheVariant) {
     const version = parseCCacheVersion(result.stdout);
     return version != null && version[0] >= 4 && version[1] >= 10;
 }
+async function evictOldFiles(seconds) {
+    try {
+        await exec.exec(`ccache --evict-older-than ${seconds}s`);
+    }
+    catch (error) {
+        core.warning(`Error occurred evicting old cache files: ${error}`);
+    }
+}
 async function run(earlyExit) {
     try {
         const ccacheVariant = core.getState("ccacheVariant");
@@ -58938,6 +58952,11 @@ async function run(earlyExit) {
         if (core.getState("shouldSave") !== "true") {
             core.info("Not saving cache because 'save' is set to 'false'.");
             return;
+        }
+        if (core.getState("evictOldFiles") === "true" && ccacheVariant === "ccache") {
+            const jobDuration = getJobDurationInSeconds();
+            core.debug(`Evicting cache files older than ${jobDuration} seconds`);
+            await evictOldFiles(jobDuration);
         }
         if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
             core.info("Not saving cache because no objects are cached.");
