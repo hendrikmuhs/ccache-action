@@ -58819,9 +58819,28 @@ var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 ;// CONCATENATED MODULE: ./src/common.ts
 
 
+var AgeUnit;
+(function (AgeUnit) {
+    AgeUnit["Seconds"] = "s";
+    AgeUnit["Days"] = "d";
+    AgeUnit["Job"] = "job";
+})(AgeUnit || (AgeUnit = {}));
 function getJobDurationInSeconds() {
     const startTime = Number.parseInt(core.getState("startTimestamp"));
     return Math.floor((Date.now() - startTime) * 0.001);
+}
+function parseEvictAgeParameter(age) {
+    const expr = /([0-9]+)([sd])|job/;
+    const result = age.match(expr);
+    if (result) {
+        if (result[0] !== "job") {
+            return [Number.parseInt(result[1]), result[2]];
+        }
+        else {
+            return [null, AgeUnit.Job];
+        }
+    }
+    throw new Error(`age parameter ${age} was not valid`);
 }
 /**
  * Parse the output of ccache --version to extract the semantic version components
@@ -58865,6 +58884,7 @@ function cacheDir(ccacheVariant) {
 }
 
 ;// CONCATENATED MODULE: ./src/save.ts
+
 
 
 
@@ -58913,9 +58933,9 @@ async function hasJsonStats(ccacheVariant) {
     const version = parseCCacheVersion(result.stdout);
     return version != null && version[0] >= 4 && version[1] >= 10;
 }
-async function evictOldFiles(seconds) {
+async function evictOldFiles(age, unit) {
     try {
-        await exec.exec(`ccache --evict-older-than ${seconds}s`);
+        await exec.exec(`ccache --evict-older-than ${age}${unit}`);
     }
     catch (error) {
         core.warning(`Error occurred evicting old cache files: ${error}`);
@@ -58953,10 +58973,18 @@ async function run(earlyExit) {
             core.info("Not saving cache because 'save' is set to 'false'.");
             return;
         }
-        if (core.getState("evictOldFiles") === "true" && ccacheVariant === "ccache") {
-            const jobDuration = getJobDurationInSeconds();
-            core.debug(`Evicting cache files older than ${jobDuration} seconds`);
-            await evictOldFiles(jobDuration);
+        const evictByAge = core.getState("evictOldFiles");
+        if (evictByAge && ccacheVariant === "ccache") {
+            const [time, unit] = parseEvictAgeParameter(evictByAge);
+            if (unit === AgeUnit.Job) {
+                const duration = getJobDurationInSeconds();
+                core.debug(`Evicting cache files older than ${duration} seconds`);
+                await evictOldFiles(duration, AgeUnit.Seconds);
+            }
+            else {
+                core.debug(`Evicting cache files older than ${time}${unit}`);
+                await evictOldFiles(time, unit);
+            }
         }
         if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {
             core.info("Not saving cache because no objects are cached.");

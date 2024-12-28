@@ -58831,9 +58831,28 @@ var cache = __nccwpck_require__(5116);
 ;// CONCATENATED MODULE: ./src/common.ts
 
 
+var AgeUnit;
+(function (AgeUnit) {
+    AgeUnit["Seconds"] = "s";
+    AgeUnit["Days"] = "d";
+    AgeUnit["Job"] = "job";
+})(AgeUnit || (AgeUnit = {}));
 function getJobDurationInSeconds() {
     const startTime = Number.parseInt(core.getState("startTimestamp"));
     return Math.floor((Date.now() - startTime) * 0.001);
+}
+function parseEvictAgeParameter(age) {
+    const expr = /([0-9]+)([sd])|job/;
+    const result = age.match(expr);
+    if (result) {
+        if (result[0] !== "job") {
+            return [Number.parseInt(result[1]), result[2]];
+        }
+        else {
+            return [null, AgeUnit.Job];
+        }
+    }
+    throw new Error(`age parameter ${age} was not valid`);
 }
 /**
  * Parse the output of ccache --version to extract the semantic version components
@@ -59030,7 +59049,7 @@ async function runInner() {
     const ccacheVariant = lib_core.getInput("variant");
     lib_core.saveState("startTimestamp", Date.now());
     lib_core.saveState("ccacheVariant", ccacheVariant);
-    lib_core.saveState("evictOldFiles", lib_core.getBooleanInput("evict-old-files"));
+    lib_core.saveState("evictOldFiles", lib_core.getInput("evict-old-files"));
     lib_core.saveState("shouldSave", lib_core.getBooleanInput("save"));
     lib_core.saveState("appendTimestamp", lib_core.getBooleanInput("append-timestamp"));
     let ccachePath = await io.which(ccacheVariant);

@@ -245,7 +245,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        evict: [true, false]
+        evict: ['job', '30s', '']
     steps:
       - uses: actions/checkout@v4
       - name: Run ccache-action

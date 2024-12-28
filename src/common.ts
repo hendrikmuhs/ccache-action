@@ -4,9 +4,29 @@ import * as core from "@actions/core";
 
 type Version = [number,number,number];
 
+export enum AgeUnit {
+    Seconds = "s",
+    Days = "d",
+    Job = "job"
+}
+
 export function getJobDurationInSeconds() : number  {
     const startTime = Number.parseInt(core.getState("startTimestamp"));
     return Math.floor((Date.now() - startTime) * 0.001);
+}
+
+export function parseEvictAgeParameter(age: string): [number | null, AgeUnit] {
+    const expr = /([0-9]+)([sd])|job/
+    const result = age.match(expr);
+    if (result) {
+        if (result[0] !== "job") {
+            return [Number.parseInt(result[1]), result[2] as AgeUnit];
+        } else {
+            return [null, AgeUnit.Job];
+        }
+    }
+
+    throw new Error(`age parameter ${age} was not valid`);
 }
 
 /**
