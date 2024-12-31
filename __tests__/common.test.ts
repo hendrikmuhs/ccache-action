@@ -1,7 +1,40 @@
 import * as common  from '../src/common';
-
+import * as core from "@actions/core";
 
 describe('ccache common', () => {
+    test('parse evict age parameter in seconds', () => {
+        const age = '42s';
+        const [time, unit] = common.parseEvictAgeParameter(age);
+        expect(time).toEqual(42);
+        expect(unit).toEqual(common.AgeUnit.Seconds);
+    });
+
+    test('parse evict age parameter in days', () => {
+        const age = '28d';
+        const [time, unit] = common.parseEvictAgeParameter(age);
+        expect(time).toEqual(28);
+        expect(unit).toEqual(common.AgeUnit.Days);
+    });
+
+    test('parse evict age parameter - job', () => {
+        const age = 'job';
+        const [, unit] = common.parseEvictAgeParameter(age);
+        expect(unit).toEqual(common.AgeUnit.Job);
+    });
+
+    test('get duration of job in seconds', () => {
+        const stateMock = jest.spyOn(core, "getState");
+        const expectedAgeInSeconds = 1234;
+        const startTimeMs = 1734258917128;
+        const endTimeMs = startTimeMs + expectedAgeInSeconds * 1000;
+        stateMock.mockImplementationOnce(() => startTimeMs.toString());
+        jest.useFakeTimers().setSystemTime(new Date(endTimeMs));
+
+        const age = common.getJobDurationInSeconds();
+        expect(stateMock).toHaveBeenCalledWith("startTimestamp");
+        expect(age).toBe(expectedAgeInSeconds);
+    });
+
     test('parse version string from ccache output', () => {
         const ccacheOutput = `ccache version 4.10.2
 Features: avx2 file-storage http-storage redis+unix-storage redis-storage

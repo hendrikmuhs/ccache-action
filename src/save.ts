@@ -2,6 +2,8 @@ import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as exec from "@actions/exec";
 import * as common from "./common";
+import {AgeUnit} from "./common";
+
 
 async function ccacheIsEmpty(ccacheVariant : string, ccacheKnowsVerbosityFlag : boolean) : Promise<boolean> {
   if (ccacheVariant === "ccache") {
@@ -53,6 +55,15 @@ async function hasJsonStats(ccacheVariant: string) : Promise<boolean> {
   return version != null && version[0] >= 4 && version[1] >= 10;
 }
 
+export async function evictOldFiles(age : number, unit : common.AgeUnit) : Promise<void> {
+  try {
+    await exec.exec(`ccache --evict-older-than ${age}${unit}`);
+  }
+  catch (error) {
+    core.warning(`Error occurred evicting old cache files: ${error}`);
+  }
+}
+
 async function run(earlyExit : boolean | undefined) : Promise<void> {
   try {
     const ccacheVariant = core.getState("ccacheVariant");
@@ -89,6 +100,20 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
     if (core.getState("shouldSave") !== "true") {
       core.info("Not saving cache because 'save' is set to 'false'.");
       return;
+    }
+
+    const evictByAge = core.getState("evictOldFiles");
+    if (evictByAge && ccacheVariant === "ccache") {
+      const [time, unit] = common.parseEvictAgeParameter(evictByAge)
+      if (unit === AgeUnit.Job) {
+        const duration = common.getJobDurationInSeconds();
+        core.debug(`Evicting cache files older than ${duration} seconds`);
+        await evictOldFiles(duration, common.AgeUnit.Seconds);
+      }
+      else {
+        core.debug(`Evicting cache files older than ${time}${unit}`);
+        await evictOldFiles(time as number, unit);
+      }
     }
 
     if (await ccacheIsEmpty(ccacheVariant, ccacheKnowsVerbosityFlag)) {

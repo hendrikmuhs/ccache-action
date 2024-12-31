@@ -240,3 +240,15 @@ jobs:
           else
             ls -l $(which gcc) | grep -v $(which ccache)
           fi
+
+  test_option_evict:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        evict: ['job', '30s', '']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ccache-action
+        uses: ./
+        with:
+          evict-old-files: ${{ matrix.evict }}
