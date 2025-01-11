@@ -133,7 +133,7 @@ async function execShell(cmd : string) {
 }
 
 async function execShellSudo(cmd : string) {
-  await execShell("$(which sudo) sh -xc '" + cmd + "'");
+  await execShell("$(which sudo) " + cmd);
 }
 
 async function installCcacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {
@@ -167,7 +167,7 @@ async function downloadAndExtract (url : string, srcFile : string, dstFile : str
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else {
-    await execShellSudo(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+    await execShell(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
   }
 }
 
