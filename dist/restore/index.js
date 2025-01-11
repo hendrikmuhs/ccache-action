@@ -68161,7 +68161,7 @@ async function execShell(cmd) {
     await exec.exec("sh", ["-xc", cmd]);
 }
 async function execShellSudo(cmd) {
-    await execShell("$(which sudo) sh -xc '" + cmd + "'");
+    await execShell("$(which sudo) " + cmd);
 }
 async function installCcacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
     const archiveName = `ccache-${version}-${artifactName}`;
@@ -68193,7 +68193,7 @@ async function downloadAndExtract(url, srcFile, dstFile) {
         external_fs_default().rmSync(tmp, { recursive: true });
     }
     else {
-        await execShellSudo(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
+        await execShell(`curl -L '${url}' | tar xzf - -O --wildcards '${srcFile}' > '${dstFile}'`);
     }
 }
 function checkSha256Sum(path, expectedSha256) {
