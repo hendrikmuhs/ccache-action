@@ -68103,6 +68103,9 @@ async function configure(ccacheVariant, platform) {
         await execShell(`ccache --set-config=cache_dir='${cacheDir(ccacheVariant)}'`);
         await execShell(`ccache --set-config=max_size='${maxSize}'`);
         await execShell(`ccache --set-config=compression=true`);
+        if (!lib_core.getBooleanInput("save")) {
+            await execShell(`ccache --set-config=read_only=true`);
+        }
         if (platform === "darwin") {
             await execShell(`ccache --set-config=compiler_check=content`);
         }
