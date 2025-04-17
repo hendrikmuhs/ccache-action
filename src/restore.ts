@@ -116,17 +116,17 @@ async function installSccacheLinux() : Promise<void> {
   switch (process.arch) {
     case "x64":
       packageName = "x86_64-unknown-linux-musl";
-      sha256 = "8c2bb0805983a6fe334fa8b5c26db2c5fc3a7fc3dbf51522a08f2e4c50e4fbe7";
+      sha256 = "911f611db54e48dc50c32232462a99848824be5ba0f6f52cc33903712cd78715";
       break;
     case "arm64":
       packageName = "aarch64-unknown-linux-musl";
-      sha256 = "d4773c9a6716b70ecdf646c1ee018e1b5be71bed0af5c3d82e5c595833744dbf";
+      sha256 = "a0f10f7daeeecb3439d6e903bc5dc4a4ccee67985b506d3daf742521efe45627";
       break;
     default:
       throw new Error(`Unsupported architecture: ${process.arch}`);
   }
   await installSccacheFromGitHub(
-    "v0.7.6",
+    "v0.9.1",
     packageName,
     sha256,
     "/usr/local/bin/",
@@ -136,9 +136,9 @@ async function installSccacheLinux() : Promise<void> {
 
 async function installSccacheWindows() : Promise<void> {
   await installSccacheFromGitHub(
-    "v0.7.6",
+    "v0.9.1",
     "x86_64-pc-windows-msvc",
-    "48e88be2ba87dca8d74364f045894ec214b6c850e65e61ab44e5071055c9e6d3",
+    "12578536fc5e3de6c385eb4b56d0537ebeb21b9a221242833624572b71910049",
     // TODO find a better place
     `${process.env.USERPROFILE}\\.cargo\\bin`,
     "sccache.exe"
