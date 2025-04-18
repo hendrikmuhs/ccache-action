@@ -68158,19 +68158,19 @@ async function installSccacheLinux() {
     switch (external_process_namespaceObject.arch) {
         case "x64":
             packageName = "x86_64-unknown-linux-musl";
-            sha256 = "8c2bb0805983a6fe334fa8b5c26db2c5fc3a7fc3dbf51522a08f2e4c50e4fbe7";
+            sha256 = "1fbb35e135660d04a2d5e42b59c7874d39b3deb17de56330b25b713ec59f849b";
             break;
         case "arm64":
             packageName = "aarch64-unknown-linux-musl";
-            sha256 = "d4773c9a6716b70ecdf646c1ee018e1b5be71bed0af5c3d82e5c595833744dbf";
+            sha256 = "d6a1ce4acd02b937cd61bc675a8be029a60f7bc167594c33d75732bbc0a07400";
             break;
         default:
             throw new Error(`Unsupported architecture: ${external_process_namespaceObject.arch}`);
     }
-    await installSccacheFromGitHub("v0.7.6", packageName, sha256, "/usr/local/bin/", "sccache");
+    await installSccacheFromGitHub("v0.10.0", packageName, sha256, "/usr/local/bin/", "sccache");
 }
 async function installSccacheWindows() {
-    await installSccacheFromGitHub("v0.7.6", "x86_64-pc-windows-msvc", "48e88be2ba87dca8d74364f045894ec214b6c850e65e61ab44e5071055c9e6d3", 
+    await installSccacheFromGitHub("v0.10.0", "x86_64-pc-windows-msvc", "0d499d0f73fa575f805df014af6ece49b840195fb7de0c552230899d77186ceb", 
     // TODO find a better place
     `${external_process_namespaceObject.env.USERPROFILE}\\.cargo\\bin`, "sccache.exe");
 }
