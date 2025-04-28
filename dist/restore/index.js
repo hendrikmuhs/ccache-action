@@ -65287,11 +65287,12 @@ async function restore(ccacheVariant) {
     const inputs = {
         primaryKey: lib_core.getInput("key"),
         // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
-        restoreKeys: lib_core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== "")
+        restoreKeys: lib_core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== ""),
+        appendTimestamp: lib_core.getInput("append-timestamp")
     };
     const keyPrefix = ccacheVariant + "-";
-    const primaryKey = inputs.primaryKey ? keyPrefix + inputs.primaryKey + "-" : keyPrefix;
-    const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + "-");
+    const primaryKey = inputs.primaryKey ? keyPrefix + (inputs.appendTimestamp ? inputs.primaryKey + "-" : inputs.primaryKey) : keyPrefix;
+    const restoreKeys = inputs.restoreKeys.map(k => keyPrefix + k + (inputs.appendTimestamp ? "-" : ""));
     const paths = [cacheDir(ccacheVariant)];
     lib_core.saveState("primaryKey", primaryKey);
     const shouldRestore = lib_core.getBooleanInput("restore");
