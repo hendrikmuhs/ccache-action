@@ -161,6 +161,7 @@ async function installCcacheFromGitHub(version : string, artifactName : string, 
   const binPath = path.join(binDir, binName);
   await downloadAndExtract(url, path.join(archiveName, binName), binPath);
   checkSha256Sum(binPath, binSha256);
+  core.addPath(binDir);
 }
 
 async function installSccacheFromGitHub(version : string, artifactName : string, binSha256 : string, binDir : string, binName : string) : Promise<void> {

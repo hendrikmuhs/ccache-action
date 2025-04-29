@@ -65403,6 +65403,7 @@ async function installCcacheFromGitHub(version, artifactName, binSha256, binDir,
     const binPath = external_path_default().join(binDir, binName);
     await downloadAndExtract(url, external_path_default().join(archiveName, binName), binPath);
     checkSha256Sum(binPath, binSha256);
+    lib_core.addPath(binDir);
 }
 async function installSccacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
     const archiveName = `sccache-${version}-${artifactName}`;
