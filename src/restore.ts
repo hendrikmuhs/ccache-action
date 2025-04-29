@@ -174,15 +174,15 @@ async function installSccacheFromGitHub(version : string, artifactName : string,
 }
 
 async function downloadAndExtract (url : string, srcFile : string, dstFile : string) {
+  const dstDir = path.dirname(dstFile);
+  if (!fs.existsSync(dstDir)) {
+    fs.mkdirSync(dstDir, { recursive: true });
+  }
   if (url.endsWith(".zip")) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), ""));
     const zipName = path.join(tmp, "dl.zip");
     await execShell(`curl -L '${url}' -o '${zipName}'`);
     await execShell(`unzip '${zipName}' -d '${tmp}'`);
-    const dstDir = path.dirname(dstFile);
-    if (!fs.existsSync(dstDir)) {
-      fs.mkdirSync(dstDir, { recursive: true });
-    }
     fs.copyFileSync(path.join(tmp, srcFile), dstFile);
     fs.rmSync(tmp, { recursive: true });
   } else {
