@@ -65403,6 +65403,7 @@ async function installCcacheFromGitHub(version, artifactName, binSha256, binDir,
     const binPath = external_path_default().join(binDir, binName);
     await downloadAndExtract(url, external_path_default().join(archiveName, binName), binPath);
     checkSha256Sum(binPath, binSha256);
+    lib_core.addPath(binDir);
 }
 async function installSccacheFromGitHub(version, artifactName, binSha256, binDir, binName) {
     const archiveName = `sccache-${version}-${artifactName}`;
@@ -65414,15 +65415,15 @@ async function installSccacheFromGitHub(version, artifactName, binSha256, binDir
     await execShell(`chmod +x '${binPath}'`);
 }
 async function downloadAndExtract(url, srcFile, dstFile) {
+    const dstDir = external_path_default().dirname(dstFile);
+    if (!external_fs_default().existsSync(dstDir)) {
+        external_fs_default().mkdirSync(dstDir, { recursive: true });
+    }
     if (url.endsWith(".zip")) {
         const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), ""));
         const zipName = external_path_default().join(tmp, "dl.zip");
         await execShell(`curl -L '${url}' -o '${zipName}'`);
         await execShell(`unzip '${zipName}' -d '${tmp}'`);
-        const dstDir = external_path_default().dirname(dstFile);
-        if (!external_fs_default().existsSync(dstDir)) {
-            external_fs_default().mkdirSync(dstDir, { recursive: true });
-        }
         external_fs_default().copyFileSync(external_path_default().join(tmp, srcFile), dstFile);
         external_fs_default().rmSync(tmp, { recursive: true });
     }
