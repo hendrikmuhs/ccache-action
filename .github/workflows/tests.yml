@@ -297,7 +297,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        shell: [bash]
         variant: [sccache, ccache]
     runs-on: ${{ matrix.os }}
     steps:
@@ -307,9 +306,87 @@ jobs:
         id: ccache
         with:
           variant: ${{ matrix.variant }}
-          key: parent
+          key: output
       - name: Test output.executable exists
+        shell: bash
         run: |
           test -f "${{ steps.ccache.outputs.executable }}"
           test -x "${{ steps.ccache.outputs.executable }}"
           "${{ steps.ccache.outputs.executable }}" --version
+
+
+  test_evict_old_caches_1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache action
+        uses: ./
+        id: ccache
+        with:
+          variant: ccache
+          append-timestamp: true
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          key: evict-old
+
+      - name: Test ccache
+        run: |
+          # Example program
+          echo "int x = $RANDOM;" > test.c
+          ${{ steps.ccache.outputs.executable }} gcc test.c -c -o test.o
+
+  test_evict_old_caches_2:
+    needs: test_evict_old_caches_1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache action
+        uses: ./
+        id: ccache
+        with:
+          variant: ccache
+          append-timestamp: true
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          key: evict-old
+
+      - name: Test ccache
+        run: |
+          # Example program
+          echo "int x = $RANDOM;" > test.c
+          ${{ steps.ccache.outputs.executable }} gcc test.c -c -o test.o
+
+  test_evict_old_caches_3:
+    needs: test_evict_old_caches_2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ccache action
+        uses: ./
+        id: ccache
+        with:
+          variant: ccache
+          append-timestamp: true
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          key: evict-old
+
+      - name: Test ccache
+        run: |
+          # Example program
+          echo "int x = $RANDOM;" > test.c
+          ${{ steps.ccache.outputs.executable }} gcc test.c -c -o test.o
+
+  test_evict_old_caches_4:
+    needs: test_evict_old_caches_3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test ccache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache list -R ${{ github.repository }} --key ccache-evict-old
+          count=$(gh cache list -R ${{ github.repository }} --key ccache-evict-old --json key --jq 'length')
+          if [ "$count" -eq 1 ]; then
+            exit 0   # success
+          else
+            exit 1   # failure
+          fi
+

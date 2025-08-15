@@ -53,6 +53,11 @@ inputs:
       - detect (default): install ccache if not available
       - no: do not attempt to install ccache"
     default: detect
+  gh-token:
+    description: "github actions token for access to the octokit api to be able to remove onld caches"
+    default: false
+    required: false
+
 
 outputs:
   executable: 
