@@ -33,7 +33,7 @@
     "@vercel/ncc": "^0.38.4",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "bugs": {
     "url": "https://github.com/hendrikmuhs/ccache-action/issues"
