@@ -195,6 +195,17 @@ jobs:
       - name: Run ccache-action
         uses: ./
 
+  test_docker_rocky:
+    # Test that it works in Rocky Linux Docker container with dnf package manager.
+    runs-on: ubuntu-latest
+    container: rockylinux:9
+    steps:
+      - uses: actions/checkout@v5
+      - run: dnf update -y
+        shell: sh
+      - name: Run ccache-action
+        uses: ./
+
   test_option_save:
     # Test that the 'save' option is available.
     runs-on: ubuntu-latest
