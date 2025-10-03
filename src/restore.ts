@@ -68,7 +68,7 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
       await execShell(`ln -s ${ccache} /usr/local/bin/emcc`);
       await execShell(`ln -s ${ccache} /usr/local/bin/em++`);
     }
-    core.info("Cccache config:");
+    core.info("Ccache config:");
     await execShell("ccache -p");
   } else {
     const options = `SCCACHE_IDLE_TIMEOUT=0 SCCACHE_DIR='${cacheDir(ccacheVariant)}' SCCACHE_CACHE_SIZE='${maxSize}'`;

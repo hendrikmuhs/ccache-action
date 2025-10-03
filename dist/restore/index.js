@@ -66480,7 +66480,7 @@ async function configure(ccacheVariant, platform) {
             await execShell(`ln -s ${ccache} /usr/local/bin/emcc`);
             await execShell(`ln -s ${ccache} /usr/local/bin/em++`);
         }
-        lib_core.info("Cccache config:");
+        lib_core.info("Ccache config:");
         await execShell("ccache -p");
     }
     else {
