@@ -14,7 +14,7 @@ inputs:
     required: false
   max-size:
     description: "Max size of the cache"
-    default: "500M"
+    default: "500MB"
   verbose:
     description: "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
     default: 0
