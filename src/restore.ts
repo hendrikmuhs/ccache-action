@@ -88,6 +88,11 @@ async function installCcacheLinux() : Promise<void> {
   } else if (await io.which("apk")) {
     await execShell("apk add ccache");
     return;
+  } else if (await io.which("dnf")) {
+    // ccache is part of EPEL repo.
+    await execShell("dnf install -y epel-release");
+    await execShell("dnf install -y ccache");
+    return;
   }
   throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
 }
