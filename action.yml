@@ -41,6 +41,11 @@ inputs:
       followed by the 's' or 'd' suffix respectively. Also supports the special value 'job' which represents the time
       since the job started, which evicts all cache files that were not touched during the job run."
     default: ''
+  update:
+    description: "Update package manager index before installing ccache. Enabling this might help when running
+      ccache-action in a container or from `act`. Disabling this might speed up the action execution."
+    default: false
+    required: false
 runs:
   using: "node20"
   main: "dist/restore/index.js"

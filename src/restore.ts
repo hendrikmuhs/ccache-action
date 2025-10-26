@@ -11,6 +11,14 @@ import { cacheDir } from "./common";
 
 const SELF_CI = process.env["CCACHE_ACTION_CI"] === "true"
 
+function getPackageManagerError(error: Error | unknown) : string {
+  return (
+    `Failed to install ccache via package manager: '${error}'. ` +
+    "Perhaps package manager index is not up to date? " +
+    "(either update it manually before running ccache-action or set 'update' option to 'true')"
+  );
+}
+
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 
 async function restore(ccacheVariant : string) : Promise<void> {
@@ -78,22 +86,44 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
 }
 
 async function installCcacheMac() : Promise<void> {
-  await execShell("brew install ccache");
+  if (core.getBooleanInput("update")) {
+    await execShell("brew update");
+  }
+  try {
+    await execShell("brew install ccache");
+  } catch (error) {
+    throw new Error(getPackageManagerError(error));
+  }
 }
 
 async function installCcacheLinux() : Promise<void> {
-  if (await io.which("apt-get")) {
-    await execShellSudo("apt-get install -y ccache");
-    return;
-  } else if (await io.which("apk")) {
-    await execShell("apk add ccache");
-    return;
-  } else if (await io.which("dnf")) {
-    // ccache is part of EPEL repo.
-    await execShell("dnf install -y epel-release");
-    await execShell("dnf install -y ccache");
-    return;
+  const shouldUpdate = core.getBooleanInput("update");
+  try {
+    if (await io.which("apt-get")) {
+      if (shouldUpdate) {
+        await execShellSudo("apt-get update");
+      }
+      await execShellSudo("apt-get install -y ccache");
+      return;
+    } else if (await io.which("apk")) {
+      if (shouldUpdate) {
+        await execShell("apk update");
+      }
+      await execShell("apk add ccache");
+      return;
+    } else if (await io.which("dnf")) {
+      if (shouldUpdate) {
+        await execShell("dnf check-update");
+      }
+      // ccache is part of EPEL repo.
+      await execShell("dnf install -y epel-release");
+      await execShell("dnf install -y ccache");
+      return;
+    }
+  } catch (error) {
+    throw new Error(getPackageManagerError(error));
   }
+
   throw Error("Can't install ccache automatically under this platform, please install it yourself before using this action.");
 }
 
