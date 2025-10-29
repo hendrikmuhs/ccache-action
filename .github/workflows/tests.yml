@@ -263,3 +263,27 @@ jobs:
         uses: ./
         with:
           evict-old-files: ${{ matrix.evict }}
+
+  test_option_update:
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run ccache-action
+        uses: ./
+        with:
+          update: true
+
+  test_option_update_breaks:
+    # Needed to ensure `test_option_update` actually does something.
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run ccache-action
+        id: ccache
+        uses: ./
+        continue-on-error: true
+      - name: Fail if previous step succeeded without update
+        if: steps.ccache.outcome == 'success'
+        run: exit 1
