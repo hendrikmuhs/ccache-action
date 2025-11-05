@@ -66431,7 +66431,7 @@ const SELF_CI = external_process_namespaceObject.env["CCACHE_ACTION_CI"] === "tr
 function getPackageManagerError(error) {
     return (`Failed to install ccache via package manager: '${error}'. ` +
         "Perhaps package manager index is not up to date? " +
-        "(either update it manually before running ccache-action or set 'update' option to 'true')");
+        "(either update it manually before running ccache-action or set 'update-package-index' option to 'true')");
 }
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 async function restore(ccacheVariant) {
@@ -66494,7 +66494,7 @@ async function configure(ccacheVariant, platform) {
     }
 }
 async function installCcacheMac() {
-    if (lib_core.getBooleanInput("update")) {
+    if (lib_core.getBooleanInput("update-package-index")) {
         await execShell("brew update");
     }
     try {
@@ -66505,7 +66505,7 @@ async function installCcacheMac() {
     }
 }
 async function installCcacheLinux() {
-    const shouldUpdate = lib_core.getBooleanInput("update");
+    const shouldUpdate = lib_core.getBooleanInput("update-package-index");
     try {
         if (await io.which("apt-get")) {
             if (shouldUpdate) {

@@ -15,7 +15,7 @@ function getPackageManagerError(error: Error | unknown) : string {
   return (
     `Failed to install ccache via package manager: '${error}'. ` +
     "Perhaps package manager index is not up to date? " +
-    "(either update it manually before running ccache-action or set 'update' option to 'true')"
+    "(either update it manually before running ccache-action or set 'update-package-index' option to 'true')"
   );
 }
 
@@ -86,7 +86,7 @@ async function configure(ccacheVariant : string, platform : string) : Promise<vo
 }
 
 async function installCcacheMac() : Promise<void> {
-  if (core.getBooleanInput("update")) {
+  if (core.getBooleanInput("update-package-index")) {
     await execShell("brew update");
   }
   try {
@@ -97,7 +97,7 @@ async function installCcacheMac() : Promise<void> {
 }
 
 async function installCcacheLinux() : Promise<void> {
-  const shouldUpdate = core.getBooleanInput("update");
+  const shouldUpdate = core.getBooleanInput("update-package-index");
   try {
     if (await io.which("apt-get")) {
       if (shouldUpdate) {

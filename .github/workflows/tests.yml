@@ -272,7 +272,7 @@ jobs:
       - name: Run ccache-action
         uses: ./
         with:
-          update: true
+          update-package-index: true
 
   test_option_update_breaks:
     # Needed to ensure `test_option_update` actually does something.
