@@ -66466,7 +66466,8 @@ async function configure(ccacheVariant, platform) {
         await execShell(`ccache --set-config=cache_dir='${cacheDir(ccacheVariant)}'`);
         await execShell(`ccache --set-config=max_size='${maxSize}'`);
         await execShell(`ccache --set-config=compression=true`);
-        if (platform === "darwin") {
+        if (platform === "darwin" || platform === "win32") {
+            // On Windows mtime will be different depending on the Visual Studio installation time, making it unreliable.
             await execShell(`ccache --set-config=compiler_check=content`);
         }
         if (lib_core.getBooleanInput("create-symlink")) {
