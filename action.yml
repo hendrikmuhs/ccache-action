@@ -33,7 +33,7 @@ inputs:
     default: false
     required: false
   job-summary:
-    description: "Publish stats as part of the job summary. Set to the title of the job summary section, or to the 
+    description: "Publish stats as part of the job summary. Set to the title of the job summary section, or to the
      empty string to disable this feature. Requires CCache 4.10+"
     default: 'CCache Statistics'
   evict-old-files:
@@ -46,6 +46,13 @@ inputs:
       ccache-action in a container or from `act`. Disabling this might speed up the action execution."
     default: false
     required: false
+  install:
+    description: "Whether or not to install ccache automatically. Options:
+      - yes: forcefully install through the package manager if available, or fall back to a binary
+      - binary: forcefully install a binary package
+      - detect (default): install ccache if not available
+      - no: do not attempt to install ccache"
+    default: detect
 runs:
   using: "node20"
   main: "dist/restore/index.js"
