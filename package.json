@@ -25,7 +25,7 @@
     "@actions/cache": "^6.0.0",
     "@actions/core": "^3.0.0",
     "@actions/exec": "^3.0.0",
-    "@actions/io": "^2.0.0"
+    "@actions/io": "^3.0.2"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
