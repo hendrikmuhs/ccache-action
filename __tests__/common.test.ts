@@ -1,5 +1,20 @@
-import * as common  from '../src/common';
-import * as core from "@actions/core";
+import {jest, describe, test, expect} from "@jest/globals";
+
+const mockGetState = jest.fn<(name: string) => string>();
+
+jest.unstable_mockModule("@actions/core", () => ({
+    getState: mockGetState,
+    getInput: jest.fn(),
+    warning: jest.fn(),
+    notice: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+    startGroup: jest.fn(),
+    endGroup: jest.fn(),
+    summary: { addHeading: jest.fn(), addTable: jest.fn(), write: jest.fn() },
+}));
+
+const common = await import("../src/common");
 
 describe('ccache common', () => {
     test('parse evict age parameter in seconds', () => {
@@ -23,15 +38,14 @@ describe('ccache common', () => {
     });
 
     test('get duration of job in seconds', () => {
-        const stateMock = jest.spyOn(core, "getState");
         const expectedAgeInSeconds = 1234;
         const startTimeMs = 1734258917128;
         const endTimeMs = startTimeMs + expectedAgeInSeconds * 1000;
-        stateMock.mockImplementationOnce(() => startTimeMs.toString());
+        mockGetState.mockImplementationOnce(() => startTimeMs.toString());
         jest.useFakeTimers().setSystemTime(new Date(endTimeMs));
 
         const age = common.getJobDurationInSeconds();
-        expect(stateMock).toHaveBeenCalledWith("startTimestamp");
+        expect(mockGetState).toHaveBeenCalledWith("startTimestamp");
         expect(age).toBe(expectedAgeInSeconds);
     });
 
