@@ -4,6 +4,7 @@
   "description": "github action to speedup building using ccache",
   "main": "dist/restore/index.js",
   "scripts": {
+    "metadata": "metadata/generate.sh",
     "prepare": "ncc build --target es2020 -o dist/restore src/restore.ts && ncc build --target es2020 -o dist/save src/save.ts",
     "test": "NODE_OPTIONS='--experimental-vm-modules' npx jest"
   },
