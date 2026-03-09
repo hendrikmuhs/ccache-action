@@ -45,8 +45,8 @@ jobs:
         variant: [sccache, ccache]
         install: [detect, binary]
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install: detect }
+          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true, install: detect }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
