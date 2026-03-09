@@ -1,26 +1,26 @@
 {
     "ccache": {
         "x86_64": {
-            "linux": "4.12.2",
-            "windows": "4.12.2",
-            "darwin": "4.12.2"
+            "linux": "4.13",
+            "windows": "4.13",
+            "darwin": "4.13"
         },
         "aarch64": {
-            "linux": "4.12.2",
-            "windows": "4.12.2",
-            "darwin": "4.12.2"
+            "linux": "4.13",
+            "windows": "4.13",
+            "darwin": "4.13"
         }
     },
     "sccache": {
         "x86_64": {
-            "linux": "v0.12.0",
-            "windows": "v0.12.0",
-            "darwin": "v0.12.0"
+            "linux": "v0.14.0",
+            "windows": "v0.14.0",
+            "darwin": "v0.14.0"
         },
         "aarch64": {
-            "linux": "v0.12.0",
-            "windows": "v0.12.0",
-            "darwin": "v0.12.0"
+            "linux": "v0.14.0",
+            "windows": "v0.14.0",
+            "darwin": "v0.14.0"
         }
     }
 }
