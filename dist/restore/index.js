@@ -38970,13 +38970,10 @@ __nccwpck_require__.r(__webpack_exports__);
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
   ARCH: () => (/* binding */ ARCH),
-  DARWIN: () => (/* binding */ DARWIN),
   INSTALL_METHOD: () => (/* binding */ INSTALL_METHOD),
-  LINUX: () => (/* binding */ LINUX),
   PLATFORM: () => (/* binding */ PLATFORM),
   Package: () => (/* binding */ Package),
   VARIANT: () => (/* binding */ VARIANT),
-  WINDOWS: () => (/* binding */ WINDOWS),
   "default": () => (/* binding */ src_restore),
   selectMethod: () => (/* binding */ selectMethod),
   selectPackage: () => (/* binding */ selectPackage),
@@ -85208,83 +85205,32 @@ var INSTALL_METHOD;
     INSTALL_METHOD["NO"] = "no";
 })(INSTALL_METHOD || (INSTALL_METHOD = {}));
 class Package {
-    constructor(variant, arch, platform, sha256, version) {
+    constructor(variant, arch, platform, metadata) {
         this.variant = variant;
         this.arch = arch;
         this.platform = platform;
-        this.sha256 = sha256;
-        this.version = version;
+        this.metadata = metadata;
     }
-    /**
-     * Get the name of this package.
-     * @returns The name of the package used to determine the artifact name and extracted directory.
-     */
-    packageName() {
-        const v = this.version;
-        if (this.variant === VARIANT.CCACHE) {
-            // ccache darwin is a universal binary
-            if (this.platform === PLATFORM.DARWIN) {
-                return `ccache-${v}-darwin`;
-            }
-            return `ccache-${v}-${this.platform}-${this.arch}`;
-        }
-        let suffix;
-        switch (this.platform) {
-            case PLATFORM.LINUX:
-                suffix = "unknown-linux-musl";
-                break;
-            case PLATFORM.WINDOWS:
-                suffix = "pc-windows-msvc";
-                break;
-            case PLATFORM.DARWIN:
-                suffix = "apple-darwin";
-                break;
-        }
-        return `sccache-${v}-${this.arch}-${suffix}`;
+    get packageName() {
+        return this.metadata.dir;
     }
-    /**
-     * Get the artifact name of the package.
-     * @returns The fully-qualified artifact name used to download the package.
-     */
-    downloadName() {
-        const base = this.packageName();
-        // sccache is just tar.gz
-        let extension = "tar.gz";
-        if (this.variant === VARIANT.CCACHE) {
-            switch (this.platform) {
-                case PLATFORM.LINUX:
-                    extension = "tar.xz";
-                    break;
-                case PLATFORM.WINDOWS:
-                    extension = "zip";
-                    break;
-                case PLATFORM.DARWIN:
-                    break;
-            }
-        }
-        return `${base}.${extension}`;
+    get downloadUrl() {
+        return this.metadata.url;
     }
-    /**
-     * Get the URL to download this package's artifact
-     * @returns The fully-qualified URL to download this package's artifact.
-     */
-    downloadUrl() {
-        const artifact = this.downloadName();
-        const repo = this.variant === VARIANT.CCACHE
-            ? "ccache/ccache"
-            : "mozilla/sccache";
-        // ccache is a little special sometimes :)
-        const version = this.variant === VARIANT.CCACHE ? `v${this.version}` : `${this.version}`;
-        return `https://github.com/${repo}/releases/download/${version}/${artifact}`;
+    get sha256() {
+        return this.metadata.sha256;
+    }
+    get artifact() {
+        return this.metadata.artifact;
     }
     async downloadAndExtract(srcFile, dstFile) {
         const dstDir = external_path_default().dirname(dstFile);
         if (!external_fs_default().existsSync(dstDir)) {
             external_fs_default().mkdirSync(dstDir, { recursive: true });
         }
-        const url = this.downloadUrl();
+        const url = this.downloadUrl;
         const tmp = external_fs_default().mkdtempSync(external_path_default().join(external_os_default().tmpdir(), "ccache"));
-        const dlName = external_path_default().join(tmp, this.downloadName());
+        const dlName = external_path_default().join(tmp, this.artifact);
         await execShell(`curl -L '${url}' -o '${dlName}'`);
         if (url.endsWith(".zip")) {
             await execShell(`unzip '${dlName}' -d '${tmp}'`);
@@ -85306,22 +85252,16 @@ class Package {
      */
     async installBinary() {
         const isWindows = this.platform === PLATFORM.WINDOWS;
-        // TODO: evaluate
-        const binDir = this.platform === PLATFORM.WINDOWS
+        const binDir = isWindows
             ? external_path_default().join(external_process_namespaceObject.env.USERPROFILE, ".cargo", "bin")
             : "/usr/local/bin";
         // Also prepend install path to PATH var
         // To prevent pre-existing install potentially clobbering this one
         addPath(binDir);
-        const binName = isWindows
-            ? `${this.variant}.exe`
-            : this.variant;
+        const binName = isWindows ? `${this.variant}.exe` : this.variant;
         const binPath = external_path_default().join(binDir, binName);
-        await this.downloadAndExtract(`${this.packageName()}/${binName}`, binPath);
-        // TODO: ccache provides minisig and sccache provides sha256 downloads,
-        // maybe verify w/ that?
+        await this.downloadAndExtract(`${this.packageName}/${binName}`, binPath);
         checkSha256Sum(binPath, this.sha256);
-        addPath(binDir);
         await execShell(`chmod +x '${binPath}'`);
     }
     /**
@@ -85426,7 +85366,7 @@ function detectPlatform() {
 function detectArchKey() {
     switch (external_process_namespaceObject.arch) {
         case "x64":
-            return "x64";
+            return "x86_64";
         case "arm64":
             return "aarch64";
         default:
@@ -85436,22 +85376,17 @@ function detectArchKey() {
 function selectPackage(variant) {
     const platform = detectPlatform();
     const archKey = detectArchKey();
-    let entry;
-    switch (platform) {
-        case PLATFORM.LINUX:
-            entry = LINUX[archKey];
-            break;
-        case PLATFORM.WINDOWS:
-            entry = WINDOWS[archKey];
-            break;
-        case PLATFORM.DARWIN:
-            entry = DARWIN[archKey];
-            break;
+    const metadataPath = external_path_default().join(__dirname, 'metadata.json');
+    if (!external_fs_default().existsSync(metadataPath)) {
+        throw new Error(`metadata file not found at ${metadataPath}`);
     }
-    if (entry)
-        return entry[variant];
-    else
-        throw new Error(`Unsupported package combination: platform=${platform}, arch=${archKey}, variant=${variant}`);
+    const rawData = external_fs_default().readFileSync(metadataPath, 'utf-8');
+    const allMetadata = JSON.parse(rawData);
+    const entry = allMetadata[variant]?.[archKey]?.[platform];
+    if (!entry) {
+        throw new Error(`No metadata found for combination: variant=${variant}, arch=${archKey}, platform=${platform}`);
+    }
+    return new Package(variant, archKey, platform, entry);
 }
 function selectMethod(method) {
     switch (method) {
@@ -85469,41 +85404,6 @@ function selectVariant(variant) {
         default: throw new Error(`Unsupported ccache variant ${variant}.`);
     }
 }
-// predefined packages //
-// TODO: can this be deduped? automated? generated?
-// Linux //
-const LINUX = {
-    x64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.X86_64, PLATFORM.LINUX, "4fdc966c46448960f3f9d85cf4430d818c1f4b4618ba0b745d000a396d6bc041", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.X86_64, PLATFORM.LINUX, "e381a9675f971082a522907b8381c1054777ea60511043e4c67de5dfddff3029", "v0.12.0"),
-    },
-    aarch64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.AARCH64, PLATFORM.LINUX, "65ccce8cc26ebb1127207fc55cd96443df56a2d6d74bd84f439db2c91c637d06", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.AARCH64, PLATFORM.LINUX, "2f9a8af7cea98e848f92e865a6d5062cfb8c91feeef17417cdd43276b4c7d8af", "v0.12.0"),
-    },
-};
-// Windows //
-const WINDOWS = {
-    x64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.X86_64, PLATFORM.WINDOWS, "bd73f405e3e80c7f0081ee75dbf9ee44dee64ecfbc3d4316e9a4ede4832f2e41", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.X86_64, PLATFORM.WINDOWS, "b0236d379a66b22f6bc9e944adb5b354163015315c3a2aaf7803ce2add758fcd", "v0.12.0"),
-    },
-    aarch64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.AARCH64, PLATFORM.WINDOWS, "9881a3acf40a5b22eff1c1650b335bd7cf56cf66a6c05cb7d0f53f19b43054f8", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.AARCH64, PLATFORM.WINDOWS, "0254597932dcc4fa85f67ac149be29941b96a19f8b1bb0bf71b24640641ab987", "v0.12.0"),
-    },
-};
-// macOS //
-const DARWIN = {
-    x64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.X86_64, PLATFORM.DARWIN, "3a3429dfd19c206b084204c35667005f0b91cb5716e79cfe7efe796be61a4047", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.X86_64, PLATFORM.DARWIN, "dc4b8d99d1aab20d1a2274642444c0bdc3e4a5fb4c6b63c58ff134eea81ccc15", "v0.12.0"),
-    },
-    aarch64: {
-        ccache: new Package(VARIANT.CCACHE, ARCH.AARCH64, PLATFORM.DARWIN, "3a3429dfd19c206b084204c35667005f0b91cb5716e79cfe7efe796be61a4047", "4.12.2"),
-        sccache: new Package(VARIANT.SCCACHE, ARCH.AARCH64, PLATFORM.DARWIN, "0a7e14583e7e136c5b2253990e7ce66668c453a845c710b18873e7205ed8c098", "v0.12.0"),
-    },
-};
 const SELF_CI = external_process_namespaceObject.env["CCACHE_ACTION_CI"] === "true";
 function getPackageManagerError(error) {
     return (`Failed to install ccache via package manager: '${error}'. ` +
