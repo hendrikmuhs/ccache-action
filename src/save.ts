@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as exec from "@actions/exec";
+import * as artifact from "@actions/artifact";
 import * as common from "./common";
 import {AgeUnit} from "./common";
 
@@ -130,6 +131,19 @@ async function run(earlyExit : boolean | undefined) : Promise<void> {
 
       core.info(`Save cache using key "${saveKey}".`);
       await cache.saveCache(paths, saveKey);
+    }
+
+    // If the user requested debugging mode *and* ccache is selected,
+    // upload it as an artifact named after this job's key.
+    if (core.getBooleanInput("debug") && ccacheVariant == "ccache") {
+      const primaryKey = core.getState("primaryKey")
+      const debugArtifact = `${ccacheVariant}-debug-${primaryKey}`
+      const debugDir = process.env.CCACHE_DEBUGDIR!
+
+      const client = new artifact.DefaultArtifactClient();
+      const {id, size} = await client.uploadArtifact(debugArtifact, [debugDir], debugDir)
+
+      core.debug(`Uploaded ccache debug info with id ${id} (${size} bytes)`)
     }
   } catch (error) {
     // A failure to save cache shouldn't prevent the entire CI run from
