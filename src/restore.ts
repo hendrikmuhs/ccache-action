@@ -517,6 +517,17 @@ async function configure(ccacheVariant: string, platform: string): Promise<void>
       await execShell(`ln -s ${ccache} /usr/local/bin/emcc`);
       await execShell(`ln -s ${ccache} /usr/local/bin/em++`);
     }
+    if (core.getBooleanInput("debug")) {
+      // This enables CCache's debug mode, and later uploads an artifact containing that debug info.
+      core.exportVariable("CCACHE_DEBUG", true);
+
+      const debugDir = (process.platform === "win32" ?
+        process.env.USERPROFILE! :
+        process.env.HOME) + "/.ccache-debug"
+
+      io.mkdirP(debugDir)
+      core.exportVariable("CCACHE_DEBUGDIR", debugDir)
+    }
     core.info("Ccache config:");
     await execShell("ccache -p");
   } else {
