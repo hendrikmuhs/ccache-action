@@ -54,7 +54,7 @@ inputs:
       - no: do not attempt to install ccache"
     default: detect
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
 branding:
