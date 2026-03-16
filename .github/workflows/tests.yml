@@ -44,9 +44,10 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest, windows-11-arm]
         shell: [bash]
         variant: [sccache, ccache]
+        install: [detect, binary]
         include:
-          - { os: windows-latest, shell: powershell, variant: sccache }
-          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true }
+          - { os: windows-latest, shell: powershell, variant: sccache, install: detect }
+          - { os: windows-latest, shell: powershell, variant: ccache, xfail: true, install: detect }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -59,6 +60,7 @@ jobs:
           max-size: 10M
           job-summary: 'ccache statistics'
           key: parent
+          install: ${{ matrix.install }}
       - name: Test ccache 1/2
         run: |
           [[ ${{ steps.ccache.outputs.test-cache-hit }} = true ]] || [[ ${{ steps.ccache.outputs.test-cache-hit }} = false ]]
