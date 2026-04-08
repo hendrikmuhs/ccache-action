@@ -65,7 +65,12 @@ package_info() {
 		*) _bad_platform "$platform" ;;
 		esac
 
-		pkg_name="sccache-$version-$arch-$suffix"
+		if [ "$arch" = "riscv64" ]; then
+			# sccache uses `riscv64gc` as arch name
+			pkg_name="sccache-$version-riscv64gc-$suffix"
+		else
+			pkg_name="sccache-$version-$arch-$suffix"
+		fi
 	fi
 
 	artifact="$pkg_name.$ext"

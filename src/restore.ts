@@ -17,6 +17,7 @@ export enum VARIANT {
 export enum ARCH {
   X86_64 = "x86_64",
   AARCH64 = "aarch64",
+  RISCV64 = "riscv64",
 }
 
 export enum PLATFORM {
@@ -205,6 +206,27 @@ export class Package {
   }
 }
 
+export class UnknownPackage {
+  constructor(
+    public readonly variant: VARIANT,
+    public readonly arch: ARCH,
+    public readonly platform: PLATFORM) { }
+
+  async install(method: INSTALL_METHOD): Promise<void> {
+    if (method === INSTALL_METHOD.DETECT && await io.which(this.variant)) {
+      // If the install method is "detect" and the package is already installed,
+      // don't try to install it. This is to bypass architectures that are not
+      // released in upstream projects (linux-riscv64 for ccache/ccache for example).
+    } else {
+      throw new Error(
+        `No metadata found for combination: variant=${this.variant}, arch=${this.arch}, platform=${this.platform}`
+      );
+    }
+  }
+}
+
+type MaybePackage = Package | UnknownPackage;
+
 // platform/stuff helpers //
 function detectPlatform(): PLATFORM {
   switch (process.platform) {
@@ -219,18 +241,20 @@ function detectPlatform(): PLATFORM {
   }
 }
 
-function detectArchKey(): "x86_64" | "aarch64" {
+function detectArchKey(): "x86_64" | "aarch64" | "riscv64" {
   switch (process.arch) {
     case "x64":
       return "x86_64";
     case "arm64":
       return "aarch64";
+    case "riscv64":
+      return "riscv64";
     default:
       throw new Error(`Unsupported architecture: ${process.arch}`);
   }
 }
 
-export function selectPackage(variant: VARIANT): Package {
+export function selectPackage(variant: VARIANT): MaybePackage {
   const platform = detectPlatform()
   const archKey = detectArchKey()
 
@@ -246,9 +270,8 @@ export function selectPackage(variant: VARIANT): Package {
   const entry: PackageMetadata = allMetadata[variant]?.[archKey]?.[platform];
 
   if (!entry) {
-    throw new Error(
-      `No metadata found for combination: variant=${variant}, arch=${archKey}, platform=${platform}`
-    );
+    core.warning(`No metadata found for combination: variant=${variant}, arch=${archKey}, platform=${platform}`)
+    return new UnknownPackage(variant, archKey as ARCH, platform as PLATFORM);
   }
 
   return new Package(variant, archKey as ARCH, platform as PLATFORM, entry);

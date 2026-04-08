@@ -39060,6 +39060,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   INSTALL_METHOD: () => (/* binding */ INSTALL_METHOD),
   PLATFORM: () => (/* binding */ PLATFORM),
   Package: () => (/* binding */ Package),
+  UnknownPackage: () => (/* binding */ UnknownPackage),
   VARIANT: () => (/* binding */ VARIANT),
   "default": () => (/* binding */ src_restore),
   selectMethod: () => (/* binding */ selectMethod),
@@ -86649,6 +86650,7 @@ var ARCH;
 (function (ARCH) {
     ARCH["X86_64"] = "x86_64";
     ARCH["AARCH64"] = "aarch64";
+    ARCH["RISCV64"] = "riscv64";
 })(ARCH || (ARCH = {}));
 var PLATFORM;
 (function (PLATFORM) {
@@ -86809,6 +86811,23 @@ class Package {
         }
     }
 }
+class UnknownPackage {
+    constructor(variant, arch, platform) {
+        this.variant = variant;
+        this.arch = arch;
+        this.platform = platform;
+    }
+    async install(method) {
+        if (method === INSTALL_METHOD.DETECT && await which(this.variant)) {
+            // If the install method is "detect" and the package is already installed,
+            // don't try to install it. This is to bypass architectures that are not
+            // released in upstream projects (linux-riscv64 for ccache/ccache for example).
+        }
+        else {
+            throw new Error(`No metadata found for combination: variant=${this.variant}, arch=${this.arch}, platform=${this.platform}`);
+        }
+    }
+}
 // platform/stuff helpers //
 function detectPlatform() {
     switch (external_process_namespaceObject.platform) {
@@ -86828,6 +86847,8 @@ function detectArchKey() {
             return "x86_64";
         case "arm64":
             return "aarch64";
+        case "riscv64":
+            return "riscv64";
         default:
             throw new Error(`Unsupported architecture: ${external_process_namespaceObject.arch}`);
     }
@@ -86843,7 +86864,8 @@ function selectPackage(variant) {
     const allMetadata = JSON.parse(rawData);
     const entry = allMetadata[variant]?.[archKey]?.[platform];
     if (!entry) {
-        throw new Error(`No metadata found for combination: variant=${variant}, arch=${archKey}, platform=${platform}`);
+        warning(`No metadata found for combination: variant=${variant}, arch=${archKey}, platform=${platform}`);
+        return new UnknownPackage(variant, archKey, platform);
     }
     return new Package(variant, archKey, platform, entry);
 }
