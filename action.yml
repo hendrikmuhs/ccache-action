@@ -53,6 +53,11 @@ inputs:
       - detect (default): install ccache if not available
       - no: do not attempt to install ccache"
     default: detect
+  debug:
+    description: "Enable CCache's debug mode for debugging cache misses.
+      This uploads an artifact containing CCache debug data. This has no effect on sccache."
+    default: false
+
 runs:
   using: "node24"
   main: "dist/restore/index.js"
