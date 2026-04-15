@@ -2,42 +2,42 @@
   "ccache": {
     "x86_64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-linux-x86_64-musl-static.tar.xz",
-        "sha256": "90d989c54e23916029076768e80fd316f3a32b939a6129401001fc02c3dab622",
-        "dir": "ccache-4.13-linux-x86_64-musl-static",
-        "artifact": "ccache-4.13-linux-x86_64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-linux-x86_64-musl-static.tar.xz",
+        "sha256": "f63ae7e81ef19d0a21606162cc2a25280c35b49b7b6edd6db1ed2ab0bd149114",
+        "dir": "ccache-4.13.3-linux-x86_64-musl-static",
+        "artifact": "ccache-4.13.3-linux-x86_64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-windows-x86_64.zip",
-        "sha256": "698c8dfe4eb133458411d0e655cbddc0a6ce819b42eafdb3f77a5862cdf6c852",
-        "dir": "ccache-4.13-windows-x86_64",
-        "artifact": "ccache-4.13-windows-x86_64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-windows-x86_64.zip",
+        "sha256": "c151ef86389ca166e45b4e14c12d78e4a1a6395aa9eaf13fcd96a55d1fb7f3d8",
+        "dir": "ccache-4.13.3-windows-x86_64",
+        "artifact": "ccache-4.13.3-windows-x86_64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-darwin.tar.gz",
-        "sha256": "49097fafbaf4122415185f596a08ca398547ae18aedb1551757d4ea79d6be5ea",
-        "dir": "ccache-4.13-darwin",
-        "artifact": "ccache-4.13-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-darwin.tar.gz",
+        "sha256": "1a95e67325503e69bd231b4921f03e960daf9caed3f46eb30ad1d79f2595e44e",
+        "dir": "ccache-4.13.3-darwin",
+        "artifact": "ccache-4.13.3-darwin.tar.gz"
       }
     },
     "aarch64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-linux-aarch64-musl-static.tar.xz",
-        "sha256": "f5d6dc715ef99c37417b15797c0d6e126a7625a6f018b65a4a507848aeadc780",
-        "dir": "ccache-4.13-linux-aarch64-musl-static",
-        "artifact": "ccache-4.13-linux-aarch64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-linux-aarch64-musl-static.tar.xz",
+        "sha256": "d3c13abd1b079c3232e3f451d91fe7f2449a379fe2a7498fff9056d8c74b6b14",
+        "dir": "ccache-4.13.3-linux-aarch64-musl-static",
+        "artifact": "ccache-4.13.3-linux-aarch64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-windows-aarch64.zip",
-        "sha256": "944b537fb916b17d7c6b6a1d93df8eb5b802a061cc74bf9070ae181a3fd51290",
-        "dir": "ccache-4.13-windows-aarch64",
-        "artifact": "ccache-4.13-windows-aarch64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-windows-aarch64.zip",
+        "sha256": "4a7e16a582f4a68476e17a0d18775cfdc2144c20673643ec10f9246b40367fdf",
+        "dir": "ccache-4.13.3-windows-aarch64",
+        "artifact": "ccache-4.13.3-windows-aarch64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13/ccache-4.13-darwin.tar.gz",
-        "sha256": "49097fafbaf4122415185f596a08ca398547ae18aedb1551757d4ea79d6be5ea",
-        "dir": "ccache-4.13-darwin",
-        "artifact": "ccache-4.13-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-darwin.tar.gz",
+        "sha256": "1a95e67325503e69bd231b4921f03e960daf9caed3f46eb30ad1d79f2595e44e",
+        "dir": "ccache-4.13.3-darwin",
+        "artifact": "ccache-4.13.3-darwin.tar.gz"
       }
     }
   },
