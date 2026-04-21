@@ -1,14 +1,17 @@
 {
     "ccache": {
         "x86_64": {
-            "linux": "4.13.3",
-            "windows": "4.13.3",
-            "darwin": "4.13.3"
+            "linux": "4.13.4",
+            "windows": "4.13.4",
+            "darwin": "4.13.4"
         },
         "aarch64": {
-            "linux": "4.13.3",
-            "windows": "4.13.3",
-            "darwin": "4.13.3"
+            "linux": "4.13.4",
+            "windows": "4.13.4",
+            "darwin": "4.13.4"
+        },
+        "riscv64": {
+            "linux": "4.13.4"
         }
     },
     "sccache": {
