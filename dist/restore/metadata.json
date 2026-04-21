@@ -2,42 +2,50 @@
   "ccache": {
     "x86_64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-linux-x86_64-musl-static.tar.xz",
-        "sha256": "f63ae7e81ef19d0a21606162cc2a25280c35b49b7b6edd6db1ed2ab0bd149114",
-        "dir": "ccache-4.13.3-linux-x86_64-musl-static",
-        "artifact": "ccache-4.13.3-linux-x86_64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-x86_64-musl-static.tar.xz",
+        "sha256": "33b6c83727c9ff6b11371da65cea64b981c8d59ece4029689db0f16f88863fb5",
+        "dir": "ccache-4.13.4-linux-x86_64-musl-static",
+        "artifact": "ccache-4.13.4-linux-x86_64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-windows-x86_64.zip",
-        "sha256": "c151ef86389ca166e45b4e14c12d78e4a1a6395aa9eaf13fcd96a55d1fb7f3d8",
-        "dir": "ccache-4.13.3-windows-x86_64",
-        "artifact": "ccache-4.13.3-windows-x86_64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-windows-x86_64.zip",
+        "sha256": "e9f31931624846a02978717e9c6e6c40b5cad97cb5548bcc84a46bfeeb76bd13",
+        "dir": "ccache-4.13.4-windows-x86_64",
+        "artifact": "ccache-4.13.4-windows-x86_64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-darwin.tar.gz",
-        "sha256": "1a95e67325503e69bd231b4921f03e960daf9caed3f46eb30ad1d79f2595e44e",
-        "dir": "ccache-4.13.3-darwin",
-        "artifact": "ccache-4.13.3-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-darwin.tar.gz",
+        "sha256": "b43997aece0dcbd2f0c4fbf5e29eedb31ac8b24e7a2879a587dd8751e7438c40",
+        "dir": "ccache-4.13.4-darwin",
+        "artifact": "ccache-4.13.4-darwin.tar.gz"
       }
     },
     "aarch64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-linux-aarch64-musl-static.tar.xz",
-        "sha256": "d3c13abd1b079c3232e3f451d91fe7f2449a379fe2a7498fff9056d8c74b6b14",
-        "dir": "ccache-4.13.3-linux-aarch64-musl-static",
-        "artifact": "ccache-4.13.3-linux-aarch64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-aarch64-musl-static.tar.xz",
+        "sha256": "7a64a94411e97bbeb6b67509415663c76534dbe407517bf6b7a3ce61f2735768",
+        "dir": "ccache-4.13.4-linux-aarch64-musl-static",
+        "artifact": "ccache-4.13.4-linux-aarch64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-windows-aarch64.zip",
-        "sha256": "4a7e16a582f4a68476e17a0d18775cfdc2144c20673643ec10f9246b40367fdf",
-        "dir": "ccache-4.13.3-windows-aarch64",
-        "artifact": "ccache-4.13.3-windows-aarch64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-windows-aarch64.zip",
+        "sha256": "59ff8d602731933301021f5029eb462f70542c82f74d2286440c6a033b707a37",
+        "dir": "ccache-4.13.4-windows-aarch64",
+        "artifact": "ccache-4.13.4-windows-aarch64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.3/ccache-4.13.3-darwin.tar.gz",
-        "sha256": "1a95e67325503e69bd231b4921f03e960daf9caed3f46eb30ad1d79f2595e44e",
-        "dir": "ccache-4.13.3-darwin",
-        "artifact": "ccache-4.13.3-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-darwin.tar.gz",
+        "sha256": "b43997aece0dcbd2f0c4fbf5e29eedb31ac8b24e7a2879a587dd8751e7438c40",
+        "dir": "ccache-4.13.4-darwin",
+        "artifact": "ccache-4.13.4-darwin.tar.gz"
+      }
+    },
+    "riscv64": {
+      "linux": {
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-riscv64-musl-static.tar.xz",
+        "sha256": "b6db5268b2207b9899ab9bc1632b88fa188ffcb4a218a1be5588335a9f401543",
+        "dir": "ccache-4.13.4-linux-riscv64-musl-static",
+        "artifact": "ccache-4.13.4-linux-riscv64-musl-static.tar.xz"
       }
     }
   },
