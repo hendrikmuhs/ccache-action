@@ -81,6 +81,14 @@
         "dir": "sccache-v0.14.0-aarch64-apple-darwin",
         "artifact": "sccache-v0.14.0-aarch64-apple-darwin.tar.gz"
       }
+    },
+    "riscv64": {
+      "linux": {
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.14.0/sccache-v0.14.0-riscv64gc-unknown-linux-musl.tar.gz",
+        "sha256": "67973734f48edfeb07dcc1adf174c4034dbcc1eb66cfae58076f3546684b9300",
+        "dir": "sccache-v0.14.0-riscv64gc-unknown-linux-musl",
+        "artifact": "sccache-v0.14.0-riscv64gc-unknown-linux-musl.tar.gz"
+      }
     }
   }
 }
