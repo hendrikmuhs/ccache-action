@@ -16,17 +16,17 @@
     },
     "sccache": {
         "x86_64": {
-            "linux": "v0.14.0",
-            "windows": "v0.14.0",
-            "darwin": "v0.14.0"
+            "linux": "v0.15.0",
+            "windows": "v0.15.0",
+            "darwin": "v0.15.0"
         },
         "aarch64": {
-            "linux": "v0.14.0",
-            "windows": "v0.14.0",
-            "darwin": "v0.14.0"
+            "linux": "v0.15.0",
+            "windows": "v0.15.0",
+            "darwin": "v0.15.0"
         },
         "riscv64": {
-            "linux": "v0.14.0"
+            "linux": "v0.15.0"
         }
     }
 }
