@@ -89357,7 +89357,7 @@ async function restore(ccacheVariant) {
         primaryKey: getInput("key"),
         // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
         restoreKeys: getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== ""),
-        appendTimestamp: getInput("append-timestamp")
+        appendTimestamp: getBooleanInput("append-timestamp")
     };
     const keyPrefix = ccacheVariant + "-";
     const primaryKey = inputs.primaryKey ? keyPrefix + (inputs.appendTimestamp ? inputs.primaryKey + "-" : inputs.primaryKey) : keyPrefix;
