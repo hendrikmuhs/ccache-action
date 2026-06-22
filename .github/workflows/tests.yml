@@ -20,7 +20,7 @@ jobs:
     # Run npm build and check that the dist/ folder is up to date.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build
         run: |
           npm install
@@ -30,7 +30,7 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run unit tests
         run: |
           npm install
@@ -50,7 +50,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache, xfail: true, install: detect }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         id: ccache
         uses: ./
@@ -109,7 +109,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache action
         uses: ./
         id: output
@@ -134,7 +134,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
       - name: Run ccache action
@@ -161,7 +161,7 @@ jobs:
           - { os: windows-latest, shell: powershell, variant: ccache }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: |
           echo "RAND=$RANDOM" >> $GITHUB_ENV
       - name: Run ccache action
@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: apt update
         shell: bash
       - name: Run ccache-action
@@ -192,7 +192,7 @@ jobs:
     runs-on: ubuntu-latest
     container: alpine:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: apk update
         shell: sh
       - name: Run ccache-action
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     container: rockylinux:9
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: dnf update -y
         shell: sh
       - name: Run ccache-action
@@ -216,7 +216,7 @@ jobs:
       matrix:
         save: [true, false]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         uses: ./
         with:
@@ -229,7 +229,7 @@ jobs:
       matrix:
         append-timestamp: [true, false]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         uses: ./
         with:
@@ -242,7 +242,7 @@ jobs:
       matrix:
         create-symlink: [true, false]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         uses: ./
         with:
@@ -261,7 +261,7 @@ jobs:
       matrix:
         evict: ['job', '30s', '']
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         uses: ./
         with:
@@ -271,7 +271,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         uses: ./
         with:
@@ -282,7 +282,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run ccache-action
         id: ccache
         uses: ./
