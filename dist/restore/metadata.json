@@ -2,100 +2,100 @@
   "ccache": {
     "x86_64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-x86_64-musl-static.tar.xz",
-        "sha256": "33b6c83727c9ff6b11371da65cea64b981c8d59ece4029689db0f16f88863fb5",
-        "dir": "ccache-4.13.4-linux-x86_64-musl-static",
-        "artifact": "ccache-4.13.4-linux-x86_64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-linux-x86_64-musl-static.tar.xz",
+        "sha256": "c4ca67395c175798c588ee5425c135e76bee5701add4d0631d8b4be0b161b322",
+        "dir": "ccache-4.13.6-linux-x86_64-musl-static",
+        "artifact": "ccache-4.13.6-linux-x86_64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-windows-x86_64.zip",
-        "sha256": "e9f31931624846a02978717e9c6e6c40b5cad97cb5548bcc84a46bfeeb76bd13",
-        "dir": "ccache-4.13.4-windows-x86_64",
-        "artifact": "ccache-4.13.4-windows-x86_64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-windows-x86_64.zip",
+        "sha256": "1f285645553e61463b000c6c440301724894b4ba0174dbef6b4818d54b54b68d",
+        "dir": "ccache-4.13.6-windows-x86_64",
+        "artifact": "ccache-4.13.6-windows-x86_64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-darwin.tar.gz",
-        "sha256": "b43997aece0dcbd2f0c4fbf5e29eedb31ac8b24e7a2879a587dd8751e7438c40",
-        "dir": "ccache-4.13.4-darwin",
-        "artifact": "ccache-4.13.4-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-darwin.tar.gz",
+        "sha256": "1d8cc4e68ed61355bc9b29191e05fab2b764d98a41fed794e7d6a9d34b5c3735",
+        "dir": "ccache-4.13.6-darwin",
+        "artifact": "ccache-4.13.6-darwin.tar.gz"
       }
     },
     "aarch64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-aarch64-musl-static.tar.xz",
-        "sha256": "7a64a94411e97bbeb6b67509415663c76534dbe407517bf6b7a3ce61f2735768",
-        "dir": "ccache-4.13.4-linux-aarch64-musl-static",
-        "artifact": "ccache-4.13.4-linux-aarch64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-linux-aarch64-musl-static.tar.xz",
+        "sha256": "e678bcfe84a0fea0865307dca3f8ac38f4c881125afea91e3a9397ed3a087666",
+        "dir": "ccache-4.13.6-linux-aarch64-musl-static",
+        "artifact": "ccache-4.13.6-linux-aarch64-musl-static.tar.xz"
       },
       "windows": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-windows-aarch64.zip",
-        "sha256": "59ff8d602731933301021f5029eb462f70542c82f74d2286440c6a033b707a37",
-        "dir": "ccache-4.13.4-windows-aarch64",
-        "artifact": "ccache-4.13.4-windows-aarch64.zip"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-windows-aarch64.zip",
+        "sha256": "01fd8dc542a97d71ba886a861ca26ba0343bd92356fde3c72db73da3e91840a6",
+        "dir": "ccache-4.13.6-windows-aarch64",
+        "artifact": "ccache-4.13.6-windows-aarch64.zip"
       },
       "darwin": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-darwin.tar.gz",
-        "sha256": "b43997aece0dcbd2f0c4fbf5e29eedb31ac8b24e7a2879a587dd8751e7438c40",
-        "dir": "ccache-4.13.4-darwin",
-        "artifact": "ccache-4.13.4-darwin.tar.gz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-darwin.tar.gz",
+        "sha256": "1d8cc4e68ed61355bc9b29191e05fab2b764d98a41fed794e7d6a9d34b5c3735",
+        "dir": "ccache-4.13.6-darwin",
+        "artifact": "ccache-4.13.6-darwin.tar.gz"
       }
     },
     "riscv64": {
       "linux": {
-        "url": "https://github.com/ccache/ccache/releases/download/v4.13.4/ccache-4.13.4-linux-riscv64-musl-static.tar.xz",
-        "sha256": "b6db5268b2207b9899ab9bc1632b88fa188ffcb4a218a1be5588335a9f401543",
-        "dir": "ccache-4.13.4-linux-riscv64-musl-static",
-        "artifact": "ccache-4.13.4-linux-riscv64-musl-static.tar.xz"
+        "url": "https://github.com/ccache/ccache/releases/download/v4.13.6/ccache-4.13.6-linux-riscv64-musl-static.tar.xz",
+        "sha256": "1613c449f3589fa34ca7133b89d7c22ce8e2b89c4a59714be4ea20d14295aebb",
+        "dir": "ccache-4.13.6-linux-riscv64-musl-static",
+        "artifact": "ccache-4.13.6-linux-riscv64-musl-static.tar.xz"
       }
     }
   },
   "sccache": {
     "x86_64": {
       "linux": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-x86_64-unknown-linux-musl.tar.gz",
-        "sha256": "fcfae9d4f44c5ad74b73953bc052d385ec08f437f3c02f3be10590b863503359",
-        "dir": "sccache-v0.15.0-x86_64-unknown-linux-musl",
-        "artifact": "sccache-v0.15.0-x86_64-unknown-linux-musl.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-x86_64-unknown-linux-musl.tar.gz",
+        "sha256": "066c5a84c85044c8f48b3ab571ac114293ea717c3d36985db022af8206e21e63",
+        "dir": "sccache-v0.17.0-x86_64-unknown-linux-musl",
+        "artifact": "sccache-v0.17.0-x86_64-unknown-linux-musl.tar.gz"
       },
       "windows": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-x86_64-pc-windows-msvc.tar.gz",
-        "sha256": "e68e38e5b548f015dfc47c76d6cfbe67a610034408961f2b8693828b728999f8",
-        "dir": "sccache-v0.15.0-x86_64-pc-windows-msvc",
-        "artifact": "sccache-v0.15.0-x86_64-pc-windows-msvc.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-x86_64-pc-windows-msvc.tar.gz",
+        "sha256": "7a2b4220389c959bd78a12187f0d2339f4b3d794d3e9ff75cf1e5426f7c16a29",
+        "dir": "sccache-v0.17.0-x86_64-pc-windows-msvc",
+        "artifact": "sccache-v0.17.0-x86_64-pc-windows-msvc.tar.gz"
       },
       "darwin": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-x86_64-apple-darwin.tar.gz",
-        "sha256": "1146246631ae45e7c160bb2b6b7f7b9f0d791ad8c3304696747a2770ac493db5",
-        "dir": "sccache-v0.15.0-x86_64-apple-darwin",
-        "artifact": "sccache-v0.15.0-x86_64-apple-darwin.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-x86_64-apple-darwin.tar.gz",
+        "sha256": "f9dc67b783a4493ee31dc578d55748b4dd43330c83ae664b567fb4ce9b324aa5",
+        "dir": "sccache-v0.17.0-x86_64-apple-darwin",
+        "artifact": "sccache-v0.17.0-x86_64-apple-darwin.tar.gz"
       }
     },
     "aarch64": {
       "linux": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-aarch64-unknown-linux-musl.tar.gz",
-        "sha256": "04228c3a61a6f900bd47185e8261d1948e0aa840769b2e7795bb817644454d2e",
-        "dir": "sccache-v0.15.0-aarch64-unknown-linux-musl",
-        "artifact": "sccache-v0.15.0-aarch64-unknown-linux-musl.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-aarch64-unknown-linux-musl.tar.gz",
+        "sha256": "5b53a6c23e295df2b3636d1f1f0a1768dffb11ffd273a90230eb06cbce5775d4",
+        "dir": "sccache-v0.17.0-aarch64-unknown-linux-musl",
+        "artifact": "sccache-v0.17.0-aarch64-unknown-linux-musl.tar.gz"
       },
       "windows": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-aarch64-pc-windows-msvc.tar.gz",
-        "sha256": "bfec9460a2addaedda12d94ee54cdd1871cfdde213c6559ff5764571c9574942",
-        "dir": "sccache-v0.15.0-aarch64-pc-windows-msvc",
-        "artifact": "sccache-v0.15.0-aarch64-pc-windows-msvc.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-aarch64-pc-windows-msvc.tar.gz",
+        "sha256": "11d5b138c8bd85ba0ddd14e5f13b6cb0047527530d5bccab08b41282aff9155c",
+        "dir": "sccache-v0.17.0-aarch64-pc-windows-msvc",
+        "artifact": "sccache-v0.17.0-aarch64-pc-windows-msvc.tar.gz"
       },
       "darwin": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-aarch64-apple-darwin.tar.gz",
-        "sha256": "c7f3b91e0f6343b6188451a77f47840d7c01ad64d9f61493c0516eaef3b718e1",
-        "dir": "sccache-v0.15.0-aarch64-apple-darwin",
-        "artifact": "sccache-v0.15.0-aarch64-apple-darwin.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-aarch64-apple-darwin.tar.gz",
+        "sha256": "af205fcb0fbca2b051dd293f8a96d3177cfb74b06324a948d7ee7dbadf367b78",
+        "dir": "sccache-v0.17.0-aarch64-apple-darwin",
+        "artifact": "sccache-v0.17.0-aarch64-apple-darwin.tar.gz"
       }
     },
     "riscv64": {
       "linux": {
-        "url": "https://github.com/mozilla/sccache/releases/download/v0.15.0/sccache-v0.15.0-riscv64gc-unknown-linux-musl.tar.gz",
-        "sha256": "031598296dc3eef5d3ff7d18af4e9713ad80d93e196b71795d0e053839b517f2",
-        "dir": "sccache-v0.15.0-riscv64gc-unknown-linux-musl",
-        "artifact": "sccache-v0.15.0-riscv64gc-unknown-linux-musl.tar.gz"
+        "url": "https://github.com/mozilla/sccache/releases/download/v0.17.0/sccache-v0.17.0-riscv64gc-unknown-linux-musl.tar.gz",
+        "sha256": "e6cbaa701999baa4edaa9d8ac7aef1e83bf8fd6e328d89ae0c29569a9a49c57c",
+        "dir": "sccache-v0.17.0-riscv64gc-unknown-linux-musl",
+        "artifact": "sccache-v0.17.0-riscv64gc-unknown-linux-musl.tar.gz"
       }
     }
   }
