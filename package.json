@@ -32,7 +32,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^26.4.0",
     "@vercel/ncc": "^0.44.1",
-    "jest": "^30.4.2",
+    "jest": "^30.5.0",
     "ts-jest": "^29.4.4",
     "typescript": "^5.9.3"
   },
