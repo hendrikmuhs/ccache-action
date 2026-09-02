@@ -90213,6 +90213,7 @@ async function runInner() {
     let ccachePath = await which(ccacheVariant, true);
     info(`${ccacheVariant} installed at ${ccachePath}`);
     endGroup();
+    setOutput("executable", toPosixPath(ccachePath));
     startGroup("Restore cache");
     await restore(ccacheVariant);
     endGroup();
