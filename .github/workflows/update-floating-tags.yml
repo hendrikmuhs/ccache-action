@@ -1,0 +1,51 @@
+name: Update Floating Tags
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  update-tags:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Advance major and minor version tags
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          # Ensure TAG matches strict semantic versioning (e.g. v1.2.24)
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Skipping: '$TAG' is not a stable semver tag matching vX.Y.Z."
+            exit 0
+          fi
+
+          echo "Processing release tag: $TAG"
+
+          # Extract major (e.g. v1) and minor (e.g. v1.2)
+          MAJOR="${TAG%%.*}"
+          MINOR="${TAG%.*}"
+
+          echo "Major tag: $MAJOR"
+          echo "Minor tag: $MINOR"
+
+          # Ensure the release tag is available locally.
+          git fetch --tags --force
+
+          # Configure bot identity.
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Force-update annotated floating tags to the release commit.
+          git tag -fa "$MAJOR" -m "Update $MAJOR to $TAG" "$TAG^{commit}"
+          git tag -fa "$MINOR" -m "Update $MINOR to $TAG" "$TAG^{commit}"
+
+          # Force-push both floating tags.
+          git push origin "$MAJOR" "$MINOR" --force
