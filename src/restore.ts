@@ -312,7 +312,7 @@ async function restore(ccacheVariant: string): Promise<void> {
     primaryKey: core.getInput("key"),
     // https://github.com/actions/cache/blob/73cb7e04054996a98d39095c0b7821a73fb5b3ea/src/utils/actionUtils.ts#L56
     restoreKeys: core.getInput("restore-keys").split("\n").map(s => s.trim()).filter(x => x !== ""),
-    appendTimestamp: core.getInput("append-timestamp")
+    appendTimestamp: core.getBooleanInput("append-timestamp")
   };
 
   const keyPrefix = ccacheVariant + "-";
