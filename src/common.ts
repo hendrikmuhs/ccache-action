@@ -1,6 +1,7 @@
 import path from "path";
-import {SummaryTableRow} from "@actions/core/lib/summary";
 import * as core from "@actions/core";
+
+type SummaryTableRow = Parameters<typeof core.summary.addTable>[0][number];
 
 type Version = [number,number,number];
 

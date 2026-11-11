@@ -3,11 +3,12 @@
     "noEmitOnError": false,
     "diagnostics": true,
     "lib": ["esnext"],
+    "types": ["node", "jest"],
 
     "target": "es2020",
 
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "module": "esnext",
     "esModuleInterop": true,
 
