@@ -1,5 +1,8 @@
 # Ccache for gh actions
 
+[![GitHubSponsors](https://img.shields.io/github/sponsors/hendrikmuhs?logo=githubsponsors&label=Sponsor)](https://github.com/sponsors/hendrikmuhs)
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-donate-yellow?logo=buymeacoffee)](https://buymeacoffee.com/hendrikmuhs)
+
 A Github action to speedup building using ccache/sccache for C/C++ projects.
 
 Works on Linux, macOS, and Windows.
@@ -92,3 +95,10 @@ This action is based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus
 
 In a nutshell, the `.ccache` folder is configured in the runner path and the folder is persisted and reloaded using [`cache`](https://github.com/actions/toolkit/tree/main/packages/cache).
 For more details see: https://docs.github.com/en/free-pro-team@latest/actions/guides/caching-dependencies-to-speed-up-workflows.
+
+## Support
+
+ccache-action is developed and maintained in spare time. If you find it useful, please consider supporting its development:
+
+  * [GitHub Sponsors](https://github.com/sponsors/hendrikmuhs)
+  * [Buy Me a Coffee](https://buymeacoffee.com/hendrikmuhs)
